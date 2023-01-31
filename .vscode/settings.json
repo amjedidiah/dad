@@ -1,7 +1,14 @@
 {
   "cSpell.words": [
+    "aeonik",
     "Brightland",
     "Codacy",
-    "upsell"
-  ]
+    "drpassy",
+    "Emotioncache",
+    "Flutterwave",
+    "Paystack",
+    "upsell",
+    "USSD"
+  ],
+  "eslint.workingDirectories": ["/drpassy-website"]
 }

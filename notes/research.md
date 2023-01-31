@@ -18,8 +18,9 @@
 ### Features: Next
 
 - [x] GitHub repo
-- [x] Color pallette: <https://coolors.co/660000-ffffff-000000-724e91-399e5a>
-- [ ]Theme: dark/white & based on the festive season
+- [x] Color palette: <https://coolors.co/660000-ffffff-000000-724e91-399e5a-EDB230>
+- [x] Theme(font, palette) setup with MUI and emotion
+- [ ] Theme switch button
 - Loading animation
 - Landing page / Jumbotron(without image)
 - Page transitions
@@ -30,6 +31,7 @@
 - Codacy code quality reviews
 - Google Analytics
 - High res images
+- [ ] Theme: based on the festive season
 
 ### Content
 
