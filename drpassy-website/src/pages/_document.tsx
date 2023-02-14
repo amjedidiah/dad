@@ -1,4 +1,4 @@
-import createEmotionCache from "@/lib/createEmotioncache";
+import createEmotionCache from "@/lib/create-emotion-cache";
 import createEmotionServer from "@emotion/server/create-instance";
 import Document, {
   Html,

@@ -1,7 +1,7 @@
-import { ModeContextType } from "@/hooks/use-mode";
+import { Mode } from "@/context/mode/types";
 import { aeonik, inter } from "./font.util";
 
-export const getDesignTokens = (mode: ModeContextType["mode"]) => ({
+export const getDesignTokens = (mode: Mode) => ({
   typography: {
     fontFamily: inter.style.fontFamily,
   },

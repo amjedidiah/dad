@@ -1,9 +1,10 @@
-import createEmotionCache from "@/lib/createEmotioncache";
+import createEmotionCache from "@/lib/create-emotion-cache";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import useMode, { ModeContext } from "@/hooks/use-mode";
+import useMode from "@/hooks/use-mode/use-mode";
+import { ModeContext } from "@/context/mode/mode.context";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -16,7 +17,7 @@ export default function MyApp({
   pageProps,
   emotionCache = clientSideEmotionCache,
 }: MyAppProps) {
-  const { theme, toggleMode } = useMode();
+  const { theme, toggleMode, isDarkMode } = useMode();
 
   return (
     <CacheProvider value={emotionCache}>
@@ -26,7 +27,7 @@ export default function MyApp({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ModeContext.Provider value={{ toggleMode }}>
+      <ModeContext.Provider value={{ toggleMode, isDarkMode }}>
         <ThemeProvider theme={theme}>
           <CssBaseline enableColorScheme />
           <Component {...pageProps} />
