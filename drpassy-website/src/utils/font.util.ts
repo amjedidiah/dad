@@ -35,5 +35,5 @@ export const aeonik = localFont({
       style: "italic",
     },
   ],
-  fallback: ["sans-serif"]
+  fallback: ["sans-serif"],
 });
