@@ -6,6 +6,9 @@ export const ModeButton = styled(Button)`
   box-shadow: ${({ theme }) => theme.shadows[1]};
   color: ${({ theme }) => theme.palette.primary.main};
   background-color: ${({ theme }) => theme.palette.primary.contrastText};
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
 
   &:hover {
     background-color: ${({ theme }) => theme.palette.primary.contrastText};
