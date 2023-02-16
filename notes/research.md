@@ -22,7 +22,7 @@
 - [x] Theme(font, palette) setup with MUI and emotion
 - [x] Theme switch button
 - [x] Loading animation: `Skeleton` from MUI: <https://mui.com/material-ui/react-skeleton/>
-- Smooth scrolling
+- [x] Smooth scrolling
 - Landing page / Jumbotron(without image)
 - Logo / favicon
 - PWA

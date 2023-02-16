@@ -5,7 +5,6 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import useMode from "@/hooks/use-mode/use-mode";
 import { ModeContext } from "@/context/mode/mode.context";
-import ThemeSwitch from "@/stories/theme-switch/theme-switch";
 import Layout from "@/stories/layout/layout";
 
 const clientSideEmotionCache = createEmotionCache();
