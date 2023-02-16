@@ -15,7 +15,8 @@ export default function Home() {
       <main>
         <h1>Welcome to Dr Passy&apos;s website</h1>
         <p>
-          Dr Passy Amaraegbu is a father, psychologist and pastor specializing in solving long standing issues in the lives of people
+          Dr Passy Amaraegbu is a father, psychologist and pastor specializing
+          in solving long standing issues in the lives of people
         </p>
       </main>
     </>

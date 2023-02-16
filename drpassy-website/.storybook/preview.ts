@@ -1,3 +1,5 @@
+import ThemeDecorator from "./decorators/theme.decorator";
+
 export const parameters = {
   backgrounds: {
     default: "light",
@@ -10,3 +12,5 @@ export const parameters = {
     },
   },
 };
+
+export const decorators = [ThemeDecorator];

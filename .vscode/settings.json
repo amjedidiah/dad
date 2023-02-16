@@ -4,6 +4,7 @@
     "autodocs",
     "Brightland",
     "Codacy",
+    "dolor",
     "drpassy",
     "Emotioncache",
     "esnext",
@@ -11,7 +12,9 @@
     "nextjs",
     "Paystack",
     "upsell",
-    "USSD"
+    "USSD",
+    "Voluptates",
+    "voluptatum"
   ],
   "eslint.workingDirectories": ["/drpassy-website"]
 }

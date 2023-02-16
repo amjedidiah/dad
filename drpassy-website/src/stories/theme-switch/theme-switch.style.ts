@@ -16,7 +16,7 @@ export const ModeButton = styled(Button)`
 
   &.is-dark-mode,
   &.is-dark-mode:hover {
-    color: ${({ theme }) => theme.palette.text.primary};
+    color: ${({ theme }) => theme.palette.background.default};
     background-color: ${({ theme }) => theme.palette.grey[700]};
   }
 `;

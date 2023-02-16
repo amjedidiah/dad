@@ -20,13 +20,12 @@
 - [x] GitHub repo
 - [x] Color palette: <https://coolors.co/660000-ffffff-000000-724e91-399e5a-EDB230>
 - [x] Theme(font, palette) setup with MUI and emotion
-- [ ] Theme switch button
-- Loading animation
+- [x] Theme switch button
+- [x] Loading animation: `Skeleton` from MUI: <https://mui.com/material-ui/react-skeleton/>
+- Smooth scrolling
 - Landing page / Jumbotron(without image)
-- Page transitions
 - Logo / favicon
 - PWA
-- SMooth scrolling
 - Netlify hosting
 - Codacy code quality reviews
 - Google Analytics

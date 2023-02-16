@@ -6,6 +6,7 @@ import Head from "next/head";
 import useMode from "@/hooks/use-mode/use-mode";
 import { ModeContext } from "@/context/mode/mode.context";
 import ThemeSwitch from "@/stories/theme-switch/theme-switch";
+import Layout from "@/stories/layout/layout";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -31,8 +32,9 @@ export default function MyApp({
       <ModeContext.Provider value={{ toggleMode, isDarkMode }}>
         <ThemeProvider theme={theme}>
           <CssBaseline enableColorScheme />
-          <Component {...pageProps} />
-          <ThemeSwitch />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </ThemeProvider>
       </ModeContext.Provider>
     </CacheProvider>

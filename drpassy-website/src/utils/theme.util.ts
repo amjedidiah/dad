@@ -8,7 +8,12 @@ export const getDesignTokens = (mode: Mode) => ({
   components: {
     MuiCssBaseline: {
       styleOverrides: `
-        html, body {
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        } 
+        html, body, #__next {
           min-height: 100vh;
         },
         h1, h2, h3, h4, h5, h6 {
