@@ -1,14 +1,21 @@
-import { Button, styled } from "@mui/material";
+import { Box, Button, styled } from "@mui/material";
 
 export const ModeButton = styled(Button)`
-  padding: 1.25rem;
+  min-width: unset;
+  padding: 0.5rem;
   border-radius: 50%;
   box-shadow: ${({ theme }) => theme.shadows[1]};
+  border: 1px solid ${({ theme }) => theme.palette.primary.main};
   color: ${({ theme }) => theme.palette.primary.main};
   background-color: ${({ theme }) => theme.palette.primary.contrastText};
   position: fixed;
-  bottom: 2.5rem;
-  right: 2.5rem;
+  bottom: 1rem;
+  right: 1rem;
+
+  &.switch {
+    top: 1rem;
+    bottom: unset;
+  }
 
   &:hover {
     background-color: ${({ theme }) => theme.palette.primary.contrastText};
@@ -19,18 +26,26 @@ export const ModeButton = styled(Button)`
     color: ${({ theme }) => theme.palette.background.default};
     background-color: ${({ theme }) => theme.palette.grey[700]};
   }
+
+  @media screen and (min-width: ${({ theme }) =>
+      theme.breakpoints.values.laptopL}px) {
+    right: calc(
+      (100% - ${({ theme }) => theme.breakpoints.values.laptopL}px) / 2 + 1rem
+    );
+  }
 `;
 
-export const ModeButtonGroup = styled("div")`
+export const ModeButtonGroup = styled(Box)`
   position: fixed;
-  bottom: 2.5rem;
-  right: 2.5rem;
+  height: 100%;
+  width: fit-content;
+  top: 0;
+  max-width: ${({ theme }) => theme.breakpoints.values.laptopL}px;
 
-  & button {
-    position: static;
-
-    &:first-of-type {
-      margin-right: 1rem;
-    }
+  @media screen and (min-width: ${({ theme }) =>
+      theme.breakpoints.values.laptopL}px) {
+    right: calc(
+      (100% - ${({ theme }) => theme.breakpoints.values.laptopL}px) / 2
+    );
   }
 `;

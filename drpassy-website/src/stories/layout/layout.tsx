@@ -1,4 +1,5 @@
 import useScrollPosition from "@/hooks/use-scroll-position/use-scroll-position";
+import { Box } from "@mui/material";
 import { Fragment } from "react";
 import { Link } from "react-scroll";
 import ThemeButton from "../theme-button/theme-button";
@@ -9,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <Fragment>
-      <div id="top"></div>
+      <Box id="top" />
       {children}
       <ModeButtonGroup>
         {showGoToTop && (

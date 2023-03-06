@@ -26,7 +26,7 @@ export default function ThemeButton({ isSwitch }: ThemeButtonProps) {
 
   return (
     <ModeButton
-      className={cls({ "is-dark-mode": isDarkMode })}
+      className={cls({ "is-dark-mode": isDarkMode, switch: isSwitch })}
       onClick={handleOnClick}
     >
       <IconToShow />

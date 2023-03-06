@@ -1,8 +1,19 @@
+import "@/styles/global-stories.css";
 import ThemeDecorator from "./decorators/theme.decorator";
 
 export const parameters = {
   backgrounds: {
-    default: "light",
+    default: "dark",
+    values: [
+      {
+        name: "dark",
+        value: "#000",
+      },
+      {
+        name: "light",
+        value: "#fff",
+      },
+    ],
   },
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {

@@ -34,6 +34,8 @@ export default function useScrollPosition() {
   }, [calculateScrollDistance]);
 
   const showGoToTop = useMemo(() => {
+    if (!process.browser) return false;
+
     const deviceHeight = document.documentElement.clientHeight;
     const documentHeight = document.body.scrollHeight;
     const ratio = documentHeight / deviceHeight;
