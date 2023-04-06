@@ -23,7 +23,7 @@
 - [x] Theme switch button
 - [x] Loading animation: `Skeleton` from MUI: <https://mui.com/material-ui/react-skeleton/>
 - [x] Smooth scrolling
-- Landing page / Jumbotron(without image)
+- Landing page / Jumbotron
 - Logo / favicon
 - PWA
 - Netlify hosting
