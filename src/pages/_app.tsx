@@ -1,41 +1,30 @@
-import createEmotionCache from "@/lib/create-emotion-cache";
-import { CacheProvider, EmotionCache } from "@emotion/react";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { Global, ThemeProvider } from "@emotion/react";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import useMode from "@/hooks/use-mode/use-mode";
+import useMode from "@/hooks/use-mode";
 import { ModeContext } from "@/context/mode/mode.context";
-import Layout from "@/stories/layout/layout";
-
-const clientSideEmotionCache = createEmotionCache();
-
-interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache;
-}
+import global from "@/styles/global";
 
 export default function MyApp({
   Component,
   pageProps,
-  emotionCache = clientSideEmotionCache,
-}: MyAppProps) {
+}: AppProps) {
   const { theme, toggleMode, isDarkMode } = useMode();
 
   return (
-    <CacheProvider value={emotionCache}>
+    <ModeContext.Provider value={{ toggleMode, isDarkMode }}>
       <Head>
         {/* PWA primary color */}
-        <meta name="theme-color" content={theme.palette.primary.main} />
+        <meta name="theme-color" content={theme.colors.primary} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ModeContext.Provider value={{ toggleMode, isDarkMode }}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline enableColorScheme />
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </ThemeProvider>
-      </ModeContext.Provider>
-    </CacheProvider>
+      <ThemeProvider theme={theme}>
+        <Global styles={global} />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </ModeContext.Provider>
   );
 }
+
+// TODO: Eventually integrate GraphQL Code Generator

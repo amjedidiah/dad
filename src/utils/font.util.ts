@@ -1,39 +1,24 @@
-import { Inter } from "@next/font/google";
-import localFont from "@next/font/local";
+import localFont from "next/font/local";
 
-export const inter = Inter({ subsets: ["latin"], fallback: ["sans-serif"] });
-export const aeonik = localFont({
+const neueMontreal = localFont({
   src: [
     {
-      path: "../../public/fonts/aeonik/aeonik-light.otf",
-      weight: "300",
-      style: "normal",
-    },
-    {
-      path: "../../public/fonts/aeonik/aeonik-light-italic.otf",
-      weight: "300",
-      style: "italic",
-    },
-    {
-      path: "../../public/fonts/aeonik/aeonik-regular.otf",
+      path: "../../public/fonts/neue-montreal/NeueMontreal-Regular.otf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../public/fonts/aeonik/aeonik-regular-italic.otf",
-      weight: "400",
-      style: "italic",
-    },
-    {
-      path: "../../public/fonts/aeonik/aeonik-bold.otf",
-      weight: "700",
+      path: "../../public/fonts/neue-montreal/NeueMontreal-Medium.otf",
+      weight: "500",
       style: "normal",
     },
     {
-      path: "../../public/fonts/aeonik/aeonik-bold-italic.otf",
+      path: "../../public/fonts/neue-montreal/NeueMontreal-Bold.otf",
       weight: "700",
-      style: "italic",
+      style: "normal",
     },
   ],
   fallback: ["sans-serif"],
 });
+
+export default neueMontreal;

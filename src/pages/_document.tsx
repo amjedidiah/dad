@@ -1,16 +1,7 @@
-import createEmotionCache from "@/lib/create-emotion-cache";
-import createEmotionServer from "@emotion/server/create-instance";
-import Document, {
-  Html,
-  Head,
-  Main,
-  NextScript,
-  DocumentContext,
-} from "next/document";
-import React from "react";
+import { Html, Head, Main, NextScript } from 'next/document'
 
-export default class MyDocument extends Document {
-  render = () => (
+export default function Document() {
+  return (
     <Html lang="en">
       <Head />
       <body>
@@ -18,35 +9,5 @@ export default class MyDocument extends Document {
         <NextScript />
       </body>
     </Html>
-  );
+  )
 }
-
-MyDocument.getInitialProps = async (ctx: DocumentContext): Promise<any> => {
-  const originalRenderPage = ctx.renderPage;
-  const cache = createEmotionCache();
-  const { extractCriticalToChunks } = createEmotionServer(cache);
-
-  ctx.renderPage = () =>
-    originalRenderPage({
-      enhanceApp: (App: any) => (props: any) =>
-        <App emotionCache={cache} {...props} />,
-    });
-
-  const initialProps = await Document.getInitialProps(ctx);
-  const emotionStyles = extractCriticalToChunks(initialProps.html);
-  const emotionStyleTags = emotionStyles.styles.map((style: any) => (
-    <style
-      data-emotion={`${style.key} ${style.ids.join(" ")}`}
-      key={style.key}
-      dangerouslySetInnerHTML={{ __html: style.css }}
-    />
-  ));
-
-  return {
-    ...initialProps,
-    styles: [
-      ...React.Children.toArray(initialProps.styles),
-      ...emotionStyleTags,
-    ],
-  };
-};
