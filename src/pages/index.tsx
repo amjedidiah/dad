@@ -1,3 +1,4 @@
+import Jumbo from "@/components/jumbo/index.jumbo";
 import Head from "next/head";
 import { Fragment } from "react";
 
@@ -14,9 +15,7 @@ export default function Home() {
         />
       </Head>
 
-      Hello
-      <h1>JKcnba ca</h1>
-      <p>kasnca</p>
+      <Jumbo />
     </Fragment>
   );
 }
