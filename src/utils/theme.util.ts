@@ -1,18 +1,19 @@
-const defaultTheme = {
+import { Theme } from "@emotion/react";
+
+const initTheme = {
   breakpoints: {
     mobile: 0,
     mobileS: 320,
     mobileM: 375,
     mobileL: 425,
-    mobileXL: 576,
-    tablet: 768,
-    tabletL: 992,
-    laptop: 1024,
-    laptopM: 1200,
+    sm: 640,
+    md: 768,
+    mdx: 1199,
+    lg: 1024,
+    xl: 1280,
     laptopL: 1440,
-    desktop: 1600,
-    desktopL: 1920,
-    desktopXL: 2560,
+    "2xl": 1536,
+    "4k": 2560,
   },
   colors: {
     primary: "#724e91",
@@ -20,22 +21,25 @@ const defaultTheme = {
     error: "#660000",
     warning: "#edb230",
     success: "#399e5a",
+    black: "#1a1a1a",
+    white: "#ffffff",
+    grey2: "#808080",
   },
 };
 
 export const lightTheme = {
-  ...defaultTheme,
+  ...initTheme,
   colors: {
-    ...defaultTheme.colors,
+    ...initTheme.colors,
     background: "#ffffff",
-    text: "#000000",
+    text: "#999999",
   },
 };
 
 export const darkTheme = {
-  ...defaultTheme,
+  ...initTheme,
   colors: {
-    ...defaultTheme.colors,
+    ...initTheme.colors,
     background: "#000000",
     text: "#ffffff",
   },
