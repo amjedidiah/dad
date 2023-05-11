@@ -17,7 +17,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         {/* PWA primary color */}
         <meta name="theme-color" content={theme.colors.primary} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/images/512x512.ico" />
+        <link rel="icon" href="/images/512x512.png" />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       <ThemeProvider theme={theme}>
