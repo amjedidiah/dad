@@ -1,6 +1,7 @@
 import { Global, ThemeProvider } from "@emotion/react";
 import { AppProps } from "next/app";
 import Head from "next/head";
+import { Analytics } from '@vercel/analytics/react';
 import useMode from "@/hooks/use-mode";
 import { ModeContext } from "@/context/mode/mode.context";
 import global from "@/styles/global";
@@ -22,6 +23,7 @@ export default function MyApp({
       <ThemeProvider theme={theme}>
         <Global styles={global} />
         <Component {...pageProps} />
+        <Analytics />
       </ThemeProvider>
     </ModeContext.Provider>
   );
