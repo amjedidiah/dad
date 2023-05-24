@@ -2,6 +2,8 @@
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) for my father's website.
 
+> Please read through this guide. It is very **_IMPORTANT_**.
+
 ## Getting Started
 
 - Clone project: `git clone https://github.com/amjedidiah/dad dad`
@@ -28,6 +30,8 @@ pnpm dev
 
 - Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Guides
+
 ### Naming Conventions
 
 - Features: `feat/`
@@ -47,6 +51,7 @@ pnpm dev
 ### Contributing to the project
 
 > Always raise a PR against the `develop` branch and reach out for approval, before merging into `develop`.
+> Confirm that all other checks, including vercel deploy passes before reaching out for approval
 > Do not push or merge directly to the `develop` or `main` branches
 
 ## Figma files
