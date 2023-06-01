@@ -5,6 +5,11 @@ const styles: Interpolation<Theme> = ({
   colors: { white, grey2, black },
   breakpoints,
 }) => css`
+    .bg-shadow{
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
+        postion:sticky;
+        top:0
+    }
   .nav-container {
     display: flex;
     align-items: center;

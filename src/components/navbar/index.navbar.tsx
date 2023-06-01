@@ -8,8 +8,8 @@ import ButtonGroup from "../button-group";
 export default function Navbar() {
   return (
     <div css={styles}>
-      <section className="container">
-        <div className="nav-container">
+      <section className="bg-shadow">
+        <div className="nav-container container">
           <div className="picture-container">
             <div className="image-container">
               <Image

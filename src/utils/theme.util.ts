@@ -24,6 +24,7 @@ const initTheme = {
     black: "#1a1a1a",
     white: "#ffffff",
     grey2: "#808080",
+    lightGrey:"#E6E6E6"
   },
 };
 

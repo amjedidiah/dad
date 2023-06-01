@@ -1,3 +1,4 @@
+import ChooseHim from "@/components/choose-him/index.choose";
 import Jumbo from "@/components/jumbo/index.jumbo";
 import Navbar from "@/components/navbar/index.navbar";
 import Head from "next/head";
@@ -17,6 +18,7 @@ export default function Home() {
       </Head>
       <Jumbo />
       <Navbar/>
+      <ChooseHim/>
     </Fragment>
   );
 }
