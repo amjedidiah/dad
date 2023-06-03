@@ -11,22 +11,29 @@ const styles: Interpolation<Theme> = ({
     grid-column-gap: 15px;
     grid-row-gap: 8px;
     justify-content: space-between;
+    width:100%;
+    padding: 40px 0px;
     .single-choose-grid {
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
       gap: 4px;
-      width: 326px;
       height: 272px;
     }
     .icon {
-      background: ${lightGrey};
+      background: ${isDarkMode ?grey2 : lightGrey};
       width: 96px;
       border-radius: 8px;
       padding: 20px 10px;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    p {
+        width: 344px;
+    }
+    @media (max-width: ${breakpoints.lg}px) {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
   .choose-header {
@@ -35,6 +42,7 @@ const styles: Interpolation<Theme> = ({
     gap: 10px;
     padding: 30px 0;
     margin-bottom: 20px;
+    margin-top: 20px;
     h2 {
       font-size: 64px;
       font-weight: 500;
@@ -48,12 +56,11 @@ const styles: Interpolation<Theme> = ({
       font-weight: 400;
       font-size: 20px;
       line-height: 24px;
-
       letter-spacing: 0.02em;
-
-      color: #808080;
+      color: ${isDarkMode ? black: '#808080 '};
     }
   }
+
 `;
 
 export default styles;
