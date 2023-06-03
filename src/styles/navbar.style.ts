@@ -5,16 +5,18 @@ const styles: Interpolation<Theme> = ({
   colors: { white, grey2, black },
   breakpoints,
 }) => css`
-    .bg-shadow{
+  .bg-shadow{
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
-        postion:sticky;
-        top:0
+        height:136px;
     }
   .nav-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
+    position:sticky;
+    @media (max-width: ${breakpoints.sm}px) {
+      flex-direction: column
+    }
     .picture-container {
       display: flex;
       gap: 5px;

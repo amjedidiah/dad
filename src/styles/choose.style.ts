@@ -12,7 +12,7 @@ const styles: Interpolation<Theme> = ({
     grid-row-gap: 8px;
     justify-content: space-between;
     width:100%;
-    padding: 40px 0px;
+    padding: 20px 0px;
     .single-choose-grid {
       display: flex;
       flex-direction: column;
@@ -35,18 +35,28 @@ const styles: Interpolation<Theme> = ({
     @media (max-width: ${breakpoints.lg}px) {
       grid-template-columns: repeat(2, 1fr);
     }
+    @media (max-width: ${breakpoints.sm}px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
   }
   .choose-header {
     display: flex;
     align-items: end;
     gap: 10px;
-    padding: 30px 0;
+    padding: 20px 0;
     margin-bottom: 20px;
     margin-top: 20px;
+    @media (max-width: ${breakpoints.sm}px) {
+      flex-direction: column;
+  }
     h2 {
       font-size: 64px;
       font-weight: 500;
-      max-width: 347px;
+      width: 347px;
+      @media (max-width: ${breakpoints.sm}px) {
+        font-size: 40px;
+        width: 100%;
+        }
     }
     p {
       font-weight: 400;
@@ -58,6 +68,10 @@ const styles: Interpolation<Theme> = ({
       line-height: 24px;
       letter-spacing: 0.02em;
       color: ${isDarkMode ? black: '#808080 '};
+      @media (max-width: ${breakpoints.sm}px) {
+        font-size: 18px;
+        width: 100%;
+        }
     }
   }
 
