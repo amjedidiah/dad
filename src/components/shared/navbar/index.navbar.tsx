@@ -4,7 +4,7 @@ import Link from "next/link";
 //file import
 import styles from "@/styles/navbar.style";
 import { Links,jumboButtons } from "./constants";
-import ButtonGroup from "../button-group";
+import ButtonGroup from "../../button-group";
 export default function Navbar() {
   return (
     <div css={styles}>

@@ -1,7 +1,7 @@
-import ChooseHim from "@/components/choose-him/index.choose";
-import Jumbo from "@/components/jumbo/index.jumbo";
-import Navbar from "@/components/navbar/index.navbar";
-import TalkingSection from "@/components/who-talking/index.talking";
+import ChooseHim from "@/components/landing-page/choose-him/index.choose";
+import Jumbo from "@/components/landing-page/jumbo/index.jumbo";
+import Navbar from "@/components/shared/navbar/index.navbar";
+import TalkingSection from "@/components/landing-page/who-talking/index.talking";
 import Head from "next/head";
 import { Fragment } from "react";
 
