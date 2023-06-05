@@ -74,7 +74,6 @@ const styles: Interpolation<Theme> = ({
         }
     }
   }
-
 `;
 
 export default styles;
