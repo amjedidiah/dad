@@ -12,17 +12,11 @@ env:
 run-name: Run checks against ${{ github.event.deployment_status.environment_url }}
 jobs:
   test-e2e:
-    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.environment_url, 'webapp') # Only run when the deployment was successful.
+    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.environment_url, 'dad') # Only run when the deployment was successful.
     name: Test E2E on Checkly
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: LouisBrunner/checks-action@v1.6.0
-        if: always()
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: Test E2E Passed Notification
-          conclusion: ${{ job.status }}
       - uses: actions/checkout@v3
         with:
           ref: "${{ github.event.deployment_status.deployment.ref }}"
@@ -51,3 +45,9 @@ jobs:
         id: deploy-checks
         if: steps.run-checks.outcome == 'success' && github.event.deployment_status.environment == 'Production'
         run: npx checkly deploy --force
+      - uses: LouisBrunner/checks-action@v1.6.0
+        if: always()
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Test E2E Passed Notification
+          conclusion: ${{ job.status }}
