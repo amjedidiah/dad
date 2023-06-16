@@ -11,7 +11,7 @@ const globalStyles: Interpolation<Theme> = ({
     padding: 0;
     transition: all 0.2s ease;
   }
-  
+
   html,
   body {
     font-family: ${font.style.fontFamily}, sans-serif;
