@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint:dev": "next lint --fix",
+    "lint": "next lint",
+    "test": "npx checkly test --record",
+    "test:deploy": "npx checkly deploy"
   },
   "dependencies": {
     "@emotion/css": "^11.11.0",
@@ -25,11 +28,18 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@playwright/test": "^1.34.3",
     "@types/node": "20.1.0",
-    "@types/react": "18.2.6",
-    "@types/react-dom": "18.2.4",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
+    "checkly": "latest",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
-    "typescript": "5.0.4"
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.8",
+    "ts-node": "latest",
+    "typescript": "latest",
+    "husky": "^8.0.0"
   }
 }
