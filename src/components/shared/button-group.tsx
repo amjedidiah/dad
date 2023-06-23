@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import Button, { ButtonProps } from "@/components/button";
+import Button, { ButtonProps } from "@/components/shared/button";
 import styles from "@/styles/button-group.style";
 
 type Props = {

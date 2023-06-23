@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import ButtonGroup from "@/components/button-group";
-import { jumboButtons } from "./constants";
+import ButtonGroup from "@/components/shared/button-group";
+import { jumboButtons } from "@/components/jumbo/constants";
 import styles from "@/styles/jumbo.style";
 import Link from "next/link";
 import { LinkIcon } from "@/icons";
-import BouncingArrow from "./bouncing-arrow";
-import ScrollingRoles from "./scrolling-roles";
+import BouncingArrow from "@/components/jumbo/bouncing-arrow";
+import ScrollingRoles from "@/components/jumbo/scrolling-roles";
 import Image from "next/image";
 
 export default function Jumbo() {

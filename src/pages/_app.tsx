@@ -5,7 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import useMode from "@/hooks/use-mode";
 import { ModeContext } from "@/context/mode/mode.context";
 import global from "@/styles/global.style";
-import Layout from "@/components/layout";
+import Layout from "@/components/shared/layout";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const { theme, toggleMode, isDarkMode } = useMode();
