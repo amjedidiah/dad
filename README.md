@@ -1,6 +1,6 @@
 # drpassy-website
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) for my Dr Passy's website.
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) for Dr Passy's website.
 
 > Please read through this guide. It is very **_IMPORTANT_**.
 
@@ -40,7 +40,7 @@ yarn dev
 
 - Fixes: `fix:`
 
-- Chores / other tasks: `chore:`
+- Chores or other tasks: `chore:`
 
 ### Contributing to the project
 
