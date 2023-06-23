@@ -29,12 +29,12 @@ export default function ModeSwitch() {
     <div css={styles}>
       {showScrollToTop && (
         <Link to="top" smooth>
-          <button>
+          <button aria-label="Scroll to top">
             <ScrollIcon />
           </button>
         </Link>
       )}
-      <button onClick={toggleMode}>
+      <button onClick={toggleMode} aria-label="Toggle mode">
         <SwitchIcon />
       </button>
     </div>
