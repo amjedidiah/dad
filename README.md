@@ -47,6 +47,8 @@ yarn dev
 - For PRs, reach out for approval from @amjedidiah, before merging into `develop`.
 - Confirm that all other checks pass before reaching out for approval
 
+> Never commit `yarn.lock` file
+
 #### Important Branches
 
 > Don't **push** to or **merge** into, or **delete** these branches
