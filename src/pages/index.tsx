@@ -1,5 +1,5 @@
+import ChooseHim from "@/components/choose-him/index.choose";
 import Jumbo from "@/components/jumbo/index.jumbo";
-import AppearedOn from "@/components/Appeared-On/index.appeared";
 import Head from "next/head";
 import { Fragment } from "react";
 
@@ -16,7 +16,7 @@ export default function Home() {
         />
       </Head>
       <Jumbo />
-      <AppearedOn/>
+      <ChooseHim/>
     </Fragment>
   );
 }
