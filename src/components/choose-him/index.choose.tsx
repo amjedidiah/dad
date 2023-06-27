@@ -1,9 +1,7 @@
 
 /** @jsxImportSource @emotion/react */
-import Image from "next/image";
-import Link from "next/link";
 //file imports
-import { Grid } from "./constants";
+import { Grid } from "@/components/choose-him/constants";
 import styles from "@/styles/choose.style";
 
 export default function ChooseHim() {
