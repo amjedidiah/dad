@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import styles from "@/styles/talking.style";
+import styles from "@/styles/appeared.style";
 import Image from "next/image";
 import { LogoNames } from "@/components/Appeared-On/constants";
 
