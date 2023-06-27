@@ -8,10 +8,10 @@ export const jumboButtons = [
   },
 ];
 export const Links = [
-  ["About", "/about"],
-  ["Books", "/books"],
-  ["Podcast", "/podcast"],
-  ["Testimonials", "/testimonials"],
-  ["Blog", "/blog"],
-  ["Cart", "/cart"],
+  { name: "About", link: "/about" },
+  { name: "Books", link: "/books" },
+  { name: "Podcast", link: "/podcast" },
+  { name: "Testimonials", link: "/testimonials" },
+  { name: "Blog", link: "/blog" },
+  { name: "Cart", link: "/cart" },
 ];

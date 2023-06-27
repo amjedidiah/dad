@@ -19,8 +19,6 @@ export default function Home() {
       </Head>
       <Jumbo />
       <Navbar/>
-      <ChooseHim/>
-      <TalkingSection/>
     </Fragment>
   );
 }

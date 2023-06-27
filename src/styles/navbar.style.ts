@@ -5,10 +5,10 @@ const styles: Interpolation<Theme> = ({
   colors: { white, grey2, black },
   breakpoints,
 }) => css`
-  .bg-shadow{
+  .bg-shadow
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
         height:136px;
-    }
+
   .nav-container {
     display: flex;
     align-items: center;
@@ -26,11 +26,6 @@ const styles: Interpolation<Theme> = ({
         border-radius: 50%;
         overflow: hidden;
 
-        img {
-          margin-top: 3rem;
-          position: relative;
-          left: -2%;
-        }
       }
 
       .link {
@@ -41,16 +36,13 @@ const styles: Interpolation<Theme> = ({
     nav {
       display: flex;
       justify-content: space-between;
-      gap: 10px;
-      width: 40%;
-      font-size: 16px;
+      gap: 2rem;
     }
 
     .link {
       color: #808080;
     }
     .button-group{
-        width:20%
         display: flex
     }
   }
