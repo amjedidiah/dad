@@ -1,6 +1,6 @@
+import { useEffect } from "react";
 import { useAnimate } from "framer-motion";
 import { ExploreIcon } from "@/icons";
-import { useEffect } from "react";
 
 export default function BouncingArrow() {
   const [scope, animate] = useAnimate();
