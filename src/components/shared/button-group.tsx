@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import Button, { ButtonProps } from "@/components/button";
+import Button, { ButtonProps } from "@/components/shared/button";
 import styles from "@/styles/button-group.style";
 
 type Props = {
@@ -9,8 +9,8 @@ type Props = {
 export default function ButtonGroup({ buttons }: Props) {
   return (
     <div css={styles}>
-      {buttons.map((button) => (
-        <Button key={button.value} {...button} />
+      {buttons.map(({ key, ...rest }) => (
+        <Button key={key} {...rest} />
       ))}
     </div>
   );
