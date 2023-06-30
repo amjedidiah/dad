@@ -1,6 +1,8 @@
+/** @jsxImportSource @emotion/react */
 import { useEffect } from "react";
 import { useAnimate } from "framer-motion";
 import { IRolesItems } from "@/components/landing/jumbo/index.jumbo";
+import styles from "@/styles/scrolling.style";
 
 type Props = {
   items: IRolesItems[];
@@ -28,7 +30,7 @@ export default function Scrolling({ items }: Props) {
   }, [scope, animate]);
 
   return (
-    <div ref={scope} className="roles-container">
+    <div css={styles} ref={scope}>
       {items.map((_, i) => (
         <ul key={i} className={`roles roles-${i + 1}`}>
           {items.map(({ key, Component }) => (
