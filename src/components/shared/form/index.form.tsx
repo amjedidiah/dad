@@ -34,7 +34,15 @@ Form.Field = function FormField(
     | InputHTMLAttributes<HTMLInputElement>
     | TextareaHTMLAttributes<HTMLTextAreaElement>
 ) {
-  if ("rows" in field) return <textarea className="field" {...field} />;
+  if ("rows" in field)
+    return (
+      <textarea
+        name={field.name}
+        aria-label={field.name}
+        className="field"
+        {...field}
+      />
+    );
   else if ("type" in field) return <input className="field" {...field} />;
 
   return null;
