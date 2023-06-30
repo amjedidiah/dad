@@ -19,4 +19,8 @@ export const jumboButtons: ButtonProps[] = [
   },
 ];
 
-export const roles = ["Father", "Psychologist", "Pastor"];
+export enum Roles {
+  Father = "Father",
+  Psychologist = "Psychologist",
+  Pastor = "Pastor",
+}
