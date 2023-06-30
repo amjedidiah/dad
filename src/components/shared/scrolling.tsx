@@ -1,9 +1,12 @@
 import { useEffect } from "react";
 import { useAnimate } from "framer-motion";
-import { roles } from "@/components/landing/jumbo/constants";
-import { StarIcon } from "@/icons";
+import { IRolesItems } from "@/components/landing/jumbo/index.jumbo";
 
-export default function ScrollingRoles() {
+type Props = {
+  items: IRolesItems[];
+};
+
+export default function Scrolling({ items }: Props) {
   const [scope, animate] = useAnimate();
 
   useEffect(() => {
@@ -26,11 +29,11 @@ export default function ScrollingRoles() {
 
   return (
     <div ref={scope} className="roles-container">
-      {Array.from({ length: 3 }).map((_, i) => (
+      {items.map((_, i) => (
         <ul key={i} className={`roles roles-${i + 1}`}>
-          {roles.map((role) => (
-            <li key={role} className="role-item">
-              <StarIcon /> {role}
+          {items.map(({ key, Component }) => (
+            <li key={key} className="role-item">
+              <Component /> {key}
             </li>
           ))}
         </ul>
