@@ -2,13 +2,13 @@
 import { useContext } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import ButtonGroup from "@/components/shared/button-group";
-import styles from "@/styles/jumbo.style";
-import { LinkIcon } from "@/icons";
 import BouncingArrow from "@/components/landing/jumbo/bouncing-arrow";
-import ScrollingRoles from "@/components/landing/jumbo/scrolling-roles";
-import { ModalContext } from "@/context/modal/modal.context";
 import { jumboButtons } from "@/components/landing/jumbo/constants";
+import ScrollingRoles from "@/components/landing/jumbo/scrolling-roles";
+import ButtonGroup from "@/components/shared/button-group";
+import { ModalContext } from "@/context/modal/modal.context";
+import { LinkIcon } from "@/icons";
+import styles from "@/styles/jumbo.style";
 
 export default function Jumbo() {
   const { toggleModal } = useContext(ModalContext);
