@@ -6,8 +6,9 @@ const styles: Interpolation<Theme> = ({ isDarkMode }) => css`
   align-items: flex-start;
   gap: 2rem;
   position: fixed;
-  right: clamp(2rem, 4.76%, 4.5rem);
-  bottom: clamp(2rem, 4.76%, 4.5rem);
+  right: clamp(3.175rem, 4.76%, 4.5rem);
+  bottom: clamp(3.175rem, 4.76%, 4.5rem);
+  z-index: 1000;
 
   button {
     display: flex;

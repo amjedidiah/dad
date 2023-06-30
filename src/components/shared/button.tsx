@@ -10,9 +10,18 @@ export type ButtonProps = {
   ["data-modal"]?: ModalTitles;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export default function Button({ value, outlined, ...rest }: ButtonProps) {
+export default function Button({
+  value,
+  outlined,
+  className,
+  ...rest
+}: ButtonProps) {
   return (
-    <button css={styles} className={cx({ outline: outlined })} {...rest}>
+    <button
+      css={styles}
+      className={cx({ outline: outlined }, className)}
+      {...rest}
+    >
       <span className="text">{value}</span>
       <span className="icon">
         <LinkIcon />
