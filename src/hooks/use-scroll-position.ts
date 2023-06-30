@@ -28,12 +28,14 @@ export default function useScrollPosition() {
   }, [getDocHeight]);
 
   const listenToScrollEvent = useCallback(() => {
-    document.addEventListener("scroll", () =>
-      requestAnimationFrame(() => calculateScrollDistance())
-    );
+    const calculateFunc = () =>
+      requestAnimationFrame(() => calculateScrollDistance());
+
+    document.addEventListener("scroll", calculateFunc);
+    return () => document.removeEventListener("scroll", calculateFunc);
   }, [calculateScrollDistance]);
 
-  const showGoToTop = useMemo(() => {
+  const showScrollToTop = useMemo(() => {
     if (!process.browser) return false;
 
     const deviceHeight = document.documentElement.clientHeight;
@@ -45,5 +47,5 @@ export default function useScrollPosition() {
 
   useEffect(() => listenToScrollEvent(), [listenToScrollEvent]);
 
-  return { showGoToTop };
+  return showScrollToTop;
 }

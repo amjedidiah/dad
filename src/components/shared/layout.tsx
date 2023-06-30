@@ -2,6 +2,7 @@
 import { Fragment } from "react";
 import Head from "next/head";
 import Modal from "@/components/shared/modal";
+import ModeSwitch from "@/components/shared/mode-switch";
 import useMode from "@/hooks/use-mode";
 import styles from "@/styles/layout.style";
 import { IComponentWithChildren } from "@/utils/types";
@@ -29,7 +30,11 @@ export default function Layout({
         <link rel="icon" href="/images/512x512.png" />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
-      <main css={styles}>{children}</main>
+      <main css={styles}>
+        <div id="top" />
+        {children}
+        <ModeSwitch />
+      </main>
       <Modal />
     </Fragment>
   );
