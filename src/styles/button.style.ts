@@ -6,31 +6,55 @@ const styles: Interpolation<Theme> = ({
   breakpoints,
 }) => css`
   display: flex;
+  padding: 0.5rem;
+  justify-content: center;
   align-items: center;
-  padding: 1rem 2rem;
+  gap: 0.5rem;
   background: ${isDarkMode ? white : black};
   color: ${isDarkMode ? black : white};
   border: 1px solid ${isDarkMode ? white : black};
-  border-radius: 0.5rem;
-  column-gap: 0.5rem;
   cursor: pointer;
 
-  @media (min-width: ${breakpoints.md}px) {
-    padding: 1rem 3rem;
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
   }
 
   .text {
-    font-size: 1.2rem;
-    line-height: 133%;
-
-    @media (min-width: ${breakpoints.md}px) {
-      font-size: 1.5rem;
-    }
+    font-size: 1rem;
   }
 
   .icon svg,
   .icon svg path {
     stroke: ${isDarkMode ? black : white};
+  }
+
+  &.rounded {
+    border-radius: 0.5rem;
+  }
+
+  &.bold {
+    font-weight: 500;
+  }
+
+  &.full {
+    width: 100%;
+  }
+
+  &.lg {
+    padding: 1rem 2rem;
+    @media (min-width: ${breakpoints.md}px) {
+      padding: 1rem 3rem;
+    }
+
+    .text {
+      font-size: 1.2rem;
+      line-height: 133%;
+
+      @media (min-width: ${breakpoints.md}px) {
+        font-size: 1.5rem;
+      }
+    }
   }
 
   &.outline {
@@ -42,11 +66,6 @@ const styles: Interpolation<Theme> = ({
     .icon svg path {
       stroke: ${isDarkMode ? white : black};
     }
-  }
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
   }
 `;
 
