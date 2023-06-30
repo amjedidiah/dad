@@ -1,14 +1,23 @@
 /** @jsxImportSource @emotion/react */
-import ButtonGroup from "@/components/shared/button-group";
-import { jumboButtons } from "@/components/jumbo/constants";
-import styles from "@/styles/jumbo.style";
-import Link from "next/link";
-import { LinkIcon } from "@/icons";
-import BouncingArrow from "@/components/jumbo/bouncing-arrow";
-import ScrollingRoles from "@/components/jumbo/scrolling-roles";
+import { useContext } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import BouncingArrow from "@/components/landing/jumbo/bouncing-arrow";
+import { jumboButtons } from "@/components/landing/jumbo/constants";
+import ScrollingRoles from "@/components/landing/jumbo/scrolling-roles";
+import ButtonGroup from "@/components/shared/button-group";
+import { ModalContext } from "@/context/modal/modal.context";
+import { LinkIcon } from "@/icons";
+import styles from "@/styles/jumbo.style";
 
 export default function Jumbo() {
+  const { toggleModal } = useContext(ModalContext);
+
+  const updatedJumboButtons = jumboButtons.map((button) => ({
+    ...button,
+    onClick: () => toggleModal(button["data-modal"]),
+  }));
+
   return (
     <section css={styles}>
       <div className="container">
@@ -19,7 +28,7 @@ export default function Jumbo() {
               <span className="highlight"> long standing issues?</span>
             </h1>
 
-            <ButtonGroup buttons={jumboButtons} />
+            <ButtonGroup buttons={updatedJumboButtons} />
           </div>
           <div className="image-container">
             <Image

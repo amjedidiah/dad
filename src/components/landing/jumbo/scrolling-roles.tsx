@@ -1,7 +1,7 @@
-import { StarIcon } from "@/icons";
-import { useAnimate } from "framer-motion";
 import { useEffect } from "react";
-import { roles } from "./constants";
+import { useAnimate } from "framer-motion";
+import { roles } from "@/components/landing/jumbo/constants";
+import { StarIcon } from "@/icons";
 
 export default function ScrollingRoles() {
   const [scope, animate] = useAnimate();
