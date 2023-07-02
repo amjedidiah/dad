@@ -1,4 +1,3 @@
-
 /** @jsxImportSource @emotion/react */
 //file imports
 import { Grid } from "@/components/choose-him/constants";

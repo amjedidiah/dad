@@ -11,7 +11,7 @@ const styles: Interpolation<Theme> = ({
     grid-column-gap: 15px;
     grid-row-gap: 8px;
     justify-content: space-between;
-    width:100%;
+    width: 100%;
     padding: 20px 0px;
     .single-choose-grid {
       display: flex;
@@ -21,7 +21,7 @@ const styles: Interpolation<Theme> = ({
       height: 272px;
     }
     .icon {
-      background: ${isDarkMode ?grey2 : lightGrey};
+      background: ${isDarkMode ? grey2 : lightGrey};
       width: 96px;
       border-radius: 8px;
       padding: 20px 10px;
@@ -30,7 +30,7 @@ const styles: Interpolation<Theme> = ({
       justify-content: center;
     }
     p {
-        width: 344px;
+      width: 344px;
     }
     @media (max-width: ${breakpoints.lg}px) {
       grid-template-columns: repeat(2, 1fr);
@@ -48,7 +48,7 @@ const styles: Interpolation<Theme> = ({
     margin-top: 20px;
     @media (max-width: ${breakpoints.sm}px) {
       flex-direction: column;
-  }
+    }
     h2 {
       font-size: 64px;
       font-weight: 500;
@@ -56,7 +56,7 @@ const styles: Interpolation<Theme> = ({
       @media (max-width: ${breakpoints.sm}px) {
         font-size: 40px;
         width: 100%;
-        }
+      }
     }
     p {
       font-weight: 400;
@@ -67,11 +67,11 @@ const styles: Interpolation<Theme> = ({
       font-size: 20px;
       line-height: 24px;
       letter-spacing: 0.02em;
-      color: ${isDarkMode ? black: '#808080 '};
+      color: ${isDarkMode ? black : "#808080 "};
       @media (max-width: ${breakpoints.sm}px) {
         font-size: 18px;
         width: 100%;
-        }
+      }
     }
   }
 `;

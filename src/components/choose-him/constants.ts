@@ -1,5 +1,5 @@
 import { ExpertIcon, PeopleIcon, RoundStarIcon } from "@/icons";
-export const Grid: [React.ComponentType, string, string][]  = [
+export const Grid: [React.ComponentType, string, string][] = [
   [
     ExpertIcon,
     "Certified Expert",
