@@ -15,6 +15,7 @@ const styles: Interpolation<Theme> = ({
       font-weight: 500;
       line-height: 2rem;
       color: ${isDarkMode ? white : grey1};
+      text-transform: capitalize;
     }
 
     .field {
@@ -23,6 +24,7 @@ const styles: Interpolation<Theme> = ({
       font-size: 1rem;
       background: transparent;
       color: ${isDarkMode ? white : black};
+      font-family: inherit;
 
       &:hover,
       &:focus,
@@ -41,7 +43,6 @@ const styles: Interpolation<Theme> = ({
 
       &::-webkit-input-placeholder {
         color: ${isDarkMode ? grey1 : secondGrey};
-        font-family: ${font.style.fontFamily};
       }
     }
   }

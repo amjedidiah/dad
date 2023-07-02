@@ -4,7 +4,7 @@ import { ModalTitles } from "@/context/modal/types";
 import { LinkIcon } from "@/icons";
 import styles from "@/styles/button.style";
 
-export type ButtonProps = {
+export type IButton = {
   key: string;
   outlined?: boolean;
   ["data-modal"]?: ModalTitles;
@@ -15,7 +15,7 @@ export default function Button({
   outlined,
   className,
   ...rest
-}: ButtonProps) {
+}: IButton) {
   return (
     <button
       css={styles}

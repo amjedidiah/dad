@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import Button, { ButtonProps } from "@/components/shared/button";
+import Button, { IButton } from "@/components/shared/button";
 import styles from "@/styles/button-group.style";
 
 type Props = {
-  buttons: ButtonProps[];
+  buttons: IButton[];
 };
 
 export default function ButtonGroup({ buttons }: Props) {

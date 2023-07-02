@@ -14,7 +14,7 @@ const styles: Interpolation<Theme> = ({ breakpoints }) => css`
       column-gap: 2.5rem;
       grid-template-rows: auto auto auto;
 
-      .group:nth-child(n + 3) {
+      .group:nth-of-type(n + 3) {
         grid-column: 1 / 3;
       }
     }
