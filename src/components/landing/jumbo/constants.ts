@@ -46,7 +46,12 @@ export const contactFormFields = [
     name: "email",
     placeholder: "Type your email here",
     ["aria-label"]: "email",
-    required: true,
+    required: {
+      value: true,
+      message: "Email is required",
+    },
+    pattern:
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
   },
   {
     type: "textarea",
@@ -55,6 +60,14 @@ export const contactFormFields = [
     placeholder: "Type your message here",
     rows: 7,
     ["aria-label"]: "message",
+    required: {
+      value: true,
+      message: "A message is required",
+    },
+    minLength: {
+      value: 10,
+      message: "More context is required for this message",
+    },
   },
 ] as IFormField<{
   [key in ContactFormInputIds]: string;
@@ -68,3 +81,7 @@ export const contactFormButtons = [
     value: "Send",
   },
 ] as IButton[];
+
+export const contactFormPraise = `You did good, 💪🏾. You can proceed to send your message`;
+
+export const contactFormSuccess = `Your message has been sent to Dr. Passy. He will get back to you as soon as possible`;

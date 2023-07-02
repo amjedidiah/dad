@@ -2,8 +2,17 @@ import { Interpolation, Theme, css } from "@emotion/react";
 
 const styles: Interpolation<Theme> = ({
   isDarkMode,
-  colors: { grey1, white, greyLighter, secondGrey, black },
-  font,
+  colors: {
+    grey1,
+    white,
+    greyLighter,
+    secondGrey,
+    black,
+    warning,
+    success,
+    error,
+    primary,
+  },
 }) => css`
   .group {
     display: flex;
@@ -16,6 +25,11 @@ const styles: Interpolation<Theme> = ({
       line-height: 2rem;
       color: ${isDarkMode ? white : grey1};
       text-transform: capitalize;
+
+      .asterisk {
+        color: ${warning};
+        margin-left: 0.25rem;
+      }
     }
 
     .field {
@@ -44,6 +58,31 @@ const styles: Interpolation<Theme> = ({
       &::-webkit-input-placeholder {
         color: ${isDarkMode ? grey1 : secondGrey};
       }
+
+      &[aria-invalid="true"] {
+        border-color: ${warning};
+      }
+    }
+  }
+  .helper {
+    font-size: 0.75rem;
+    &.error {
+      color: ${error};
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    &.success {
+      color: ${success};
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    &.warning {
+      color: ${warning};
+    }
+    &.praise {
+      color: ${primary};
+      font-size: 0.85rem;
+      font-weight: bold;
     }
   }
 `;
