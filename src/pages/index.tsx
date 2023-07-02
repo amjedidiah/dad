@@ -16,7 +16,7 @@ export default function Home() {
         />
       </Head>
       <Jumbo />
-      <AppearedOn/>
+      <AppearedOn />
     </Fragment>
   );
 }

@@ -24,8 +24,8 @@ const initTheme = {
     black: "#1a1a1a",
     white: "#ffffff",
     grey2: "#808080",
-    lightGrey:"#E6E6E6",
-    grey1:"#4D4D4D"
+    lightGrey: "#E6E6E6",
+    grey1: "#4D4D4D",
   },
 };
 
