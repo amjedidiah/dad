@@ -1,9 +1,14 @@
-import { StarIcon } from "@/icons";
-import { useAnimate } from "framer-motion";
+/** @jsxImportSource @emotion/react */
 import { useEffect } from "react";
-import { roles } from "./constants";
+import { useAnimate } from "framer-motion";
+import { IRolesItems } from "@/components/landing/jumbo/index.jumbo";
+import styles from "@/styles/scrolling.style";
 
-export default function ScrollingRoles() {
+type Props = {
+  items: IRolesItems[];
+};
+
+export default function Scrolling({ items }: Props) {
   const [scope, animate] = useAnimate();
 
   useEffect(() => {
@@ -25,12 +30,12 @@ export default function ScrollingRoles() {
   }, [scope, animate]);
 
   return (
-    <div ref={scope} className="roles-container">
-      {Array.from({ length: 3 }).map((_, i) => (
+    <div css={styles} ref={scope}>
+      {items.map((_, i) => (
         <ul key={i} className={`roles roles-${i + 1}`}>
-          {roles.map((role) => (
-            <li key={role} className="role-item">
-              <StarIcon /> {role}
+          {items.map(({ key, Component }) => (
+            <li key={key} className="role-item">
+              <Component /> {key}
             </li>
           ))}
         </ul>

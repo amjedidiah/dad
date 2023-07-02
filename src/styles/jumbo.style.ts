@@ -101,35 +101,14 @@ const styles: Interpolation<Theme> = ({
       }
     }
 
-    .roles-container {
-      flex: 1;
-      overflow-x: hidden;
-      min-width: 350px;
+    .role-item {
+      font-size: 2.25rem;
+      line-height: 133%;
+      color: ${grey2};
+      text-transform: uppercase;
       display: flex;
-      flex-direction: column;
-      position: relative;
-
-      .roles {
-        display: flex;
-        list-style: none;
-        justify-content: space-between;
-        gap: clamp(3rem, 12%, 12rem);
-
-        &.roles-1,
-        &.roles-3 {
-          position: absolute;
-        }
-
-        .role-item {
-          font-size: 2.25rem;
-          line-height: 133%;
-          color: ${grey2};
-          text-transform: uppercase;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-      }
+      align-items: center;
+      gap: 0.5rem;
     }
   }
 `;

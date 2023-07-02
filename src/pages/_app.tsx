@@ -1,32 +1,26 @@
-import { Global, ThemeProvider } from "@emotion/react";
 import { AppProps } from "next/app";
-import Head from "next/head";
+import { Global, ThemeProvider } from "@emotion/react";
 import { Analytics } from "@vercel/analytics/react";
-import useMode from "@/hooks/use-mode";
+import { ModalContext } from "@/context/modal/modal.context";
 import { ModeContext } from "@/context/mode/mode.context";
+import useModal from "@/hooks/use-modal";
+import useMode from "@/hooks/use-mode";
 import global from "@/styles/global.style";
-import Layout from "@/components/layout";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-  const { theme, toggleMode, isDarkMode } = useMode();
+  const { theme, ...rest } = useMode();
+  const modalContextValue = useModal();
 
   if (!theme) return <div>Loading...</div>;
 
   return (
-    <ModeContext.Provider value={{ toggleMode, isDarkMode, theme }}>
-      <Head>
-        {/* PWA primary color */}
-        <meta name="theme-color" content={theme.colors.primary} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/images/512x512.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-      </Head>
+    <ModeContext.Provider value={{ theme, ...rest }}>
       <ThemeProvider theme={theme}>
-        <Layout>
+        <ModalContext.Provider value={modalContextValue}>
           <Global styles={global} />
           <Component {...pageProps} />
           <Analytics />
-        </Layout>
+        </ModalContext.Provider>
       </ThemeProvider>
     </ModeContext.Provider>
   );

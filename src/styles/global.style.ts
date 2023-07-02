@@ -1,9 +1,9 @@
-import font from "@/utils/font.util";
 import { Interpolation, Theme, css } from "@emotion/react";
 
 const globalStyles: Interpolation<Theme> = ({
   isDarkMode,
   colors: { black, white },
+  font,
 }) => css`
   * {
     box-sizing: border-box;
@@ -11,7 +11,7 @@ const globalStyles: Interpolation<Theme> = ({
     padding: 0;
     transition: all 0.2s ease;
   }
-  
+
   html,
   body {
     font-family: ${font.style.fontFamily}, sans-serif;
@@ -21,6 +21,10 @@ const globalStyles: Interpolation<Theme> = ({
 
   a {
     text-decoration: none;
+  }
+
+  .theme-bg {
+    background: ${isDarkMode ? black : white};
   }
 
   .theme-icon svg,

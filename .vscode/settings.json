@@ -3,6 +3,7 @@
     "aeonik",
     "autodocs",
     "Brightland",
+    "checkly",
     "Codacy",
     "dolor",
     "drpassy",
@@ -16,5 +17,6 @@
     "USSD",
     "Voluptates",
     "voluptatum"
-  ]
+  ],
+  "deepscan.enable": true
 }

@@ -1,4 +1,4 @@
-import { Theme } from "@emotion/react";
+import font from "@/utils/font.util";
 
 const initTheme = {
   breakpoints: {
@@ -23,8 +23,9 @@ const initTheme = {
     success: "#399e5a",
     black: "#1a1a1a",
     white: "#ffffff",
-    grey2: "#808080"
+    grey2: "#808080",
   },
+  font,
 };
 
 export const lightTheme = {

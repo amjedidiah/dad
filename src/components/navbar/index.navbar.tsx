@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 //file import
 import styles from "@/styles/navbar.style";
-import { Links,jumboButtons } from "@/components/navbar/constants";
-import ButtonGroup from "../button-group";
+import { Links, jumboButtons } from "@/components/navbar/constants";
+import ButtonGroup from "@/components/shared/button-group";
 export default function Navbar() {
   return (
     <div css={styles}>
@@ -23,15 +23,15 @@ export default function Navbar() {
           </div>
 
           <nav className="">
-            {Links.map(({name, link}, index) => (
+            {Links.map(({ name, link }, index) => (
               <Link href={`${link}`} key={index}>
                 <span className="link">{name}</span>
               </Link>
             ))}
           </nav>
-          <div className="button-group">
+          {/* <div className="button-group">
             <ButtonGroup buttons={jumboButtons}/>
-          </div>
+          </div> */}
         </div>
       </section>
     </div>
