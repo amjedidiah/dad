@@ -13,7 +13,7 @@ const styles: Interpolation<Theme> = ({
     margin-bottom: 20px;
     margin-top: 20px;
     @media (max-width: ${breakpoints.sm}px) {
-        flex-direction: column;
+      flex-direction: column;
     }
     h2 {
       font-size: 64px;
@@ -22,7 +22,7 @@ const styles: Interpolation<Theme> = ({
       @media (max-width: ${breakpoints.sm}px) {
         font-size: 40px;
         width: 100%;
-        }
+      }
     }
     p {
       font-weight: 400;
@@ -37,7 +37,7 @@ const styles: Interpolation<Theme> = ({
       @media (max-width: ${breakpoints.sm}px) {
         font-size: 18px;
         width: 100%;
-        }
+      }
     }
   }
   .twitter-grid {
