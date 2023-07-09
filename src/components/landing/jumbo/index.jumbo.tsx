@@ -14,6 +14,7 @@ import { ModalContext } from "@/context/modal/modal.context";
 import useMobileDetect from "@/hooks/use-mobile-detect";
 import { LinkIcon, StarIcon } from "@/icons";
 import styles from "@/styles/jumbo.style";
+import { Features, features } from "@/utils/features.utils";
 
 export type IRolesItems = {
   key: keyof typeof Roles;
@@ -29,10 +30,16 @@ export default function Jumbo() {
       jumboButtons.map((button) => {
         return {
           ...button,
-          onClick: () =>
-            isMobile && button.key === JumboButtonKeys.contact
-              ? window.open(`tel:${process.env.NEXT_PUBLIC_CONTACT_NUMBER}`)
-              : toggleModal(button["data-modal"]),
+          onClick: () => {
+            if (button.key === JumboButtonKeys.contact) {
+              if (isMobile || !features[Features.Mail].status)
+                return window.open(
+                  `tel:${process.env.NEXT_PUBLIC_CONTACT_NUMBER}`
+                );
+            }
+
+            return toggleModal(button["data-modal"]);
+          },
           className: "rounded lg",
         };
       }),
