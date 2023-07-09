@@ -91,7 +91,7 @@ export default function Jumbo() {
             </Link>
             <p className="about-title">(D. Min, Ph.D)</p>
           </div>
-          <Scrolling items={rolesItems} />
+          <Scrolling items={rolesItems} speed={100} />
         </footer>
       </div>
     </section>

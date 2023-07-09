@@ -109,6 +109,7 @@ const styles: Interpolation<Theme> = ({
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      margin: 0 clamp(1.5rem, 6%, 6rem);
     }
   }
 `;
