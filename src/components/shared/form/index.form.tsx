@@ -92,7 +92,7 @@ export default function Form<F extends FieldValues>({
           </Form.Group>
         );
       })}
-      {shouldPraise && (
+      {shouldPraise && !isSubmitting && (
         <Form.Group>
           <Form.Helper type={IFormHelperTypes.Praise}>{praise}</Form.Helper>
         </Form.Group>
@@ -108,7 +108,13 @@ export default function Form<F extends FieldValues>({
         <Form.Group key={button.key}>
           <Button
             {...button}
-            disabled={button.disabled || isLoading || !isValid}
+            disabled={
+              button.disabled ||
+              isLoading ||
+              !isValid ||
+              isSubmitting ||
+              Boolean(formResponse)
+            }
             isLoading={isSubmitting && button.type === "submit"}
             notGrow
           />
