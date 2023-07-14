@@ -8,13 +8,12 @@ import {
   Roles,
   jumboButtons,
 } from "@/components/landing/jumbo/constants";
-import Scrolling from "@/components/shared/scrolling";
 import ButtonGroup from "@/components/shared/button-group";
+import Scrolling from "@/components/shared/scrolling";
 import { ModalContext } from "@/context/modal/modal.context";
 import useMobileDetect from "@/hooks/use-mobile-detect";
 import { LinkIcon, StarIcon } from "@/icons";
 import styles from "@/styles/jumbo.style";
-import { Features, features } from "@/utils/features.utils";
 
 export type IRolesItems = {
   key: keyof typeof Roles;
@@ -27,22 +26,14 @@ export default function Jumbo() {
 
   const updatedJumboButtons = useMemo(
     () =>
-      jumboButtons.map((button) => {
-        return {
-          ...button,
-          onClick: () => {
-            if (button.key === JumboButtonKeys.contact) {
-              if (isMobile || !features[Features.Mail].status)
-                return window.open(
-                  `tel:${process.env.NEXT_PUBLIC_CONTACT_NUMBER}`
-                );
-            }
-
-            return toggleModal(button["data-modal"]);
-          },
-          className: "rounded lg",
-        };
-      }),
+      jumboButtons.map((button) => ({
+        ...button,
+        onClick: () =>
+          button.key === JumboButtonKeys.contact && isMobile
+            ? window.open(`tel:${process.env.NEXT_PUBLIC_CONTACT_NUMBER}`)
+            : toggleModal(button["data-modal"]),
+        className: "rounded lg",
+      })),
     [toggleModal, isMobile]
   );
 
