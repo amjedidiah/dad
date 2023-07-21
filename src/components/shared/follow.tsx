@@ -6,14 +6,11 @@ import {
   TwitterIcon,
 } from "@/icons";
 import styles from "@/styles/follow.style";
-import { Features, features } from "@/utils/features.util";
 
 export default function Follow() {
-  if (!features[Features.Follow].status) return null;
-
   return (
     <div css={styles} className="follow-us">
-      <p className="text theme-text">Follow us</p>
+      <p className="text theme-text">Follow Dr. Passy</p>
       <div className="social-media-icons">
         <span className="theme-icon-fill">
           <LinkedInIcon />

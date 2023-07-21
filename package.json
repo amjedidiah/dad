@@ -25,7 +25,8 @@
     "react-hook-form": "^7.45.1",
     "react-scroll": "^1.8.9",
     "resend": "^0.16.0",
-    "sharp": "^0.32.1"
+    "sharp": "^0.32.1",
+    "swiper": "^10.0.4"
   },
   "engines": {
     "node": ">=16.13.0",
