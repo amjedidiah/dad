@@ -3,9 +3,9 @@ import { Fragment } from "react";
 import Head from "next/head";
 import Modal from "@/components/shared/modal";
 import ModeSwitch from "@/components/shared/mode-switch";
-import useMode from "@/hooks/use-mode";
 import styles from "@/styles/layout.style";
 import { IComponentWithChildren } from "@/utils/types";
+import { useTheme } from "@emotion/react";
 
 type Props = {
   title: string;
@@ -17,7 +17,7 @@ export default function Layout({
   title,
   description,
 }: IComponentWithChildren & Props) {
-  const { theme } = useMode();
+  const theme = useTheme();
 
   return (
     <Fragment>

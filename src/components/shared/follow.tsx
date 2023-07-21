@@ -6,7 +6,7 @@ import {
   TwitterIcon,
 } from "@/icons";
 import styles from "@/styles/follow.style";
-import { Features, features } from "@/utils/features.utils";
+import { Features, features } from "@/utils/features.util";
 
 export default function Follow() {
   if (!features[Features.Follow].status) return null;
