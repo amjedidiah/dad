@@ -1,6 +1,7 @@
 import { Interpolation, Theme, css } from "@emotion/react";
 
 const styles: Interpolation<Theme> = ({ breakpoints }) => css`
+  width: 808px;
   .form {
     display: grid;
     row-gap: 1.5rem;

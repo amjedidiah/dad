@@ -8,4 +8,5 @@ export type IModalContext = {
 
 export enum ModalTitles {
   contact = "contact",
+  partner = "partner",
 }

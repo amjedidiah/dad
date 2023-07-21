@@ -17,6 +17,7 @@ export const jumboButtons: IButton[] = [
   {
     key: JumboButtonKeys.partner,
     value: "Partner",
+    ["data-modal"]: ModalTitles.partner,
   },
 ];
 
@@ -85,3 +86,9 @@ export const contactFormButtons = [
 export const contactFormPraise = `You did good, 💪🏾. You can proceed to send your message`;
 
 export const contactFormSuccess = `Your message has been sent to Dr. Passy. He will get back to you as soon as possible`;
+
+export const ministries = [
+  { key: "Successful family" },
+  { key: "faith clinic" },
+  { key: "morning glory" },
+];

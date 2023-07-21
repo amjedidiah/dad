@@ -13,11 +13,14 @@ const styles: Interpolation<Theme> = ({ breakpoints, isDarkMode }) => css`
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1;
 
     .modal-body {
-      width: 808px;
+      max-width: 100%;
       margin: 0 auto;
-      padding: 1.5rem 2.5rem;
+      padding: 1.5rem clamp(2rem, 4.76%, 4.5rem);
+      max-height: 90vh;
+      overflow-y: scroll;
 
       &.full {
         width: 100%;
