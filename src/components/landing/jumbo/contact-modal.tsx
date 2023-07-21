@@ -1,14 +1,14 @@
-import {
-  contactFormButtons,
-  contactFormFields,
-  contactFormPraise,
-  contactFormSuccess,
-} from "@/components/landing/jumbo/constants";
 import Follow from "@/components/shared/follow";
 import Form from "@/components/shared/form/index.form";
 import Modal from "@/components/shared/modal";
 import useMail from "@/hooks/use-mail";
 import styles from "@/styles/contact-modal.style";
+import {
+  contactFormButtons,
+  contactFormFields,
+  contactFormPraise,
+  contactFormSuccess,
+} from "@/utils/constants";
 
 export default function ContactModal() {
   const { sendMail } = useMail();

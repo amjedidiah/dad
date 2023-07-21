@@ -1,9 +1,10 @@
 import Image from "next/image";
-import { ministries } from "@/components/landing/jumbo/constants";
+import Link from "next/link";
 import Modal from "@/components/shared/modal";
 import Scrolling from "@/components/shared/scrolling";
 import styles from "@/styles/partner-modal.style";
 import Testimonials from "@/components/landing/testimonials";
+import { ministries } from "@/utils/constants";
 
 export default function PartnerModal() {
   return (
@@ -21,28 +22,34 @@ export default function PartnerModal() {
 
           <div className="container-partner-logos">
             <div className="child-partner-logo">
-              <Image
-                src="/images/partner/stripe.png"
-                alt="partner-with-stripe"
-                width={92}
-                height={44}
-              />
+              <Link
+                href={process.env.NEXT_PUBLIC_PAYSTACK_DONATION_LINK as string}
+                passHref
+                target="_blank"
+              >
+                <Image
+                  src="/images/partner/paystack.png"
+                  alt="partner-with-paystack"
+                  width={123}
+                  height={57}
+                />
+              </Link>
             </div>
             <div className="child-partner-logo">
-              <Image
-                src="/images/partner/flutterwave.png"
-                alt="partner-with-flutterwave"
-                width={210}
-                height={50}
-              />
-            </div>
-            <div className="child-partner-logo">
-              <Image
-                src="/images/partner/paystack.png"
-                alt="partner-with-paystack"
-                width={123}
-                height={57}
-              />
+              <Link
+                href={
+                  process.env.NEXT_PUBLIC_FLUTTERWAVE_DONATION_LINK as string
+                }
+                passHref
+                target="_blank"
+              >
+                <Image
+                  src="/images/partner/flutterwave.png"
+                  alt="partner-with-flutterwave"
+                  width={210}
+                  height={50}
+                />
+              </Link>
             </div>
           </div>
         </div>
