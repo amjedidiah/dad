@@ -1,5 +1,7 @@
 # drpassy-website
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/daa1fcf12a20471f9a897711c810871f)](https://app.codacy.com/gh/amjedidiah/dad/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) for Dr Passy's website.
 
 > Please read through this guide. It is very **_IMPORTANT_**.

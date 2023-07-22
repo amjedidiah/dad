@@ -1,17 +1,13 @@
 # PR Details
 
-## Summary
+## Key Changes
 
-[What does this PR introduce?]
+<!-- List the changes to look for in this PR -->
 
 ## Reviewer Context
 
-- Merge Deadline: DD/MM/YY
+- Related Github issue 🔗
 - GTmetrix results screenshots 📉
-
-### Key Changes
-
-- [List the changes to look for in this PR]
 
 ## Check List
 
