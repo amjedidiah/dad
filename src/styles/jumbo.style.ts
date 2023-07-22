@@ -18,7 +18,7 @@ const styles: Interpolation<Theme> = ({
     display: grid;
     align-items: center;
 
-    @media (min-width: ${breakpoints.mdx}px) {
+    @media (min-width: ${breakpoints.lgx}px) {
       grid-template-columns: 3fr 450px;
     }
 
@@ -28,7 +28,7 @@ const styles: Interpolation<Theme> = ({
       border: 10px solid ${isDarkMode ? grey2 : black};
       overflow: hidden;
 
-      @media (min-width: ${breakpoints.mdx}px) {
+      @media (min-width: ${breakpoints.lgx}px) {
         display: block;
       }
 
@@ -101,7 +101,7 @@ const styles: Interpolation<Theme> = ({
       }
     }
 
-    .role-item {
+    .scroll-item {
       font-size: 2.25rem;
       line-height: 133%;
       color: ${grey2};
@@ -109,6 +109,7 @@ const styles: Interpolation<Theme> = ({
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      margin: 0 clamp(1.5rem, 6%, 6rem);
     }
   }
 `;

@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import ContactModal from "@/components/landing/jumbo/contact-modal";
+import PartnerModal from "@/components/landing/jumbo/partner-modal";
 import { IModalContext, ModalTitles } from "@/context/modal/types";
 
 export default function useModal(): IModalContext {
@@ -11,16 +12,14 @@ export default function useModal(): IModalContext {
     return (
       {
         [ModalTitles.contact]: ContactModal,
+        [ModalTitles.partner]: PartnerModal,
       }[modalTitle] || null
     );
   }, [modalTitle]);
 
-  const toggleModal = useCallback(
-    (title: IModalContext["modalTitle"]) => {
-      setModalTitle((prevTitle) => (prevTitle === title ? undefined : title));
-    },
-    [setModalTitle]
-  );
+  const toggleModal = useCallback((title: IModalContext["modalTitle"]) => {
+    setModalTitle((prevTitle) => (prevTitle === title ? undefined : title));
+  }, []);
 
   return {
     modalTitle,

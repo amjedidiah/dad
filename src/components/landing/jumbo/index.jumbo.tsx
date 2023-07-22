@@ -3,12 +3,13 @@ import { useContext, useMemo, FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import BouncingArrow from "@/components/landing/jumbo/bouncing-arrow";
-import { Roles, jumboButtons } from "@/components/landing/jumbo/constants";
-import Scrolling from "@/components/shared/scrolling";
 import ButtonGroup from "@/components/shared/button-group";
+import Scrolling from "@/components/shared/scrolling";
 import { ModalContext } from "@/context/modal/modal.context";
+import useMobileDetect from "@/hooks/use-mobile-detect";
 import { LinkIcon, StarIcon } from "@/icons";
 import styles from "@/styles/jumbo.style";
+import { JumboButtonKeys, Roles, jumboButtons } from "@/utils/constants";
 
 export type IRolesItems = {
   key: keyof typeof Roles;
@@ -17,15 +18,19 @@ export type IRolesItems = {
 
 export default function Jumbo() {
   const { toggleModal } = useContext(ModalContext);
+  const { isMobile } = useMobileDetect();
 
   const updatedJumboButtons = useMemo(
     () =>
       jumboButtons.map((button) => ({
         ...button,
-        onClick: () => toggleModal(button["data-modal"]),
+        onClick: () =>
+          button.key === JumboButtonKeys.contact && isMobile
+            ? window.open(`tel:${process.env.NEXT_PUBLIC_CONTACT_NUMBER}`)
+            : toggleModal(button["data-modal"]),
         className: "rounded lg",
       })),
-    [toggleModal]
+    [toggleModal, isMobile]
   );
 
   const rolesItems = useMemo(
