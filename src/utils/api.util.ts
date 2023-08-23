@@ -17,48 +17,88 @@ export enum HttpMethods {
   DELETE = "DELETE",
 }
 
-export function isValidRequestMethod(
+function isValidRequestMethod(
   req: NextApiRequest,
   allowedMethods: Set<HttpMethods>
 ) {
-  return allowedMethods.has(req.method as HttpMethods);
+  const isValidMethod = allowedMethods.has(req.method as HttpMethods);
+  const allowedMethodSize = allowedMethods.size;
+
+  if (!isValidMethod)
+    throw {
+      statusCode: HttpStatus.METHOD_NOT_ALLOWED,
+      message: "An error occurred",
+      devMessage: `Only ${Array.from(allowedMethods).join(", ")} method${
+        allowedMethodSize > 1 ? "s" : ""
+      } ${allowedMethodSize > 1 ? "are" : "is"} allowed`,
+      data: null,
+    };
 }
 
-export function validateRequestHeaders(
+function validateRequestHeaders(
   req: NextApiRequest,
   requiredHeaders: string[]
 ) {
   const missingHeaders = requiredHeaders.filter(
     (header) => !(header in req.headers)
   );
+  const hasValidHeaders = missingHeaders.length === 0;
 
-  return {
-    hasValidHeaders: missingHeaders.length === 0,
-    missingHeaders,
-  };
+  if (!hasValidHeaders)
+    throw {
+      statusCode: HttpStatus.BAD_REQUEST,
+      message: "An error occurred",
+      devMessage: "Required request headers are missing",
+      data: missingHeaders,
+    };
 }
 
-export function validateRequestBody(req: NextApiRequest, fields: string[]) {
+function validateRequestBody(req: NextApiRequest, fields: string[]) {
   const missingFields = fields.filter((field) => !(field in req.body));
+  const hasValidBody = missingFields.length === 0;
 
-  return {
-    hasValidBody: missingFields.length === 0,
-    missingFields,
-  };
+  if (!hasValidBody)
+    throw {
+      statusCode: HttpStatus.BAD_REQUEST,
+      message: "An error occurred",
+      devMessage: "Required request body fields are missing",
+      data: missingFields,
+    };
 }
 
-export function validateRequiredFields(
-  req: NextApiRequest,
-  requiredFields: string[]
-) {
+function validateRequiredFields(req: NextApiRequest, requiredFields: string[]) {
   const missingRequiredFields = requiredFields.filter(
     (field) => req.body[field] === ""
   );
+  const hasRequiredFields = missingRequiredFields.length === 0;
 
-  return {
-    hasRequiredFields: missingRequiredFields.length === 0,
-    missingRequiredFields,
-  };
+  if (!hasRequiredFields)
+    throw {
+      statusCode: HttpStatus.BAD_REQUEST,
+      message: "Required fields are missing",
+      devMessage: "Required fields are missing",
+      data: missingRequiredFields,
+    };
+}
+
+export function validateRequest(
+  req: NextApiRequest,
+  {
+    methods,
+    requiredHeaders,
+    requiredBodyFields,
+    requiredFields,
+  }: {
+    methods: Set<HttpMethods>;
+    requiredHeaders?: string[];
+    requiredBodyFields: string[];
+    requiredFields: string[];
+  }
+) {
+  isValidRequestMethod(req, methods);
+  if (requiredHeaders) validateRequestHeaders(req, requiredHeaders);
+  validateRequestBody(req, requiredBodyFields);
+  validateRequiredFields(req, requiredFields);
 }
 
 export function validateEmail(email: string) {
