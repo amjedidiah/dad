@@ -17,7 +17,7 @@ export default function PartnerModal() {
       <article className="container-partner">
         <div className="child-partner-logos">
           <h4 className="theme-text">
-            Partner with us using any of the following platforms
+            Partner using any of the following platforms
           </h4>
 
           <div className="container-partner-logos">
@@ -25,7 +25,6 @@ export default function PartnerModal() {
               <Link
                 href={process.env.NEXT_PUBLIC_PAYSTACK_DONATION_LINK as string}
                 passHref
-                target="_blank"
               >
                 <Image
                   src="/images/partner/paystack.png"
@@ -41,7 +40,6 @@ export default function PartnerModal() {
                   process.env.NEXT_PUBLIC_FLUTTERWAVE_DONATION_LINK as string
                 }
                 passHref
-                target="_blank"
               >
                 <Image
                   src="/images/partner/flutterwave.png"
@@ -55,7 +53,7 @@ export default function PartnerModal() {
         </div>
         <div className="child-partner-testimonials">
           <h4 className="theme-text sub-title">
-            Hear what our partners are saying
+            Hear what partners are saying
           </h4>
           <Testimonials />
         </div>
