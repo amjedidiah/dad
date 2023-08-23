@@ -18,7 +18,7 @@ const styles: Interpolation<Theme> = ({
     display: grid;
     align-items: center;
 
-    @media (min-width: ${breakpoints.mdx}px) {
+    @media (min-width: ${breakpoints.lgx}px) {
       grid-template-columns: 3fr 450px;
     }
 
@@ -28,7 +28,7 @@ const styles: Interpolation<Theme> = ({
       border: 10px solid ${isDarkMode ? grey2 : black};
       overflow: hidden;
 
-      @media (min-width: ${breakpoints.mdx}px) {
+      @media (min-width: ${breakpoints.lgx}px) {
         display: block;
       }
 
@@ -101,35 +101,15 @@ const styles: Interpolation<Theme> = ({
       }
     }
 
-    .roles-container {
-      flex: 1;
-      overflow-x: hidden;
-      min-width: 350px;
+    .scroll-item {
+      font-size: 2.25rem;
+      line-height: 133%;
+      color: ${grey2};
+      text-transform: uppercase;
       display: flex;
-      flex-direction: column;
-      position: relative;
-
-      .roles {
-        display: flex;
-        list-style: none;
-        justify-content: space-between;
-        gap: clamp(3rem, 12%, 12rem);
-
-        &.roles-1,
-        &.roles-3 {
-          position: absolute;
-        }
-
-        .role-item {
-          font-size: 2.25rem;
-          line-height: 133%;
-          color: ${grey2};
-          text-transform: uppercase;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-      }
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0 clamp(1.5rem, 6%, 6rem);
     }
   }
 `;

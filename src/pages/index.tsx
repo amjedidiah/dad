@@ -1,21 +1,13 @@
-import Jumbo from "@/components/jumbo/index.jumbo";
-import Head from "next/head";
-import { Fragment } from "react";
+import Jumbo from "@/components/landing/jumbo/index.jumbo";
+import Layout from "@/components/shared/layout";
 
 export default function Home() {
   return (
-    <Fragment>
-      <Head>
-        <title>
-          Dr Passy Amaraegbu | Living a life of purity, power and prosperity
-        </title>
-        <meta
-          name="description"
-          content="Dr Passy Amaraegbu is a father, psychologist and pastor specializing in solving long standing issues in the lives of people"
-        />
-      </Head>
-
+    <Layout
+      title="Dr Passy Amaraegbu | Living a life of purity, power and prosperity"
+      description="Dr Passy Amaraegbu is a father, psychologist and pastor specializing in solving long standing issues in the lives of people"
+    >
       <Jumbo />
-    </Fragment>
+    </Layout>
   );
 }
