@@ -1,4 +1,4 @@
-import { Theme } from "@emotion/react";
+import font from "@/utils/font.util";
 
 const initTheme = {
   breakpoints: {
@@ -8,8 +8,9 @@ const initTheme = {
     mobileL: 425,
     sm: 640,
     md: 768,
-    mdx: 1199,
+    mdx: 834,
     lg: 1024,
+    lgx: 1199,
     xl: 1280,
     laptopL: 1440,
     "2xl": 1536,
@@ -23,8 +24,12 @@ const initTheme = {
     success: "#399e5a",
     black: "#1a1a1a",
     white: "#ffffff",
+    grey1: "#4d4d4d",
     grey2: "#808080",
+    secondGrey: "#999999",
+    greyLighter: "#e6e6e6",
   },
+  font,
 };
 
 export const lightTheme = {
