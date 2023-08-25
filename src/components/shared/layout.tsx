@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Fragment } from "react";
 import Head from "next/head";
+import Header from "@/components/shared/header";
 import Modal from "@/components/shared/modal";
 import ModeSwitch from "@/components/shared/mode-switch";
 import styles from "@/styles/layout.style";
@@ -10,12 +11,14 @@ import { useTheme } from "@emotion/react";
 type Props = {
   title: string;
   description: string;
+  noHeader?: boolean;
 };
 
 export default function Layout({
   children,
   title,
   description,
+  noHeader = false,
 }: IComponentWithChildren & Props) {
   const theme = useTheme();
 
@@ -31,6 +34,7 @@ export default function Layout({
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       <main css={styles}>
+        {!noHeader && <Header />}
         <div id="top" />
         {children}
         <ModeSwitch />

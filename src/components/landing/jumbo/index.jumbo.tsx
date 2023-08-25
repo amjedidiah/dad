@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { useContext, useMemo, FC } from "react";
+import { useMemo, FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Link as ScrollLink } from "react-scroll";
 import BouncingArrow from "@/components/landing/jumbo/bouncing-arrow";
 import ButtonGroup from "@/components/shared/button-group";
 import Scrolling from "@/components/shared/scrolling";
-import { ModalContext } from "@/context/modal/modal.context";
-import useMobileDetect from "@/hooks/use-mobile-detect";
+import useActionButtons from "@/hooks/use-action-buttons";
 import { LinkIcon, StarIcon } from "@/icons";
 import styles from "@/styles/jumbo.style";
-import { JumboButtonKeys, Roles, jumboButtons } from "@/utils/constants";
+import { Roles } from "@/utils/constants";
 
 export type IRolesItems = {
   key: keyof typeof Roles;
@@ -17,21 +17,7 @@ export type IRolesItems = {
 };
 
 export default function Jumbo() {
-  const { toggleModal } = useContext(ModalContext);
-  const { isMobile } = useMobileDetect();
-
-  const updatedJumboButtons = useMemo(
-    () =>
-      jumboButtons.map((button) => ({
-        ...button,
-        onClick: () =>
-          button.key === JumboButtonKeys.contact && isMobile
-            ? window.open(`tel:${process.env.NEXT_PUBLIC_CONTACT_NUMBER}`)
-            : toggleModal(button["data-modal"]),
-        className: "rounded lg",
-      })),
-    [toggleModal, isMobile]
-  );
+  const jumboButtons = useActionButtons();
 
   const rolesItems = useMemo(
     () =>
@@ -52,7 +38,7 @@ export default function Jumbo() {
               <span className="highlight"> long standing issues?</span>
             </h1>
 
-            <ButtonGroup buttons={updatedJumboButtons} />
+            <ButtonGroup buttons={jumboButtons} />
           </div>
           <div className="image-container">
             <Image
@@ -64,9 +50,10 @@ export default function Jumbo() {
           </div>
         </article>
         <article className="explore">
-          <span className="theme-text">Explore</span>
-          <br />
-          <BouncingArrow />
+          <ScrollLink to="why-choose-him" smooth>
+            <span className="theme-text">Explore</span>
+            <BouncingArrow />
+          </ScrollLink>
         </article>
         <footer className="footer">
           <div className="name-container">

@@ -9,7 +9,7 @@ const globalStyles: Interpolation<Theme> = ({
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.15s ease-in-out;
   }
 
   html,

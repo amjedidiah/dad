@@ -7,13 +7,6 @@ const styles: Interpolation<Theme> = ({
 }) => css`
   padding: 75px 0;
 
-  @media (min-width: ${breakpoints.lg}px) {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
   .top {
     display: grid;
     align-items: center;
@@ -61,6 +54,15 @@ const styles: Interpolation<Theme> = ({
   .explore {
     text-align: center;
     margin: 4rem 0;
+    cursor: pointer;
+
+    a {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: fit-content;
+      margin: 0 auto;
+    }
 
     .theme-text {
       display: block;

@@ -12,6 +12,7 @@ export type IButton = {
   ["data-modal"]?: ModalTitles;
   isLoading?: boolean;
   notGrow?: boolean;
+  noIcon?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export default function Button({
@@ -20,6 +21,7 @@ export default function Button({
   className,
   isLoading,
   notGrow,
+  noIcon,
   ...rest
 }: IButton) {
   return (
@@ -31,9 +33,11 @@ export default function Button({
       {!isLoading ? (
         <Fragment>
           <span className="text">{value}</span>
-          <span className="icon">
-            <LinkIcon />
-          </span>
+          {!noIcon && (
+            <span className="icon">
+              <LinkIcon />
+            </span>
+          )}
         </Fragment>
       ) : (
         <Loading />

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import useScrollPosition from "@/hooks/use-scroll-position";
+import useScrollToTop from "@/hooks/use-scroll-to-top";
 import {
   DarkModeIcon,
   LightModeIcon,
@@ -12,7 +12,7 @@ import { useMemo } from "react";
 import { Link } from "react-scroll";
 
 export default function ModeSwitch() {
-  const showScrollToTop = useScrollPosition();
+  const showScrollToTop = useScrollToTop();
   const { isDarkMode, toggleMode } = useTheme();
 
   const ScrollIcon = useMemo(
