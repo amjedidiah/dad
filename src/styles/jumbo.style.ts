@@ -104,14 +104,14 @@ const styles: Interpolation<Theme> = ({
     }
 
     .scroll-item {
+      margin: 0 clamp(1.5rem, 6%, 6rem);
+      text-transform: uppercase;
+      color: ${grey2};
       font-size: 2.25rem;
       line-height: 133%;
-      color: ${grey2};
-      text-transform: uppercase;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      margin: 0 clamp(1.5rem, 6%, 6rem);
     }
   }
 `;

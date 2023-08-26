@@ -36,6 +36,7 @@ const styles: Interpolation<Theme> = ({
     align-items: center;
     gap: 2.5rem;
     border: 1px solid ${secondGrey};
+    border-radius: 0.5rem;
     background: ${isDarkMode ? black : white};
 
     @media (min-width: ${breakpoints.md}px) {

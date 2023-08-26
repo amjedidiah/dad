@@ -5,6 +5,22 @@ const globalStyles: Interpolation<Theme> = ({
   colors: { black, white },
   font,
 }) => css`
+  @keyframes slide-fade-in {
+    from {
+      opacity: 0.3;
+      transform: translateY(2rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .load-in > * {
+      view-timeline-name: --item-timeline;
+      animation: slide-fade-in both 0.5s ease-in-out;
+      animation-timeline: --item-timeline;
+      animation-range: cover 0% cover 50%;
+    }
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;

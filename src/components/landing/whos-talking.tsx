@@ -5,7 +5,7 @@ import styles from "@/styles/whos-talking.style";
 
 export default function WhosTalking() {
   return (
-    <section id="why-choose-him" css={styles}>
+    <section id="why-choose-him" className="load-in" css={styles}>
       <div className="container">
         <SectionHeader
           title="Who's Talking"

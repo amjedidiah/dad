@@ -1,3 +1,4 @@
+import AppearedOn from "@/components/landing/appeared-on";
 import Jumbo from "@/components/landing/jumbo/index.jumbo";
 import WhosTalking from "@/components/landing/whos-talking";
 import WhyChooseHim from "@/components/landing/why-choose-him";
@@ -18,6 +19,7 @@ export default function Home() {
       <Header />
       <WhyChooseHim />
       <WhosTalking />
+      <AppearedOn />
     </RootLayout>
   );
 }

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useMemo, FC } from "react";
+import { FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Link as ScrollLink } from "react-scroll";
@@ -16,17 +16,13 @@ export type IRolesItems = {
   Component: FC;
 };
 
+const rolesItems = Object.keys(Roles).map((key) => ({
+  key,
+  Component: StarIcon,
+})) as IRolesItems[];
+
 export default function Jumbo() {
   const jumboButtons = useActionButtons();
-
-  const rolesItems = useMemo(
-    () =>
-      Object.keys(Roles).map((key) => ({
-        key,
-        Component: StarIcon,
-      })),
-    []
-  ) as IRolesItems[];
 
   return (
     <section css={styles}>

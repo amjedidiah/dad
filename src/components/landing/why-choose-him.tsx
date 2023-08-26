@@ -30,7 +30,7 @@ const sellingPoints = [
 
 export default function WhyChooseHim() {
   return (
-    <section id="why-choose-him" css={styles}>
+    <section id="why-choose-him" className="load-in" css={styles}>
       <div className="container">
         <SectionHeader
           title="Why Choose Him"

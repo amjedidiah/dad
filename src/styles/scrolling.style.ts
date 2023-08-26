@@ -6,6 +6,10 @@ const styles: Interpolation<Theme> = css`
   display: flex;
   list-style: none;
   justify-content: space-between;
+
+  .scroll-image-container {
+    position: relative;
+  }
 `;
 
 export default styles;
