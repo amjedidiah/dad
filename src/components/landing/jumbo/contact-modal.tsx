@@ -1,6 +1,6 @@
 import Follow from "@/components/shared/follow";
-import Form from "@/components/shared/form/index.form";
-import Modal from "@/components/shared/modal";
+import Form from "@/components/shared/form";
+import Modal from "@/components/shared/layout/modal";
 import useMail from "@/hooks/use-mail";
 import styles from "@/styles/contact-modal.style";
 import {

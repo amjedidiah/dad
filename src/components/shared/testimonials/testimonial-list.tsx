@@ -3,9 +3,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import Testimonial, {
+import TestimonialItem, {
   TestimonialProps,
-} from "@/components/landing/testimonial";
+} from "@/components/shared/testimonials/testimonial-item";
 import styles from "@/styles/testimonials.style";
 import { testimonials as defaultTestimonials } from "@/utils/constants";
 
@@ -13,7 +13,7 @@ type Props = {
   testimonials?: TestimonialProps[];
 };
 
-export default function Testimonials({
+export default function TestimonialList({
   testimonials = defaultTestimonials,
 }: Props) {
   return (
@@ -45,7 +45,7 @@ export default function Testimonials({
       >
         {testimonials.map((testimonial) => (
           <SwiperSlide key={testimonial.name}>
-            <Testimonial {...testimonial} />
+            <TestimonialItem {...testimonial} />
           </SwiperSlide>
         ))}
       </Swiper>

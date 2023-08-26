@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Link as ScrollLink } from "react-scroll";
 import BouncingArrow from "@/components/landing/jumbo/bouncing-arrow";
-import ButtonGroup from "@/components/shared/button-group";
+import ButtonGroup from "@/components/shared/button/button-group";
 import Scrolling from "@/components/shared/scrolling";
 import useActionButtons from "@/hooks/use-action-buttons";
 import { LinkIcon, StarIcon } from "@/icons";

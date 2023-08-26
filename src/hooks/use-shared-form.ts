@@ -5,10 +5,7 @@ import {
   UseFormReturn,
   useForm,
 } from "react-hook-form";
-import {
-  IFormResponse,
-  IFormHelperTypes,
-} from "@/components/shared/form/index.form";
+import { IFormResponse, IFormHelperTypes } from "@/components/shared/form";
 
 type IUseSharedForm<F extends FieldValues> = Pick<
   UseFormReturn<F>,

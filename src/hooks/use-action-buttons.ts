@@ -1,5 +1,5 @@
 import { useContext, useMemo } from "react";
-import { IButton } from "@/components/shared/button";
+import { IButton } from "@/components/shared/button/index.button";
 import { ModalContext } from "@/context/modal/modal.context";
 import { ModalTitles } from "@/context/modal/types";
 import useMobileDetect from "@/hooks/use-mobile-detect";

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Resend } from "resend";
-import EmailTemplate from "@/components/shared/email-template";
+import EmailTemplate from "@/components/email/email-template";
 import {
   HttpMethods,
   HttpStatus,

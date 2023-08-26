@@ -7,7 +7,7 @@ export type TestimonialProps = {
   image: string;
 };
 
-export default function Testimonial({
+export default function TestimonialItem({
   name,
   title,
   description,

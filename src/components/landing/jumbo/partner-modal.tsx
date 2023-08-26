@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import Modal from "@/components/shared/modal";
+import Modal from "@/components/shared/layout/modal";
 import Scrolling from "@/components/shared/scrolling";
+import TestimonialList from "@/components/shared/testimonials/testimonial-list";
 import styles from "@/styles/partner-modal.style";
-import Testimonials from "@/components/landing/testimonials";
 import { ministries } from "@/utils/constants";
 
 export default function PartnerModal() {
@@ -55,7 +55,7 @@ export default function PartnerModal() {
           <h4 className="theme-text sub-title">
             Hear what partners are saying
           </h4>
-          <Testimonials />
+          <TestimonialList />
         </div>
       </article>
     </Modal.Body>

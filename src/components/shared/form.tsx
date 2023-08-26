@@ -13,7 +13,7 @@ import {
   UseFormRegister,
 } from "react-hook-form";
 import { cx } from "@emotion/css";
-import Button, { IButton } from "@/components/shared/button";
+import Button, { IButton } from "@/components/shared/button/index.button";
 import useSharedForm from "@/hooks/use-shared-form";
 import styles from "@/styles/form.style";
 import { IComponentWithChildren } from "@/utils/types";

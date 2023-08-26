@@ -1,6 +1,9 @@
 import { Interpolation, Theme, css } from "@emotion/react";
 
-const styles: Interpolation<Theme> = ({ isDarkMode }) => css`
+const styles: Interpolation<Theme> = ({
+  isDarkMode,
+  colors: { white, black },
+}) => css`
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
@@ -24,6 +27,10 @@ const styles: Interpolation<Theme> = ({ isDarkMode }) => css`
     background: ${isDarkMode
       ? "rgba(255, 255, 255, 0.10)"
       : "rgba(255, 255, 255, 0.50)"};
+
+    svg path {
+      fill: ${isDarkMode ? white : black};
+    }
   }
 `;
 

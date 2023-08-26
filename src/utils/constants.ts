@@ -1,6 +1,6 @@
-import { TestimonialProps } from "@/components/landing/testimonial";
-import { IButton } from "@/components/shared/button";
-import { IFormField } from "@/components/shared/form/index.form";
+import { IButton } from "@/components/shared/button/index.button";
+import { IFormField } from "@/components/shared/form";
+import { TestimonialProps } from "@/components/shared/testimonials/testimonial-item";
 
 export enum JumboButtonKeys {
   contact = "contact",

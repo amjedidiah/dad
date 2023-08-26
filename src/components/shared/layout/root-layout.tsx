@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { Fragment } from "react";
 import Head from "next/head";
-import Header from "@/components/shared/header";
-import Modal from "@/components/shared/modal";
-import ModeSwitch from "@/components/shared/mode-switch";
+import { useTheme } from "@emotion/react";
+import Header from "@/components/shared/layout/header";
+import Modal from "@/components/shared/layout/modal";
+import ModeSwitch from "@/components/shared/layout/mode-switch";
 import styles from "@/styles/layout.style";
 import { IComponentWithChildren } from "@/utils/types";
-import { useTheme } from "@emotion/react";
 
 type Props = {
   title: string;
@@ -14,7 +14,7 @@ type Props = {
   noHeader?: boolean;
 };
 
-export default function Layout({
+export default function RootLayout({
   children,
   title,
   description,

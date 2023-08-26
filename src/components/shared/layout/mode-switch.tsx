@@ -1,24 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import useScrollToTop from "@/hooks/use-scroll-to-top";
-import {
-  DarkModeIcon,
-  LightModeIcon,
-  ScrollToTopDarkIcon,
-  ScrollToTopLightIcon,
-} from "@/icons";
-import styles from "@/styles/mode-switch.style";
-import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
 import { Link } from "react-scroll";
+import { useTheme } from "@emotion/react";
+import useScrollToTop from "@/hooks/use-scroll-to-top";
+import { DarkModeIcon, LightModeIcon, ScrollToTopIcon } from "@/icons";
+import styles from "@/styles/mode-switch.style";
 
 export default function ModeSwitch() {
   const showScrollToTop = useScrollToTop();
   const { isDarkMode, toggleMode } = useTheme();
-
-  const ScrollIcon = useMemo(
-    () => (isDarkMode ? ScrollToTopLightIcon : ScrollToTopDarkIcon),
-    [isDarkMode]
-  );
 
   const SwitchIcon = useMemo(
     () => (isDarkMode ? LightModeIcon : DarkModeIcon),
@@ -30,7 +20,7 @@ export default function ModeSwitch() {
       {showScrollToTop && (
         <Link to="top" smooth>
           <button aria-label="Scroll to top">
-            <ScrollIcon />
+            <ScrollToTopIcon />
           </button>
         </Link>
       )}
