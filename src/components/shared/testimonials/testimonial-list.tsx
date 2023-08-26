@@ -11,10 +11,21 @@ import { testimonials as defaultTestimonials } from "@/utils/constants";
 
 type Props = {
   testimonials?: TestimonialProps[];
+  breakpoints?: Record<number, { slidesPerView: number }>;
+};
+
+const defaultBreakpoints = {
+  10: {
+    slidesPerView: 1,
+  },
+  768: {
+    slidesPerView: 2,
+  },
 };
 
 export default function TestimonialList({
   testimonials = defaultTestimonials,
+  breakpoints = {},
 }: Props) {
   return (
     <div className="testimonials" css={styles}>
@@ -31,14 +42,7 @@ export default function TestimonialList({
         scrollbar={{ draggable: true }}
         spaceBetween={16}
         slidesPerView="auto"
-        breakpoints={{
-          10: {
-            slidesPerView: 1,
-          },
-          768: {
-            slidesPerView: 2,
-          },
-        }}
+        breakpoints={{ ...defaultBreakpoints, ...breakpoints }}
         centeredSlides
         centeredSlidesBounds
         centerInsufficientSlides

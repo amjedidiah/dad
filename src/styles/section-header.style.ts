@@ -11,6 +11,7 @@ const styles: Interpolation<Theme> = ({
   flex-wrap: wrap;
 
   .title {
+    width: fit-content;
     max-width: 21.75rem;
     color: ${isDarkMode ? white : black};
     font-size: 3rem;
@@ -23,6 +24,7 @@ const styles: Interpolation<Theme> = ({
   }
 
   .sub-title {
+    width: fit-content;
     max-width: 21.75rem;
     color: ${isDarkMode ? white : secondGrey};
     font-size: 1.25rem;

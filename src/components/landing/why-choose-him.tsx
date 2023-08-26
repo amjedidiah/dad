@@ -12,19 +12,19 @@ const sellingPoints = [
     icon: <CertifiedExpertIcon />,
     title: "Certified Expert",
     description:
-      "Lorem ipsum dolor sit amet consectetur. In risus diam orci arcu pellentesque feugiat dui sed lacus. Quis aliquet nisi suspendisse at gravida enim sed. Integer sit vitae ",
+      "Dr. Passy Amaraegbu has a Ph.D in Clinical Psychology from the University of Ibadan and a D.Min from Bakke Graduate University, Texas.<br />",
   },
   {
     icon: <AllRounderIcon />,
-    title: "All Rounder",
+    title: "All-Rounder",
     description:
-      "Lorem ipsum dolor sit amet consectetur. In risus diam orci arcu pellentesque feugiat dui sed lacus. Quis aliquet nisi suspendisse at gravida enim sed. Integer sit vitae ",
+      "He is a practising clinical psychologist, and the Lagos 1 State Overseer of the Charismatic Renewal Ministries. He is a father and husband of over 30 years.",
   },
   {
     icon: <FreeCounsellingIcon />,
     title: "Free Counselling Session",
     description:
-      "Lorem ipsum dolor sit amet consectetur. In risus diam orci arcu pellentesque feugiat dui sed lacus. Quis aliquet nisi suspendisse at gravida enim sed. Integer sit vitae ",
+      "To show his devotion to helping people, when you reach out, you get the first counselling session free",
   },
 ];
 
@@ -34,14 +34,17 @@ export default function WhyChooseHim() {
       <div className="container">
         <SectionHeader
           title="Why Choose Him"
-          subtitle="We have the best expertise person  liquet nisi suspendisse at gravida"
+          subtitle="An all-round certified expert providing the first counselling session for free"
         />
         <ul className="selling-point-list">
           {sellingPoints.map(({ title, icon, description }) => (
             <li key={title} className="selling-point-item">
               <span className="selling-point-icon">{icon}</span>
               <p className="selling-point-title">{title}</p>
-              <p className="selling-point-description"> {description}</p>
+              <p
+                className="selling-point-description"
+                dangerouslySetInnerHTML={{ __html: description }}
+              />
             </li>
           ))}
         </ul>

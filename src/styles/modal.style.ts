@@ -1,6 +1,6 @@
 import { Interpolation, Theme, css } from "@emotion/react";
 
-const styles: Interpolation<Theme> = ({ breakpoints, isDarkMode }) => css`
+const styles: Interpolation<Theme> = ({ isDarkMode }) => css`
   &[open] {
     width: 100%;
     height: 100%;

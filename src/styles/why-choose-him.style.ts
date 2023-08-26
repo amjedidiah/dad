@@ -24,13 +24,13 @@ const styles: Interpolation<Theme> = ({
       gap: 2.5rem;
 
       @media (min-width: ${breakpoints.md}px) {
-        display: flex;
-        justify-content: space-between;
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
     .selling-point-item {
-      display: grid;
+      display: flex;
+      flex-direction: column;
       gap: 1.5rem;
 
       .selling-point-icon {

@@ -1,4 +1,5 @@
 import Jumbo from "@/components/landing/jumbo/index.jumbo";
+import WhosTalking from "@/components/landing/whos-talking";
 import WhyChooseHim from "@/components/landing/why-choose-him";
 import Header from "@/components/shared/layout/header";
 import RootLayout from "@/components/shared/layout/root-layout";
@@ -16,6 +17,7 @@ export default function Home() {
       <Jumbo />
       <Header />
       <WhyChooseHim />
+      <WhosTalking />
     </RootLayout>
   );
 }
