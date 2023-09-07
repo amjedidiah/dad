@@ -4,9 +4,11 @@ import { Global, ThemeProvider } from "@emotion/react";
 import { Analytics } from "@vercel/analytics/react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { SWRConfig } from "swr";
 import { ModalContext } from "@/context/modal/modal.context";
 import useModal from "@/hooks/use-modal";
 import useMode from "@/hooks/use-mode";
+import "@/styles/global.css";
 import global from "@/styles/global.style";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
@@ -21,7 +23,15 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     <ThemeProvider theme={theme}>
       <Global styles={global} />
       <ModalContext.Provider value={modalContextValue}>
-        <Component {...pageProps} />
+        <SWRConfig
+          value={{
+            fetcher: (resource, init) =>
+              fetch(resource, init).then((res) => res.json()),
+            revalidateOnFocus: false,
+          }}
+        >
+          <Component {...pageProps} />
+        </SWRConfig>
         <ToastContainer theme={toastTheme} />
       </ModalContext.Provider>
       <Analytics />

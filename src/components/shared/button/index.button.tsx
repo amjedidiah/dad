@@ -13,6 +13,7 @@ export type IButton = {
   isLoading?: boolean;
   notGrow?: boolean;
   noIcon?: boolean;
+  Icon?: React.FC;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export default function Button({
@@ -22,20 +23,26 @@ export default function Button({
   isLoading,
   notGrow,
   noIcon,
+  Icon,
   ...rest
 }: IButton) {
   return (
     <button
       css={styles}
-      className={cx({ outlined, grow: !notGrow }, className)}
+      className={cx({ outlined, expand: !notGrow }, className)}
       {...rest}
     >
       {!isLoading ? (
         <Fragment>
           <span className="text">{value}</span>
-          {!noIcon && (
+          {!noIcon && !Icon && (
             <span className="icon">
               <LinkIcon />
+            </span>
+          )}
+          {Icon && (
+            <span className="icon">
+              <Icon />
             </span>
           )}
         </Fragment>

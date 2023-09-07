@@ -8,7 +8,7 @@ type Props = {
 
 export default function SectionHeader({ title, subtitle }: Props) {
   return (
-    <header css={styles}>
+    <header className="section-header" css={styles}>
       <h2 className="title">{title}</h2>
       <p className="sub-title">{subtitle}</p>
     </header>

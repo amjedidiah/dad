@@ -13,7 +13,7 @@ const styles: Interpolation<Theme> = ({ isDarkMode }) => css`
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 999;
 
     .modal-body {
       max-width: 100%;

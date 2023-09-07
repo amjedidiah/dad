@@ -5,7 +5,7 @@ const styles: Interpolation<Theme> = ({
   colors: { white, grey2, black },
   breakpoints,
 }) => css`
-  padding: 75px 0;
+  padding: 4.5rem 0;
 
   .top {
     display: grid;
@@ -68,6 +68,11 @@ const styles: Interpolation<Theme> = ({
       display: block;
       font-weight: 500;
       line-height: 175%;
+    }
+
+    .theme-icon-fill {
+      display: inline-flex;
+      justify-content: center;
     }
 
     @media (min-width: ${breakpoints.md}px) {

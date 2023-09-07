@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import SectionHeader from "@/components/shared/section-header";
 import TestimonialList from "@/components/shared/testimonials/testimonial-list";
-import styles from "@/styles/whos-talking.style";
+import styles from "@/styles/testimonies.style";
 
-export default function WhosTalking() {
+export default function Testimonies() {
   return (
-    <section id="why-choose-him" className="load-in" css={styles}>
+    <section id="testimonies" className="load-in" css={styles}>
       <div className="container">
         <SectionHeader
-          title="Who's Talking"
-          subtitle="Hear what partners and beneficiaries are saying"
+          title="Testimonies"
+          subtitle="Hear what partners and beneficiaries have to say"
         />
         <TestimonialList
           breakpoints={{

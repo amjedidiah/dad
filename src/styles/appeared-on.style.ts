@@ -1,8 +1,7 @@
 import { Interpolation, Theme, css } from "@emotion/react";
 
 const styles: Interpolation<Theme> = ({ breakpoints }) => css`
-  margin: 4rem 0 2rem;
-  padding-bottom: 2.5rem;
+  padding: 4.5rem 0 2.5rem;
 
   .container {
     display: flex;
@@ -27,7 +26,7 @@ const styles: Interpolation<Theme> = ({ breakpoints }) => css`
     display: flex;
     align-items: center;
 
-    &:nth-child(1) .scroll-image-container {
+    &:nth-of-type(1) .scroll-image-container {
       width: 100px;
       height: 92px;
 
@@ -36,7 +35,7 @@ const styles: Interpolation<Theme> = ({ breakpoints }) => css`
         height: 106px;
       }
     }
-    &:nth-child(2) .scroll-image-container {
+    &:nth-of-type(2) .scroll-image-container {
       width: 322px;
       height: 59px;
 
@@ -45,7 +44,7 @@ const styles: Interpolation<Theme> = ({ breakpoints }) => css`
         height: 68px;
       }
     }
-    &:nth-child(3) .scroll-image-container {
+    &:nth-of-type(3) .scroll-image-container {
       width: 169px;
       height: 87px;
 

@@ -81,6 +81,21 @@ function validateRequiredFields(req: NextApiRequest, requiredFields: string[]) {
     };
 }
 
+function validateQueryParams(req: NextApiRequest, requiredParams: string[]) {
+  const missingRequiredParams = requiredParams.filter(
+    (param) => !(param in req.query)
+  );
+  const hasRequiredParams = missingRequiredParams.length === 0;
+
+  if (!hasRequiredParams)
+    throw {
+      statusCode: HttpStatus.BAD_REQUEST,
+      message: "Required query params are missing",
+      devMessage: "Required query params are missing",
+      data: missingRequiredParams,
+    };
+}
+
 export function validateRequest(
   req: NextApiRequest,
   {
@@ -88,17 +103,20 @@ export function validateRequest(
     requiredHeaders,
     requiredBodyFields,
     requiredFields,
+    requiredParams,
   }: {
     methods: Set<HttpMethods>;
     requiredHeaders?: string[];
-    requiredBodyFields: string[];
-    requiredFields: string[];
+    requiredBodyFields?: string[];
+    requiredFields?: string[];
+    requiredParams?: string[];
   }
 ) {
   isValidRequestMethod(req, methods);
   if (requiredHeaders) validateRequestHeaders(req, requiredHeaders);
-  validateRequestBody(req, requiredBodyFields);
-  validateRequiredFields(req, requiredFields);
+  if (requiredParams) validateQueryParams(req, requiredParams);
+  if (requiredBodyFields) validateRequestBody(req, requiredBodyFields);
+  if (requiredFields) validateRequiredFields(req, requiredFields);
 }
 
 export function validateEmail(email: string) {

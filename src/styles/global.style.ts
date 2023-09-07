@@ -37,6 +37,10 @@ const globalStyles: Interpolation<Theme> = ({
 
   a {
     text-decoration: none;
+
+    &:hover {
+      transform: scaleY(1.05);
+    }
   }
 
   .theme-bg {

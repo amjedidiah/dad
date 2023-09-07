@@ -18,7 +18,7 @@ const sellingPoints = [
     icon: <AllRounderIcon />,
     title: "All-Rounder",
     description:
-      "He is a practising clinical psychologist, and the Lagos 1 State Overseer of the Charismatic Renewal Ministries. He is a father and husband of over 30 years.",
+      "He is a clinical psychologist, and the Lagos 1 State Overseer of the Charismatic Renewal Ministries. He is a father and husband of over 30 years.",
   },
   {
     icon: <FreeCounsellingIcon />,

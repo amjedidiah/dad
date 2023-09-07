@@ -2,7 +2,7 @@ import { Interpolation, Theme, css } from "@emotion/react";
 
 const styles: Interpolation<Theme> = ({
   isDarkMode,
-  colors: { white, grey1, grey2, black },
+  colors: { white, grey1, grey2, black, secondGrey },
   breakpoints,
 }) => css`
   height: 8.5rem;
@@ -13,7 +13,9 @@ const styles: Interpolation<Theme> = ({
     top: 0;
     left: 0;
     z-index: 2;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: ${isDarkMode
+      ? "0 4px 8px 0 rgba(0, 0, 0, 0.2)"
+      : "0 4px 8px 0 rgba(0, 0, 0, 0.1)"};
   }
 
   .container {
@@ -66,7 +68,7 @@ const styles: Interpolation<Theme> = ({
       width: 1.25rem;
     }
 
-    @media (min-width: ${breakpoints.xl}px) {
+    @media (min-width: ${breakpoints.laptopL}px) {
       display: none;
     }
 
@@ -103,7 +105,7 @@ const styles: Interpolation<Theme> = ({
     z-index: 1;
     opacity: 0;
 
-    @media (min-width: ${breakpoints.xl}px) {
+    @media (min-width: ${breakpoints.laptopL}px) {
       position: unset;
       height: unset;
       width: unset;
@@ -122,7 +124,7 @@ const styles: Interpolation<Theme> = ({
         opacity: 0;
         transition: opacity 0s;
 
-        @media (min-width: ${breakpoints.xl}px) {
+        @media (min-width: ${breakpoints.laptopL}px) {
           opacity: unset;
         }
 
@@ -134,6 +136,9 @@ const styles: Interpolation<Theme> = ({
           text-transform: capitalize;
           opacity: 0.75;
           position: relative;
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
 
           &:after {
             position: absolute;
@@ -150,6 +155,15 @@ const styles: Interpolation<Theme> = ({
 
             &:after {
               width: 100%;
+            }
+          }
+
+          span {
+            position: relative;
+            top: 0.25rem;
+
+            path {
+              fill: ${isDarkMode ? secondGrey : grey2};
             }
           }
         }
@@ -175,7 +189,7 @@ const styles: Interpolation<Theme> = ({
       }
     }
 
-    @media (max-width: ${breakpoints.xl - 2}px) {
+    @media (max-width: ${breakpoints.laptopL - 2}px) {
       &.show {
         top: 0;
         opacity: 1;
