@@ -11,6 +11,7 @@ module.exports = {
         grey1: "#4D4D4D",
         grey2: "#808080",
         greyLighter: "#e6e6e6",
+        greyLoading: "rgba(127.5,127.5,127.5,0.3)",
       },
       screens: {
         mdx: "834px",

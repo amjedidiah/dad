@@ -21,7 +21,7 @@ export default function Rating({ value }: Props) {
               return (
                 <span
                   key={`star-${index + 1}`}
-                  className="bg-[rgba(255,255,255,0.3)] animate-pulse rounded w-6 h-6"
+                  className="bg-greyLoading animate-pulse rounded w-6 h-6"
                 />
               );
 

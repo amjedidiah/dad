@@ -69,7 +69,7 @@ export default function BestSellingContent({ type }: Props) {
             <div className="flex flex-1 justify-center items-center">
               <div className="w-[2.45in] mdx:w-[3.5in] h-[3.675in] mdx:h-[5.25in] relative group">
                 <ShouldRender if={isLoading}>
-                  <div className="w-full h-full animate-pulse bg-[rgba(255,255,255,0.3)]"></div>
+                  <div className="w-full h-full animate-pulse bg-greyLoading rounded" />
                 </ShouldRender>
                 <ShouldRender if={!isLoading}>
                   <Image
@@ -112,9 +112,13 @@ export default function BestSellingContent({ type }: Props) {
             </header>
             <div className="flex flex-wrap gap-4 items-center justify-between">
               <div>
-                <h3 className="theme-text text-[2.5rem] font-medium leading-[140%]">
-                  {book.title}
-                </h3>
+                {book.title ? (
+                  <h3 className="theme-text text-[2.5rem] font-medium leading-[140%]">
+                    {book.title}
+                  </h3>
+                ) : (
+                  <div className="h-14 w-full animate-pulse bg-greyLoading rounded" />
+                )}
                 <p className="mt-2 text-xl leading-6 flex flex-wrap gap-[10px]">
                   <span
                     className={`${
@@ -123,20 +127,33 @@ export default function BestSellingContent({ type }: Props) {
                   >
                     Published By:
                   </span>{" "}
-                  <span>{book.publisher}</span>
+                  {book.publisher ? (
+                    <span>{book.publisher}</span>
+                  ) : (
+                    <span className="h-5 w-60 flex-1 animate-pulse bg-greyLoading rounded" />
+                  )}
                 </p>
               </div>
               <div className="w-full sm:w-auto flex sm:flex-col items-center justify-between sm:justify-center gap-2">
-                <p
-                  className={`text-xl font-medium leading-6 py-2 px-8 ${
-                    isDarkMode ? "bg-white text-black" : "bg-black text-white"
-                  } `}
-                >
-                  {formattedPrice}
-                </p>
+                {formattedPrice ? (
+                  <p
+                    className={`text-xl font-medium leading-6 py-2 px-8 ${
+                      isDarkMode ? "bg-white text-black" : "bg-black text-white"
+                    } `}
+                  >
+                    {formattedPrice}
+                  </p>
+                ) : (
+                  <div className="h-14 w-32 animate-pulse bg-greyLoading rounded" />
+                )}
                 <p className="text-base flex gap-1 justify-center">
-                  (<span>{book.copies_sold}</span>
-                  <span>Copies Sold</span>)
+                  &#40;
+                  {book.copies_sold ? (
+                    <span>{book.copies_sold}</span>
+                  ) : (
+                    <span className="h-5 w-5 flex-1 animate-pulse bg-greyLoading rounded" />
+                  )}
+                  <span>Copies Sold</span>&#41;
                 </p>
               </div>
             </div>
@@ -149,13 +166,21 @@ export default function BestSellingContent({ type }: Props) {
                 >
                   Foreword By:
                 </span>{" "}
-                <span>
-                  {book.foreword_author_title} - {book.foreword_author_name}
-                </span>
+                {book.foreword_author_title ? (
+                  <span>
+                    {book.foreword_author_title} - {book.foreword_author_name}
+                  </span>
+                ) : (
+                  <span className="h-5 flex-1 animate-pulse bg-greyLoading rounded" />
+                )}
               </p>
-              <div
-                dangerouslySetInnerHTML={{ __html: book.foreword_content }}
-              />
+              {book.foreword_content ? (
+                <div
+                  dangerouslySetInnerHTML={{ __html: book.foreword_content }}
+                />
+              ) : (
+                <div className="h-14 w-full animate-pulse bg-greyLoading rounded" />
+              )}
             </div>
 
             <footer>
@@ -168,13 +193,17 @@ export default function BestSellingContent({ type }: Props) {
                   >
                     Publish Date:
                   </span>{" "}
-                  <span>
-                    {new Date(book.publish_date).toLocaleDateString("en-NG", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </span>
+                  {book.publish_date ? (
+                    <span>
+                      {new Date(book.publish_date).toLocaleDateString("en-NG", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </span>
+                  ) : (
+                    <span className="h-5 w-32 flex-1 animate-pulse bg-greyLoading rounded" />
+                  )}
                 </p>
                 <p className="theme-text text-xl leading-6 font-medium underline cursor-pointer">
                   <span onClick={() => toggleModal(ModalTitles.rate)}>
