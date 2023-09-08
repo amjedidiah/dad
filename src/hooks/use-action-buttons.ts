@@ -11,31 +11,28 @@ const buttons: IButton[] = [
     value: "Contact",
     ["data-modal"]: ModalTitles.contact,
     outlined: true,
-    className: "action-button",
   },
   {
     key: JumboButtonKeys.partner,
     value: "Partner",
     ["data-modal"]: ModalTitles.partner,
-    className: "action-button",
   },
 ];
 
-export default function useActionButtons(props?: IButton) {
+export default function useActionButtons() {
   const { toggleModal } = useContext(ModalContext);
   const { isMobile } = useMobileDetect();
   const actionButtons = useMemo(
     () =>
       buttons.map((button) => ({
         ...button,
-        ...props,
         onClick: () =>
           button.key === JumboButtonKeys.contact && isMobile
             ? window.open(`tel:${process.env.NEXT_PUBLIC_CONTACT_NUMBER}`)
             : toggleModal(button["data-modal"]),
         className: "rounded lg",
       })),
-    [isMobile, props, toggleModal]
+    [isMobile, toggleModal]
   );
 
   return actionButtons;

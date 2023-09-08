@@ -96,7 +96,10 @@ export default function BestSellingContent({ type }: Props) {
             } gap-2`}
           >
             <header className="flex justify-between items-center mb-4">
-              <Rating value={book.average_rating} />
+              <div className="flex items-center gap-4">
+                <p className="theme-text">Rating:</p>
+                <Rating value={book.average_rating} />
+              </div>
               <Link
                 href={{
                   pathname: `/books/${book.slug}`,

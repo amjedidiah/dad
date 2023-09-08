@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { cx } from "@emotion/css";
-import Button, { IButton } from "@/components/shared/button/index.button";
+import Button from "@/components/shared/button/index.button";
 import ButtonGroup from "@/components/shared/button/button-group";
 import useActionButtons from "@/hooks/use-action-buttons";
 import useStickyHeader from "@/hooks/use-sticky-header";
@@ -15,9 +15,7 @@ const navItems = ["about", "books", "messages", "testimonies", "blog", "cart"];
 export default function Header() {
   const isHeaderSticky = useStickyHeader();
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const headerButtons = useActionButtons({
-    className: "action-button",
-  } as IButton);
+  const headerButtons = useActionButtons();
 
   const toggleNavbar = () => setIsNavbarOpen((prev) => !prev);
 

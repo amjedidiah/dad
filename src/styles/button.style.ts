@@ -38,10 +38,6 @@ const styles: Interpolation<Theme> = ({
     stroke: ${isDarkMode ? black : white};
   }
 
-  &.rounded {
-    border-radius: 0.5rem;
-  }
-
   &.bold {
     font-weight: 500;
   }
