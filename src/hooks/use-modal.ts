@@ -3,6 +3,7 @@ import ContactModal from "@/components/shared/modals/contact-modal";
 import PartnerModal from "@/components/shared/modals/partner-modal";
 import { IModalContext, ModalTitles } from "@/context/modal/types";
 import RateModal from "@/components/shared/modals/rate-modal";
+import ReviewModal from "@/components/shared/modals/review-modal";
 
 export default function useModal(): IModalContext {
   const [modalTitle, setModalTitle] = useState<IModalContext["modalTitle"]>();
@@ -15,7 +16,7 @@ export default function useModal(): IModalContext {
         [ModalTitles.contact]: ContactModal,
         [ModalTitles.partner]: PartnerModal,
         [ModalTitles.rate]: RateModal,
-        [ModalTitles.review]: null,
+        [ModalTitles.review]: ReviewModal,
       }[modalTitle] || null
     );
   }, [modalTitle]);

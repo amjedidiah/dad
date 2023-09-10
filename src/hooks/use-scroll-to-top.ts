@@ -43,7 +43,10 @@ export default function useScrollToTop() {
   /**
    * Function to be called on scroll, which triggers the scroll position calculation.
    */
-  const handleScroll = () => requestAnimationFrame(calculateScrollDistance);
+  const handleScroll = useCallback(
+    () => requestAnimationFrame(calculateScrollDistance),
+    [calculateScrollDistance]
+  );
 
   // Attach scroll listener using custom hook
   useScroll(handleScroll, true);

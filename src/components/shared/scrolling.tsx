@@ -22,7 +22,7 @@ export default function Scrolling({ items, speed = 75, delay = 0 }: Props) {
             {Component && <Component />} {!imageLink && key}
             {imageLink && (
               <div className="scroll-image-container">
-                <Image src={imageLink} alt={key} fill />
+                <Image src={imageLink} alt={key} fill sizes="100%" />
               </div>
             )}
           </li>

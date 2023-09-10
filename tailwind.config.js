@@ -20,6 +20,9 @@ module.exports = {
       gridTemplateColumns: {
         "auto-1fr": "auto 1fr",
       },
+      gridTemplateRows: {
+        "auto-3": "auto auto auto",
+      },
     },
   },
   plugins: [],

@@ -2,11 +2,11 @@ import Modal from "@/components/shared/layout/modal";
 import Rating from "@/components/shared/rating";
 import { ModalTitles } from "@/context/modal/types";
 import { IButton } from "@/components/shared/button/index.button";
-import { useCallback, useContext, useMemo, useState } from "react";
-import { ModalContext } from "@/context/modal/modal.context";
+import { useContext, useMemo } from "react";
 import ButtonGroup from "@/components/shared/button/button-group";
 import { useTheme } from "@emotion/react";
 import { cx } from "@emotion/css";
+import RatingContext from "@/context/rating/rating.context";
 
 const buttons: IButton[] = [
   {
@@ -23,21 +23,16 @@ const buttons: IButton[] = [
 
 export default function RateModal() {
   const { isDarkMode } = useTheme();
-  const { toggleModal } = useContext(ModalContext);
-  const [rating, setRating] = useState(0);
-
-  const handleReview = useCallback(() => console.log({ rating }), [rating]);
+  const { rating, setRating, handleReview } = useContext(RatingContext);
 
   const reviewButtons = useMemo(
     () =>
       buttons.map((button) => ({
         ...button,
-        onClick:
-          button.key === "review"
-            ? () => toggleModal(button["data-modal"])
-            : handleReview,
+        onClick: button.key === "review" ? button.onClick : handleReview,
+        disabled: rating === 0,
       })),
-    [handleReview, toggleModal]
+    [handleReview, rating]
   ) as IButton[];
 
   return (

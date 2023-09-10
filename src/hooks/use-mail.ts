@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 type MailData = {
   name?: string;
   email: string;
@@ -5,7 +7,7 @@ type MailData = {
 };
 
 export default function useMail() {
-  const sendMail = async (data: MailData) => {
+  const sendMail = useCallback(async (data: MailData) => {
     const response = await fetch("/api/mail", {
       method: "POST",
       headers: {
@@ -17,7 +19,7 @@ export default function useMail() {
       body: JSON.stringify(data),
     });
     return response.json();
-  };
+  }, []);
 
   return {
     sendMail,

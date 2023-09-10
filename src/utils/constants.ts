@@ -1,6 +1,7 @@
 import { IButton } from "@/components/shared/button/index.button";
 import { IFormField } from "@/components/shared/form";
 import { TestimonialProps } from "@/components/shared/testimonials/testimonial-item";
+import { ModalTitles } from "@/context/modal/types";
 
 export enum JumboButtonKeys {
   contact = "contact",
@@ -60,6 +61,49 @@ export const contactFormFields = [
   [key in ContactFormInputIds]: string;
 }>[];
 
+export const reviewFormFields = [
+  {
+    type: "text",
+    id: "name",
+    name: "name",
+    placeholder: "Type your name here",
+    ["aria-label"]: "name",
+    required: {
+      value: true,
+      message: "Name is required",
+    },
+    minLength: {
+      value: 3,
+      message: "Name must be at least 3 characters",
+    },
+  },
+  {
+    type: "file",
+    id: "image",
+    name: "image",
+    accept: "image/png, image/jpeg",
+    ["aria-label"]: "Upload Photo",
+  },
+  {
+    type: "textarea",
+    id: "review",
+    name: "review",
+    placeholder: "Type your review here",
+    rows: 7,
+    ["aria-label"]: "review",
+    required: {
+      value: true,
+      message: "A review is required",
+    },
+    minLength: {
+      value: 10,
+      message: "More context is required for this review",
+    },
+  },
+] as IFormField<{
+  [key in ContactFormInputIds]: string;
+}>[];
+
 export const contactFormButtons = [
   {
     key: "contact-modal-form",
@@ -69,9 +113,31 @@ export const contactFormButtons = [
   },
 ] as IButton[];
 
+export const reviewFormButtons = [
+  {
+    key: "review-modal-form-back",
+    className: "bold full",
+    type: "button",
+    value: "Back",
+    outlined: true,
+    noIcon: true,
+    ["data-modal"]: ModalTitles.rate,
+  },
+  {
+    key: "review-modal-form",
+    className: "bold full",
+    type: "submit",
+    value: "Submit",
+  },
+] as IButton[];
+
 export const contactFormPraise = `You did good, 💪🏾. You can proceed to send your message`;
 
+export const reviewFormPraise = `You did good, 💪🏾. You can proceed to submit your review`;
+
 export const contactFormSuccess = `Your message has been sent to Dr. Passy. He will get back to you as soon as possible`;
+
+export const reviewFormSuccess = `Your review has been recorded. You will get feedback once it has been approved or denied`;
 
 export const ministries = [
   { key: "Successful family" },

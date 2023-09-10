@@ -109,11 +109,12 @@ export default function Form<F extends FieldValues>({
           <Button
             {...button}
             disabled={
-              button.disabled ||
-              isLoading ||
-              !isValid ||
-              isSubmitting ||
-              Boolean(formResponse)
+              button.type === "submit" &&
+              (button.disabled ||
+                isLoading ||
+                !isValid ||
+                isSubmitting ||
+                Boolean(formResponse))
             }
             isLoading={isSubmitting && button.type === "submit"}
             notGrow

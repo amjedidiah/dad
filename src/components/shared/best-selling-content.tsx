@@ -51,10 +51,12 @@ export default function BestSellingContent({ type }: Props) {
   if (!isLoading && !data?.data) return null;
   const book = data?.data ?? {};
 
-  const formattedPrice = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(book.price);
+  const formattedPrice =
+    book.price &&
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(book.price);
 
   return (
     <section css={styles} className="load-in py-[4.5rem]">
