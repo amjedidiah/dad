@@ -9,7 +9,7 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
-  phone_number VARCHAR(255) UNIQUE NOT NULL,
+  phone_number VARCHAR(255) UNIQUE,
   image_url VARCHAR(255),
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
@@ -42,6 +42,7 @@ CREATE TABLE ratings (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id),
   content_id INTEGER NOT NULL,
+  type VARCHAR(255) NOT NULL CHECK (type IN ('book')),
   review TEXT,
   rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
   created_at TIMESTAMP DEFAULT NOW(),

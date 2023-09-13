@@ -1,4 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+:root {
+  --toastify-toast-z-index: 1000001;
+}
+
+.Toastify__toast-container {
+  z-index: var(--toastify-toast-z-index);
+}

@@ -7,6 +7,7 @@ import ButtonGroup from "@/components/shared/button/button-group";
 import { useTheme } from "@emotion/react";
 import { cx } from "@emotion/css";
 import RatingContext from "@/context/rating/rating.context";
+import { ModalContext } from "@/context/modal/modal.context";
 
 const buttons: IButton[] = [
   {
@@ -24,15 +25,19 @@ const buttons: IButton[] = [
 export default function RateModal() {
   const { isDarkMode } = useTheme();
   const { rating, setRating, handleReview } = useContext(RatingContext);
+  const { modalData: contentData } = useContext(ModalContext);
 
   const reviewButtons = useMemo(
     () =>
       buttons.map((button) => ({
         ...button,
-        onClick: button.key === "review" ? button.onClick : handleReview,
+        onClick:
+          button.key === "review"
+            ? button.onClick
+            : () => handleReview(contentData),
         disabled: rating === 0,
       })),
-    [handleReview, rating]
+    [contentData, handleReview, rating]
   ) as IButton[];
 
   return (

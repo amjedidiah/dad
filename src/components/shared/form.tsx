@@ -4,19 +4,31 @@ import {
   LabelHTMLAttributes,
   TextareaHTMLAttributes,
   forwardRef,
+  useRef,
+  useState,
 } from "react";
 import {
   FieldValues,
   Path,
+  PathValue,
   RegisterOptions,
   SubmitHandler,
   UseFormRegister,
+  UseFormSetValue,
 } from "react-hook-form";
 import { cx } from "@emotion/css";
 import Button, { IButton } from "@/components/shared/button/index.button";
 import useSharedForm from "@/hooks/use-shared-form";
 import styles from "@/styles/form.style";
 import { IComponentWithChildren } from "@/utils/types";
+import {
+  CldUploadWidget,
+  CldUploadWidgetProps,
+  CldUploadWidgetPropsOptions,
+  CldUploadWidgetResults,
+} from "next-cloudinary";
+import { useTheme } from "@emotion/react";
+import { toast } from "react-toastify";
 
 type IForm<F extends FieldValues> = {
   fields: IFormField<F>[];
@@ -26,9 +38,15 @@ type IForm<F extends FieldValues> = {
   onSubmit: SubmitHandler<F>;
 } & React.FormHTMLAttributes<HTMLFormElement>;
 
+type IFormFieldOptions = CldUploadWidgetPropsOptions & {
+  helperMessage: string;
+};
+
 export type IFormField<T extends FieldValues> = {
   id: keyof T;
   register: UseFormRegister<T>;
+  options?: IFormFieldOptions;
+  setValue: UseFormSetValue<T>;
 } & (
   | InputHTMLAttributes<HTMLInputElement>
   | TextareaHTMLAttributes<HTMLTextAreaElement>
@@ -64,12 +82,14 @@ export default function Form<F extends FieldValues>({
     submitForm,
     formResponse,
     shouldPraise,
+    setValue,
   } = useSharedForm<F>(onSubmit, successMessage);
 
   return (
     <form css={styles} className="form" onSubmit={submitForm}>
       {fields.map(({ value, ...field }) => {
         field["aria-invalid"] = errors[field.id] ? "true" : "false";
+        field.setValue = setValue;
 
         return (
           <Form.Group key={field.id}>
@@ -144,7 +164,57 @@ Form.Label = function FormLabel({
 Form.Field = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   IFormField<any>
->(function FormField<Y extends FieldValues>(field: IFormField<Y>, ref: any) {
+>(function FormField<Y extends FieldValues>(
+  { setValue, ...field }: IFormField<Y>,
+  ref: any
+) {
+  const { isDarkMode } = useTheme();
+  const [fileUploadMessage, setFileUploadMessage] = useState<{
+    type?: string;
+    message: string;
+  }>({ message: field.options?.helperMessage || "" });
+
+  const handleSuccess: CldUploadWidgetProps["onSuccess"] = ({ info }) => {
+    if (!info || typeof info === "string") return;
+    const data = info as {
+      secure_url: string;
+      original_filename: string;
+      format: string;
+    };
+    setValue(field.name as Path<Y>, data.secure_url as PathValue<Y, Path<Y>>);
+
+    setFileUploadMessage({
+      type: "success",
+      message: `${data.original_filename}.${data.format}`,
+    });
+  };
+
+  const handleUpload = (
+    { info }: CldUploadWidgetResults,
+    options?: IFormFieldOptions
+  ) => {
+    if (!info || typeof info === "string") return;
+    const data = info as { file: { size: number; type: string } };
+    const fileSize = data.file.size;
+    const fileExt = data.file.type.split("/")[1];
+    const maxFileSize = options?.maxFileSize || Number.MAX_SAFE_INTEGER;
+
+    if (
+      fileSize > maxFileSize ||
+      !options?.clientAllowedFormats?.includes(fileExt)
+    ) {
+      setValue(field.name as Path<Y>, undefined as PathValue<Y, Path<Y>>);
+      setFileUploadMessage({
+        type: "error",
+        message: field.options?.helperMessage || "",
+      });
+      setTimeout(
+        () => toast.info("Close the upload dialog and try again..."),
+        2500
+      );
+    }
+  };
+
   if ("rows" in field)
     return (
       <textarea
@@ -155,7 +225,57 @@ Form.Field = forwardRef<
       />
     );
   else if ("type" in field)
-    return <input className="field" ref={ref} {...field} />;
+    if (field.type === "file")
+      return (
+        <CldUploadWidget
+          signatureEndpoint="/api/sign-cloudinary-params"
+          onSuccess={handleSuccess}
+          onUploadAdded={(results, widget) =>
+            handleUpload(results, field.options)
+          }
+          options={field.options}
+        >
+          {({ open, results }) => {
+            function handleOnClick(e: React.MouseEvent<HTMLDivElement>) {
+              e.preventDefault();
+              open();
+            }
+            return (
+              <div
+                className="flex border border-danger cursor-pointer"
+                onClick={handleOnClick}
+                id="uploadWidget"
+              >
+                <p
+                  className={cx(
+                    {
+                      "text-greyLighter": isDarkMode && !fileUploadMessage.type,
+                      "text-secondGrey": !isDarkMode && !fileUploadMessage.type,
+                      "text-red-500": fileUploadMessage.type === "error",
+                      "text-success": fileUploadMessage.type === "success",
+                    },
+                    "flex-1 flex items-center p-2"
+                  )}
+                >
+                  {fileUploadMessage.message}
+                </p>
+                <div
+                  className={cx(
+                    {
+                      "bg-greyLighter text-black": isDarkMode,
+                      "bg-grey2 text-white": !isDarkMode,
+                    },
+                    "py-2 px-[22.5px] leading-8 inline-flex items-center justify-center"
+                  )}
+                >
+                  Browse file
+                </div>
+              </div>
+            );
+          }}
+        </CldUploadWidget>
+      );
+    else return <input className="field" ref={ref} {...field} />;
 
   return null;
 });

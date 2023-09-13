@@ -12,6 +12,8 @@ module.exports = {
         grey2: "#808080",
         greyLighter: "#e6e6e6",
         greyLoading: "rgba(127.5,127.5,127.5,0.3)",
+        secondGrey: "#999",
+        success: "#399e5a",
       },
       screens: {
         mdx: "834px",
@@ -21,7 +23,7 @@ module.exports = {
         "auto-1fr": "auto 1fr",
       },
       gridTemplateRows: {
-        "auto-3": "auto auto auto",
+        "auto-4": "auto auto auto auto",
       },
     },
   },

@@ -1,4 +1,6 @@
 import { NextApiRequest } from "next";
+import { Api } from "zerobounce";
+import validate from "deep-email-validator";
 
 export enum HttpStatus {
   OK = 200,
@@ -119,8 +121,32 @@ export function validateRequest(
   if (requiredFields) validateRequiredFields(req, requiredFields);
 }
 
-export function validateEmail(email: string) {
-  return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i.test(
-    email
-  );
+export async function validateEmail(email: string) {
+  try {
+    const isValidByRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i.test(
+        email
+      );
+    if (!isValidByRegex) return false;
+
+    const isValidByDeepValidator = validate({
+      email,
+      validateRegex: true,
+      validateMx: true,
+      validateTypo: false,
+      validateDisposable: true,
+      validateSMTP: true,
+    });
+    if (!isValidByDeepValidator) return false;
+    if (process.env.NODE_ENV === "development") return true;
+
+    const api = new Api(process.env.ZEROBOUNCE_API_KEY as string);
+    const response = await api.validate(email);
+
+    console.info({ success: response.success, error: response.error });
+    return response.isSuccess();
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }

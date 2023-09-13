@@ -25,7 +25,7 @@ export default async function handler(
       requiredFields: ["email", "message"],
     });
 
-    const isValidEmail = validateEmail(email as string);
+    const isValidEmail = await validateEmail(email as string);
     switch (true) {
       case !isValidEmail:
         throw {
@@ -33,6 +33,13 @@ export default async function handler(
           message: "Email is invalid",
           devMessage: "Email is invalid",
           data: email,
+        };
+      case name.length < 3:
+        throw {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Name is too short",
+          devMessage: "Name is too short",
+          data: name,
         };
       case message.length < 10:
         throw {

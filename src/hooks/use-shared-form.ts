@@ -3,6 +3,7 @@ import {
   FieldValues,
   SubmitHandler,
   UseFormReturn,
+  UseFormSetValue,
   useForm,
 } from "react-hook-form";
 import { IFormResponse, IFormHelperTypes } from "@/components/shared/form";
@@ -14,13 +15,14 @@ type IUseSharedForm<F extends FieldValues> = Pick<
   submitForm: any;
   formResponse?: IFormResponse;
   shouldPraise: boolean;
+  setValue: UseFormSetValue<F>;
 };
 
 export default function useSharedForm<F extends FieldValues>(
   onSubmit: SubmitHandler<F>,
   successMessage: string
 ): IUseSharedForm<F> {
-  const { register, handleSubmit, formState, reset } = useForm<F>({
+  const { register, handleSubmit, formState, reset, setValue } = useForm<F>({
     mode: "onChange",
   });
   const [formResponse, setFormResponse] = useState<IFormResponse | undefined>();
@@ -65,5 +67,6 @@ export default function useSharedForm<F extends FieldValues>(
     submitForm,
     formResponse,
     shouldPraise,
+    setValue,
   };
 }

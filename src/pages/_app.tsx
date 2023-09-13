@@ -36,7 +36,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           >
             <Component {...pageProps} />
           </SWRConfig>
-          <ToastContainer theme={toastTheme} />
+          <ToastContainer bodyStyle={{ zIndex: 1000001 }} theme={toastTheme} />
         </ModalContext.Provider>
       </RatingContext.Provider>
       <Analytics />

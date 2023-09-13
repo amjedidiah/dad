@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ContactModal from "@/components/shared/modals/contact-modal";
 import PartnerModal from "@/components/shared/modals/partner-modal";
 import { IModalContext, ModalTitles } from "@/context/modal/types";
@@ -7,6 +7,7 @@ import ReviewModal from "@/components/shared/modals/review-modal";
 
 export default function useModal(): IModalContext {
   const [modalTitle, setModalTitle] = useState<IModalContext["modalTitle"]>();
+  const [modalData, setModalData] = useState<any>(null);
 
   const ModalComponent = useMemo(() => {
     if (!modalTitle) return null;
@@ -22,14 +23,21 @@ export default function useModal(): IModalContext {
   }, [modalTitle]);
 
   const toggleModal = useCallback(
-    (title: IModalContext["modalTitle"]) =>
-      setModalTitle((prevTitle) => (prevTitle === title ? undefined : title)),
+    (title: IModalContext["modalTitle"], data?: any) => {
+      setModalTitle((prevTitle) => (prevTitle === title ? undefined : title));
+      if (data) setModalData(data);
+    },
     []
   );
+
+  useEffect(() => {
+    if (!modalTitle) setModalData(null);
+  }, [modalTitle]);
 
   return {
     modalTitle,
     ModalComponent,
     toggleModal,
+    modalData,
   };
 }

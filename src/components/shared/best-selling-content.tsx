@@ -14,9 +14,10 @@ import { ModalTitles } from "@/context/modal/types";
 import { CartIcon } from "@/icons";
 import styles from "@/styles/best-selling-content.style";
 import { useRouter } from "next/router";
+import { IContentData } from "@/context/rating/rating.context";
 
 type Props = {
-  type: "book" | "message";
+  type: IContentData["type"];
 };
 
 export default function BestSellingContent({ type }: Props) {
@@ -211,7 +212,11 @@ export default function BestSellingContent({ type }: Props) {
                   )}
                 </p>
                 <p className="theme-text text-xl leading-6 font-medium underline cursor-pointer">
-                  <span onClick={() => toggleModal(ModalTitles.rate)}>
+                  <span
+                    onClick={() =>
+                      toggleModal(ModalTitles.rate, { type, id: book.id })
+                    }
+                  >
                     Rate this {type}
                   </span>
                 </p>

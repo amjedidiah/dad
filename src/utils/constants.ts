@@ -20,18 +20,25 @@ export enum ContactFormInputIds {
   Message = "message",
 }
 
+export enum ReviewFormInputIds {
+  Name = "name",
+  Image = "image",
+  Email = "email",
+  Content = "content",
+}
+
 export const contactFormFields = [
   {
     type: "text",
     id: ContactFormInputIds.Name,
-    name: "name",
+    name: ContactFormInputIds.Name,
     placeholder: "Type your name here",
     ["aria-label"]: "name",
   },
   {
     type: "email",
     id: ContactFormInputIds.Email,
-    name: "email",
+    name: ContactFormInputIds.Email,
     placeholder: "Type your email here",
     ["aria-label"]: "email",
     required: {
@@ -44,7 +51,7 @@ export const contactFormFields = [
   {
     type: "textarea",
     id: ContactFormInputIds.Message,
-    name: "message",
+    name: ContactFormInputIds.Message,
     placeholder: "Type your message here",
     rows: 7,
     ["aria-label"]: "message",
@@ -64,8 +71,8 @@ export const contactFormFields = [
 export const reviewFormFields = [
   {
     type: "text",
-    id: "name",
-    name: "name",
+    id: ReviewFormInputIds.Name,
+    name: ReviewFormInputIds.Name,
     placeholder: "Type your name here",
     ["aria-label"]: "name",
     required: {
@@ -79,15 +86,34 @@ export const reviewFormFields = [
   },
   {
     type: "file",
-    id: "image",
-    name: "image",
+    id: ReviewFormInputIds.Image,
+    name: ReviewFormInputIds.Image,
     accept: "image/png, image/jpeg",
     ["aria-label"]: "Upload Photo",
+    options: {
+      maxFileSize: 1024 * 1024 * 2,
+      clientAllowedFormats: ["png", "jpeg", "jpg"],
+      multiple: false,
+      helperMessage: "Max size is 2MB of either jpg, jpeg or png image",
+    },
+  },
+  {
+    type: "email",
+    id: ReviewFormInputIds.Email,
+    name: ReviewFormInputIds.Email,
+    placeholder: "Type your email here",
+    ["aria-label"]: "email",
+    required: {
+      value: true,
+      message: "Email is required",
+    },
+    pattern:
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
   },
   {
     type: "textarea",
-    id: "review",
-    name: "review",
+    id: ReviewFormInputIds.Content,
+    name: ReviewFormInputIds.Content,
     placeholder: "Type your review here",
     rows: 7,
     ["aria-label"]: "review",
@@ -101,7 +127,7 @@ export const reviewFormFields = [
     },
   },
 ] as IFormField<{
-  [key in ContactFormInputIds]: string;
+  [key in ReviewFormInputIds]: string;
 }>[];
 
 export const contactFormButtons = [
