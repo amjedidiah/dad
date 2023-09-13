@@ -47,7 +47,7 @@ export default function BestSellingContent({ type }: Props) {
 
     return buttons;
   }, [type, router]);
-  const { data, isLoading } = useSWR(`/api/${type}s/best-selling?type=book`);
+  const { data, isLoading } = useSWR(`/api/best-selling?type=${type}`);
 
   if (!isLoading && !data?.data) return null;
   const book = data?.data ?? {};

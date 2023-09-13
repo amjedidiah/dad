@@ -24,8 +24,9 @@ const buttons: IButton[] = [
 
 export default function RateModal() {
   const { isDarkMode } = useTheme();
-  const { rating, setRating, handleReview } = useContext(RatingContext);
-  const { modalData: contentData } = useContext(ModalContext);
+  const { rating, setRating, handleReview, isRating } =
+    useContext(RatingContext);
+  const { modalData: contentData, toggleModal } = useContext(ModalContext);
 
   const reviewButtons = useMemo(
     () =>
@@ -34,10 +35,14 @@ export default function RateModal() {
         onClick:
           button.key === "review"
             ? button.onClick
-            : () => handleReview(contentData),
-        disabled: rating === 0,
+            : async () => {
+                await handleReview(contentData);
+                toggleModal();
+              },
+        disabled: rating === 0 || isRating,
+        isLoading: button.key === "rate" && isRating,
       })),
-    [contentData, handleReview, rating]
+    [contentData, handleReview, isRating, rating, toggleModal]
   ) as IButton[];
 
   return (

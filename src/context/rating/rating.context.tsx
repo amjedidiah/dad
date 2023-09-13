@@ -13,10 +13,12 @@ export type IRatingContext = {
     contentData: IContentData,
     review?: ReviewData
   ) => Promise<any>;
+  isRating: boolean;
 };
 
 export default createContext<IRatingContext>({
   rating: 0,
   setRating: () => {},
   handleReview: () => Promise.resolve(),
+  isRating: false,
 });

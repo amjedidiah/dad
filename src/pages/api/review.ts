@@ -79,19 +79,15 @@ export default async function handler(
     const queryString = hasReview
       ? db`WITH upserted_user AS 
           (INSERT INTO users (name, email, image_url)
-          VALUES (${name}, ${email}, ${imageUrl}) 
+          VALUES (${name}, ${email}, ${imageUrl || ""}) 
           ON CONFLICT (email)
           DO UPDATE SET name = EXCLUDED.name, image_url = EXCLUDED.image_url RETURNING id)
           INSERT INTO ratings (user_id, content_id, type, review, rating)
           VALUES ((SELECT id FROM upserted_user), ${id}, ${type}, ${message}, ${rating}) 
           RETURNING id, user_id, content_id
         `
-      : db`INSERT INTO ratings (content_id, type, rating) VALUES (${id}, "${type}", ${rating})`;
-    // console.log({ queryString });
-
-    const contents = await db`${queryString}`;
-
-    // console.log(contents);
+      : db`INSERT INTO ratings (content_id, type, rating) VALUES (${id}, ${type}, ${rating})`;
+    await db`${queryString}`;
 
     res.status(HttpStatus.OK).json({
       data: null,

@@ -45,10 +45,10 @@ CREATE TABLE ratings (
   type VARCHAR(255) NOT NULL CHECK (type IN ('book')),
   review TEXT,
   rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  approved BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
 
-  CONSTRAINT unique_content_id UNIQUE (content_id),
   FOREIGN KEY (content_id) REFERENCES books(id) ON DELETE CASCADE
 );
 
@@ -80,7 +80,7 @@ RETURNS TRIGGER AS $$
 BEGIN
   UPDATE books
   SET average_rating = (
-    SELECT AVG(rating) FROM ratings WHERE content_id = NEW.content_id
+    SELECT AVG(rating) FROM ratings WHERE content_id = NEW.content_id AND approved = TRUE
   )
   WHERE id = NEW.content_id;
   

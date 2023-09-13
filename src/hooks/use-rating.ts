@@ -1,6 +1,7 @@
 import { IContentData } from "@/context/rating/rating.context";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
+import { useSWRConfig } from "swr";
 
 export type ReviewData = {
   image?: string;
@@ -11,9 +12,12 @@ export type ReviewData = {
 
 export default function useRating() {
   const [rating, setRating] = useState(0);
+  const [isRating, setIsRating] = useState(false);
+  const { mutate } = useSWRConfig();
 
   const handleReview = useCallback(
     async (contentData: IContentData, review?: ReviewData) => {
+      setIsRating(true);
       const hasReview = !!review;
       const data = { rating, ...review, hasReview, ...contentData };
 
@@ -24,22 +28,24 @@ export default function useRating() {
         },
         body: JSON.stringify(data),
       });
+      const result = response.json();
+      const { error, message } = await result;
+
       setRating(0);
+      setIsRating(false);
+      toast[error ? "error" : "success"](message);
 
-      if (!hasReview) {
-        const { error, message } = await response.json();
-        toast[error ? "error" : "success"](message);
-        return;
-      }
+      await mutate(`/api/best-selling?type=${contentData.type}`);
 
-      return response.json();
+      return result;
     },
-    [rating]
+    [mutate, rating]
   );
 
   return {
     rating,
     setRating,
     handleReview,
+    isRating,
   };
 }

@@ -8,19 +8,23 @@ import {
   validateRequest,
 } from "@/utils/api.util";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const {
+  SITE_EMAIL: from,
+  CONTACT_EMAIL: to,
+  CONTACT_EMAIL_CC: cc,
+  RESEND_API_KEY,
+} = process.env;
+const resend = new Resend(RESEND_API_KEY);
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const { name, email, message } = req.body;
-  const { from, to, cc } = req.headers;
 
   try {
     validateRequest(req, {
       methods: new Set([HttpMethods.POST]),
-      requiredHeaders: ["from", "to", "cc"],
       requiredBodyFields: ["name", "email", "message"],
       requiredFields: ["email", "message"],
     });

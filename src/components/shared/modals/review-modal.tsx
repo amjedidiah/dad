@@ -12,7 +12,7 @@ import { useContext } from "react";
 
 export default function ReviewModal() {
   const { handleReview } = useContext(RatingContext);
-  const { modalData: contentData } = useContext(ModalContext);
+  const { modalData: contentData, toggleModal } = useContext(ModalContext);
 
   const handleSubmit = async (data: any) => {
     try {
@@ -26,6 +26,8 @@ export default function ReviewModal() {
     } catch (error) {
       console.error(error);
       throw error;
+    } finally {
+      toggleModal();
     }
   };
 

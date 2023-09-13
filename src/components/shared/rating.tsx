@@ -29,7 +29,7 @@ export default function Rating({ value, isActive, onRating }: Props) {
       {Array(5)
         .fill(0)
         .map((_, index) => {
-          if (value === undefined || value === null)
+          if (value === undefined)
             return (
               <span
                 key={`star-${index + 1}`}
