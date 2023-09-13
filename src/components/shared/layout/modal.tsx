@@ -5,15 +5,20 @@ import { Interpolation, Theme } from "@emotion/react";
 import { ModalContext } from "@/context/modal/modal.context";
 import styles from "@/styles/modal.style";
 import { IComponentWithChildren } from "@/utils/types";
+import RatingContext from "@/context/rating/rating.context";
+import useRating from "@/hooks/use-rating";
 
 export default function Modal() {
   const { ModalComponent, toggleModal } = useContext(ModalContext);
+  const ratingContextValue = useRating();
 
   if (!ModalComponent) return null;
 
   return (
     <dialog css={styles} open={true} onClick={() => toggleModal()}>
-      <ModalComponent />
+      <RatingContext.Provider value={ratingContextValue}>
+        <ModalComponent />
+      </RatingContext.Provider>
     </dialog>
   );
 }

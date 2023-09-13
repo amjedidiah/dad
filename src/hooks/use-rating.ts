@@ -31,10 +31,7 @@ export default function useRating() {
       const result = response.json();
       const { error, message } = await result;
 
-      setRating(0);
-      setIsRating(false);
       toast[error ? "error" : "success"](message);
-
       await mutate(`/api/best-selling?type=${contentData.type}`);
 
       return result;

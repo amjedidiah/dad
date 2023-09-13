@@ -10,13 +10,10 @@ import useModal from "@/hooks/use-modal";
 import useMode from "@/hooks/use-mode";
 import "@/styles/global.css";
 import global from "@/styles/global.style";
-import useRating from "@/hooks/use-rating";
-import RatingContext from "@/context/rating/rating.context";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const theme = useMode();
   const modalContextValue = useModal();
-  const ratingContextValue = useRating();
   const toastTheme = useMemo(
     () => (theme.isDarkMode ? "dark" : "light"),
     [theme.isDarkMode]
@@ -25,20 +22,20 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
       <Global styles={global} />
-      <RatingContext.Provider value={ratingContextValue}>
+
+      <SWRConfig
+        value={{
+          fetcher: (resource, init) =>
+            fetch(resource, init).then((res) => res.json()),
+          revalidateOnFocus: false,
+        }}
+      >
         <ModalContext.Provider value={modalContextValue}>
-          <SWRConfig
-            value={{
-              fetcher: (resource, init) =>
-                fetch(resource, init).then((res) => res.json()),
-              revalidateOnFocus: false,
-            }}
-          >
-            <Component {...pageProps} />
-          </SWRConfig>
-          <ToastContainer bodyStyle={{ zIndex: 1000001 }} theme={toastTheme} />
+          <Component {...pageProps} />
         </ModalContext.Provider>
-      </RatingContext.Provider>
+      </SWRConfig>
+      <ToastContainer bodyStyle={{ zIndex: 1000001 }} theme={toastTheme} />
+
       <Analytics />
     </ThemeProvider>
   );
