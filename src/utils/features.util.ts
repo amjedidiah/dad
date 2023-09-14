@@ -27,8 +27,10 @@ export const features = {
   [Features.Donate]: {
     title: Features.Donate,
     status: false,
-    reason:
+    reasons: [
       "configure the following production env vars: NEXT_PUBLIC_FLUTTERWAVE_DONATION_LINK, NEXT_PUBLIC_PAYSTACK_DONATION_LINK, and NEXT_PUBLIC_PAYSTACK_DONATION_LINK_REDIRECT in Flutterwave and Paystack dashboards",
+      "set stripe or paystack & flutterwave donation based on user's location",
+    ],
   },
   [Features.CldOGImage]: {
     title: Features.CldOGImage,

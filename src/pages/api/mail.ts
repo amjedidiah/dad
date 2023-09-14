@@ -7,6 +7,7 @@ import {
   validateEmail,
   validateRequest,
 } from "@/utils/api.util";
+import db from "@/utils/db.util";
 
 const {
   SITE_EMAIL: from,
@@ -25,11 +26,10 @@ export default async function handler(
   try {
     validateRequest(req, {
       methods: new Set([HttpMethods.POST]),
-      requiredBodyFields: ["name", "email", "message"],
       requiredFields: ["email", "message"],
     });
 
-    const isValidEmail = await validateEmail(email as string);
+    const isValidEmail = await validateEmail(email);
     switch (true) {
       case !isValidEmail:
         throw {
@@ -38,11 +38,11 @@ export default async function handler(
           devMessage: "Email is invalid",
           data: email,
         };
-      case name.length < 3:
+      case name && name.length < 3:
         throw {
           statusCode: HttpStatus.BAD_REQUEST,
-          message: "Name is too short",
-          devMessage: "Name is too short",
+          message: "Name must be at least 3 characters",
+          devMessage: "Name must be at least 3 characters",
           data: name,
         };
       case message.length < 10:
@@ -55,6 +55,12 @@ export default async function handler(
       default:
         break;
     }
+
+    await db`INSERT INTO users (name, email)
+              VALUES (${name || ""}, ${email})
+              ON CONFLICT (email) DO UPDATE
+              SET name = EXCLUDED.name;
+          `;
 
     const data = await resend.emails.send({
       from: `Dr. Passy Website <${from}>`,

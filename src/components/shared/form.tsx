@@ -4,10 +4,10 @@ import {
   LabelHTMLAttributes,
   TextareaHTMLAttributes,
   forwardRef,
-  useRef,
   useState,
 } from "react";
 import {
+  Control,
   FieldValues,
   Path,
   PathValue,
@@ -29,6 +29,10 @@ import {
 } from "next-cloudinary";
 import { useTheme } from "@emotion/react";
 import { toast } from "react-toastify";
+import PhoneInput from "react-phone-number-input/react-hook-form";
+import "react-phone-number-input/style.css";
+import { useSelector } from "react-redux";
+import { selectCountryCode } from "@/redux/slices/location.slice";
 
 type IForm<F extends FieldValues> = {
   fields: IFormField<F>[];
@@ -47,6 +51,7 @@ export type IFormField<T extends FieldValues> = {
   register: UseFormRegister<T>;
   options?: IFormFieldOptions;
   setValue: UseFormSetValue<T>;
+  control: Control<T, any>;
 } & (
   | InputHTMLAttributes<HTMLInputElement>
   | TextareaHTMLAttributes<HTMLTextAreaElement>
@@ -83,6 +88,7 @@ export default function Form<F extends FieldValues>({
     formResponse,
     shouldPraise,
     setValue,
+    control,
   } = useSharedForm<F>(onSubmit, successMessage);
 
   return (
@@ -90,6 +96,7 @@ export default function Form<F extends FieldValues>({
       {fields.map(({ value, ...field }) => {
         field["aria-invalid"] = errors[field.id] ? "true" : "false";
         field.setValue = setValue;
+        if ("type" in field && field.type === "tel") field.control = control;
 
         return (
           <Form.Group key={field.id}>
@@ -173,6 +180,7 @@ Form.Field = forwardRef<
     type?: string;
     message: string;
   }>({ message: field.options?.helperMessage || "" });
+  const countryCode = useSelector(selectCountryCode);
 
   const handleSuccess: CldUploadWidgetProps["onSuccess"] = ({ info }) => {
     if (!info || typeof info === "string") return;
@@ -274,6 +282,19 @@ Form.Field = forwardRef<
             );
           }}
         </CldUploadWidget>
+      );
+    else if (field.type === "tel")
+      return (
+        <PhoneInput
+          name={field.name as string}
+          control={field.control}
+          rules={{ required: field.required }}
+          className={cx("field-tel border", {
+            "border-warning": field["aria-invalid"] === "true",
+            "border-greyLighter": field["aria-invalid"] === "false",
+          })}
+          defaultCountry={countryCode}
+        />
       );
     else return <input className="field" ref={ref} {...field} />;
 

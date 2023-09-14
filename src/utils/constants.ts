@@ -34,6 +34,7 @@ export const contactFormFields = [
     name: ContactFormInputIds.Name,
     placeholder: "Type your name here",
     ["aria-label"]: "name",
+    minLength: 3,
   },
   {
     type: "email",

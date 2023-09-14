@@ -10,6 +10,11 @@ import useModal from "@/hooks/use-modal";
 import useMode from "@/hooks/use-mode";
 import "@/styles/global.css";
 import global from "@/styles/global.style";
+import { Provider } from "react-redux";
+import store from "@/redux/store";
+import { loadLocation } from "@/redux/slices/location.slice";
+
+store.dispatch(loadLocation());
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const theme = useMode();
@@ -30,12 +35,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           revalidateOnFocus: false,
         }}
       >
-        <ModalContext.Provider value={modalContextValue}>
-          <Component {...pageProps} />
-        </ModalContext.Provider>
+        <Provider store={store}>
+          <ModalContext.Provider value={modalContextValue}>
+            <Component {...pageProps} />
+          </ModalContext.Provider>
+        </Provider>
       </SWRConfig>
       <ToastContainer bodyStyle={{ zIndex: 1000001 }} theme={toastTheme} />
-
       <Analytics />
     </ThemeProvider>
   );

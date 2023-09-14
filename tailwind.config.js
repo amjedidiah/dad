@@ -14,6 +14,7 @@ module.exports = {
         greyLoading: "rgba(127.5,127.5,127.5,0.3)",
         secondGrey: "#999",
         success: "#399e5a",
+        warning: "#edb230",
       },
       screens: {
         mdx: "834px",

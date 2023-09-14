@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import {
+  Control,
   FieldValues,
   SubmitHandler,
   UseFormReturn,
@@ -16,15 +17,17 @@ type IUseSharedForm<F extends FieldValues> = Pick<
   formResponse?: IFormResponse;
   shouldPraise: boolean;
   setValue: UseFormSetValue<F>;
+  control: Control<F, any>;
 };
 
 export default function useSharedForm<F extends FieldValues>(
   onSubmit: SubmitHandler<F>,
   successMessage: string
 ): IUseSharedForm<F> {
-  const { register, handleSubmit, formState, reset, setValue } = useForm<F>({
-    mode: "onChange",
-  });
+  const { register, handleSubmit, formState, reset, setValue, control } =
+    useForm<F>({
+      mode: "onChange",
+    });
   const [formResponse, setFormResponse] = useState<IFormResponse | undefined>();
   const shouldPraise = useMemo(
     () => formState.isValid && !formResponse,
@@ -68,5 +71,6 @@ export default function useSharedForm<F extends FieldValues>(
     formResponse,
     shouldPraise,
     setValue,
+    control,
   };
 }

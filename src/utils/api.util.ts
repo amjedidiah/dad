@@ -1,6 +1,7 @@
 import { NextApiRequest } from "next";
 import { Api } from "zerobounce";
 import validate from "deep-email-validator";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 export enum HttpStatus {
   OK = 200,
@@ -122,6 +123,7 @@ export function validateRequest(
 }
 
 export async function validateEmail(email: string) {
+  if (!email) return false;
   try {
     const isValidByRegex =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i.test(
@@ -145,6 +147,26 @@ export async function validateEmail(email: string) {
 
     console.info({ success: response.success, error: response.error });
     return response.isSuccess();
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export async function validatePhone(phone: string) {
+  if (!phone) return false;
+
+  const isValid = isValidPhoneNumber(phone);
+  if (!isValid) return false;
+
+  if (process.env.NODE_ENV === "development") return true;
+
+  try {
+    const response = await fetch(
+      `https://phonevalidation.abstractapi.com/v1/?api_key=${process.env.ABSTRACT_API_KEY}&phone=${phone}`
+    );
+    const { valid } = await response.json();
+    return valid;
   } catch (error) {
     console.error(error);
     return false;
