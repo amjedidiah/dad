@@ -35,6 +35,7 @@ export const contactFormFields = [
     placeholder: "Type your name here",
     ["aria-label"]: "name",
     minLength: 3,
+    required: true,
   },
   {
     type: "email",

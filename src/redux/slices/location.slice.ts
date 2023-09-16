@@ -1,10 +1,10 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Country } from "react-phone-number-input";
-import { RootState, StateStatus } from "@/redux/store";
+import { RootState, CommonStateStatus } from "@/redux/store";
 
 type LocationState = {
   countryCode?: Country;
-  status: StateStatus;
+  status: CommonStateStatus;
 };
 
 const initialState = {
@@ -18,23 +18,28 @@ const locationSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(loadLocation.pending, (state) => {
+      .addCase(fetchLocationData.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(loadLocation.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.countryCode = action.payload;
-      })
-      .addCase(loadLocation.rejected, (state) => {
+      .addCase(
+        fetchLocationData.fulfilled,
+        (state, action: PayloadAction<LocationState["countryCode"]>) => {
+          state.status = "idle";
+          state.countryCode = action.payload;
+        }
+      )
+      .addCase(fetchLocationData.rejected, (state) => {
         state.status = "failed";
       });
   },
 });
 
-export const loadLocation = createAsyncThunk("location/loadLocation", () =>
-  fetch("https://ipapi.co/json/")
-    .then((res) => res.json())
-    .then(({ country_code }) => country_code)
+export const fetchLocationData = createAsyncThunk(
+  "location/fetchLocationData",
+  () =>
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then(({ country_code }) => country_code)
 );
 
 export const selectCountryCode = (state: RootState) =>

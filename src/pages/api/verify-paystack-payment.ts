@@ -8,7 +8,6 @@ export default async function handler(
   try {
     validateRequest(req, {
       methods: new Set([HttpMethods.POST]),
-      requiredBodyFields: ["reference"],
       requiredFields: ["reference"],
     });
 

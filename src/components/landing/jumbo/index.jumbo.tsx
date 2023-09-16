@@ -46,7 +46,7 @@ export default function Jumbo() {
           </div>
         </article>
         <article className="explore">
-          <ScrollLink to="why-choose-him" smooth>
+          <ScrollLink to="why-choose-him" smooth offset={-100}>
             <span className="theme-text">Explore</span>
             <BouncingArrow />
           </ScrollLink>

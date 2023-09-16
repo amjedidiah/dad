@@ -56,22 +56,9 @@ function validateRequestHeaders(
     };
 }
 
-function validateRequestBody(req: NextApiRequest, fields: string[]) {
-  const missingFields = fields.filter((field) => !(field in req.body));
-  const hasValidBody = missingFields.length === 0;
-
-  if (!hasValidBody)
-    throw {
-      statusCode: HttpStatus.BAD_REQUEST,
-      message: "An error occurred",
-      devMessage: "Required request body fields are missing",
-      data: missingFields,
-    };
-}
-
 function validateRequiredFields(req: NextApiRequest, requiredFields: string[]) {
   const missingRequiredFields = requiredFields.filter(
-    (field) => req.body[field] === ""
+    (field) => !req.body[field]
   );
   const hasRequiredFields = missingRequiredFields.length === 0;
 
@@ -118,7 +105,6 @@ export function validateRequest(
   isValidRequestMethod(req, methods);
   if (requiredHeaders) validateRequestHeaders(req, requiredHeaders);
   if (requiredParams) validateQueryParams(req, requiredParams);
-  if (requiredBodyFields) validateRequestBody(req, requiredBodyFields);
   if (requiredFields) validateRequiredFields(req, requiredFields);
 }
 

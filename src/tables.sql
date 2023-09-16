@@ -6,13 +6,16 @@
 
 -- Users Table Schema
 CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
+  id VARCHAR(255) PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  phone_number VARCHAR(255) UNIQUE,
+  email VARCHAR(255) NOT NULL,
+  phone_number VARCHAR(255),
   image_url VARCHAR(255),
   created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
+  updated_at TIMESTAMP DEFAULT NOW(),
+  
+  -- Add a unique constraint on email and phone_number
+  CONSTRAINT user_contact_info_unique UNIQUE (email, phone_number)
 );
 
 -- Books Table Schema
@@ -34,22 +37,52 @@ CREATE TABLE books (
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
 
-  CONSTRAINT unique_title UNIQUE(title)
+  -- Add a unique constraint on slug and title
+  CONSTRAINT book_slug_title_unique UNIQUE (slug, title)
 );
 
--- Ratings Table Schema
-CREATE TABLE ratings (
+-- Messages Table Schema
+CREATE TABLE messages (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER REFERENCES users(id),
+  title VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  
+  -- Add a unique constraint on slug and title
+  CONSTRAINT message_slug_title_unique UNIQUE (slug, title)
+);
+
+-- Reviews Table Schema
+CREATE TABLE reviews (
+  id SERIAL PRIMARY KEY,
+  user_id VARCHAR(255) NOT NULL,
   content_id INTEGER NOT NULL,
-  type VARCHAR(255) NOT NULL CHECK (type IN ('book')),
+  type VARCHAR(255) NOT NULL CHECK (type IN ('book', 'message')),
   review TEXT,
   rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
   approved BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
 
-  FOREIGN KEY (content_id) REFERENCES books(id) ON DELETE CASCADE
+  FOREIGN KEY (content_id) REFERENCES books(id) OR REFERENCES messages(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Cart Table Schema
+CREATE TABLE cart (
+  id SERIAL PRIMARY KEY,
+  user_id VARCHAR(255) NOT NULL,
+  content_id INTEGER NOT NULL,
+  quantity INTEGER NOT NULL CHECK (quantity >= 1),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  
+
+  FOREIGN KEY (content_id) REFERENCES books(id) OR REFERENCES messages(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  -- Add a unique constraint on user_id and book_id
+  CONSTRAINT cart_user_book_unique UNIQUE (user_id, content_id)
 );
 
 
@@ -61,10 +94,12 @@ CREATE TABLE ratings (
 --------------------
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_phone_number ON users(phone_number);
-CREATE INDEX idx_ratings_user_id ON ratings(user_id);
-CREATE INDEX idx_ratings_content_id ON ratings(content_id);
+CREATE INDEX idx_reviews_user_id ON reviews(user_id);
+CREATE INDEX idx_reviews_content_id ON reviews(content_id);
 CREATE INDEX idx_books_slug ON books(slug);
 CREATE INDEX idx_books_title ON books(title);
+CREATE INDEX idx_cart_user_id ON cart(user_id);
+CREATE INDEX idx_cart_book_id ON cart(book_id);
 
 
 
@@ -80,7 +115,7 @@ RETURNS TRIGGER AS $$
 BEGIN
   UPDATE books
   SET average_rating = (
-    SELECT AVG(rating) FROM ratings WHERE content_id = NEW.content_id AND approved = TRUE
+    SELECT AVG(rating) FROM reviews WHERE content_id = NEW.content_id AND approved = TRUE
   )
   WHERE id = NEW.content_id;
   
@@ -154,9 +189,9 @@ $$ LANGUAGE plpgsql;
 ----- TRIGGERS -----
 --------------------
 --------------------
--- Create a trigger that fires after every INSERT or UPDATE on the ratings table
+-- Create a trigger that fires after every INSERT or UPDATE on the reviews table
 CREATE TRIGGER update_average_rating
-AFTER INSERT OR UPDATE ON ratings
+AFTER INSERT OR UPDATE ON reviews
 FOR EACH ROW
 EXECUTE FUNCTION calculate_average_rating();
 

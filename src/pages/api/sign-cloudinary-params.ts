@@ -7,7 +7,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     req.body = JSON.parse(req.body || {});
     validateRequest(req, {
       methods: new Set([HttpMethods.POST]),
-      requiredBodyFields: ["paramsToSign"],
+      requiredFields: ["paramsToSign"],
     });
 
     const params_to_sign = req.body.paramsToSign;

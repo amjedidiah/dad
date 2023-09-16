@@ -11,10 +11,12 @@ import useMode from "@/hooks/use-mode";
 import "@/styles/global.css";
 import global from "@/styles/global.style";
 import { Provider } from "react-redux";
-import store from "@/redux/store";
-import { loadLocation } from "@/redux/slices/location.slice";
+import store, { persistor } from "@/redux/store";
+import { fetchLocationData } from "@/redux/slices/location.slice";
+import { PersistGate } from "redux-persist/integration/react";
+import { MagicProvider } from "@/context/magic.context";
 
-store.dispatch(loadLocation());
+store.dispatch(fetchLocationData());
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const theme = useMode();
@@ -36,9 +38,17 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         }}
       >
         <Provider store={store}>
-          <ModalContext.Provider value={modalContextValue}>
-            <Component {...pageProps} />
-          </ModalContext.Provider>
+          <PersistGate loading={null} persistor={persistor}>
+            <MagicProvider
+              publishableAPIKey={
+                process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string
+              }
+            >
+              <ModalContext.Provider value={modalContextValue}>
+                <Component {...pageProps} />
+              </ModalContext.Provider>
+            </MagicProvider>
+          </PersistGate>
         </Provider>
       </SWRConfig>
       <ToastContainer bodyStyle={{ zIndex: 1000001 }} theme={toastTheme} />
