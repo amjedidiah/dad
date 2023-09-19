@@ -2,6 +2,7 @@ import { NextApiRequest } from "next";
 import { Api } from "zerobounce";
 import validate from "deep-email-validator";
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { UserData } from "@/redux/slices/user.slice";
 
 export enum HttpStatus {
   OK = 200,
@@ -39,51 +40,32 @@ function isValidRequestMethod(
     };
 }
 
-function validateRequestHeaders(
+function validateRequestParams(
   req: NextApiRequest,
-  requiredHeaders: string[]
+  param: string,
+  requiredArray: string[]
 ) {
-  const missingHeaders = requiredHeaders.filter(
-    (header) => !(header in req.headers)
+  const missingRequiredParamFields = requiredArray.filter((field) =>
+    param === "query" || param === "headers"
+      ? !(field in req[param])
+      : !req.body[field]
   );
-  const hasValidHeaders = missingHeaders.length === 0;
+  const message = (
+    {
+      query: "Required query params are missing",
+      body: "Required fields are missing",
+      headers: "An error occurred",
+    } as { [param: string]: string }
+  )[param];
+  const devMessage =
+    param === "headers" ? "Required request headers are missing" : message;
 
-  if (!hasValidHeaders)
+  if (missingRequiredParamFields.length !== 0)
     throw {
       statusCode: HttpStatus.BAD_REQUEST,
-      message: "An error occurred",
-      devMessage: "Required request headers are missing",
-      data: missingHeaders,
-    };
-}
-
-function validateRequiredFields(req: NextApiRequest, requiredFields: string[]) {
-  const missingRequiredFields = requiredFields.filter(
-    (field) => !req.body[field]
-  );
-  const hasRequiredFields = missingRequiredFields.length === 0;
-
-  if (!hasRequiredFields)
-    throw {
-      statusCode: HttpStatus.BAD_REQUEST,
-      message: "Required fields are missing",
-      devMessage: "Required fields are missing",
-      data: missingRequiredFields,
-    };
-}
-
-function validateQueryParams(req: NextApiRequest, requiredParams: string[]) {
-  const missingRequiredParams = requiredParams.filter(
-    (param) => !(param in req.query)
-  );
-  const hasRequiredParams = missingRequiredParams.length === 0;
-
-  if (!hasRequiredParams)
-    throw {
-      statusCode: HttpStatus.BAD_REQUEST,
-      message: "Required query params are missing",
-      devMessage: "Required query params are missing",
-      data: missingRequiredParams,
+      message,
+      devMessage,
+      data: missingRequiredParamFields,
     };
 }
 
@@ -102,9 +84,9 @@ export function validateRequest(
   }
 ) {
   isValidRequestMethod(req, methods);
-  if (requiredHeaders) validateRequestHeaders(req, requiredHeaders);
-  if (requiredParams) validateQueryParams(req, requiredParams);
-  if (requiredFields) validateRequiredFields(req, requiredFields);
+  if (requiredHeaders) validateRequestParams(req, "headers", requiredHeaders);
+  if (requiredParams) validateRequestParams(req, "query", requiredParams);
+  if (requiredFields) validateRequestParams(req, "body", requiredFields);
 }
 
 export async function validateEmail(email: string) {
@@ -169,9 +151,11 @@ export async function validateImage(imageUrl: string) {
 }
 
 export async function validateUserData({
-  body: { email, name, imageUrl, phoneNumber, issuer },
-  method,
-}: NextApiRequest) {
+  email,
+  name,
+  imageUrl,
+  phoneNumber,
+}: UserData) {
   const isValidEmail = await validateEmail(email);
 
   switch (true) {

@@ -19,7 +19,7 @@ export default async function handler(
       methods: new Set([HttpMethods.POST, HttpMethods.PATCH]),
       requiredFields: ["issuer", "email"],
     });
-    validateUserData(req);
+    validateUserData(req.body);
 
     const userQuery =
       await db`INSERT INTO users (id, email, name, image_url, phone_number, updated_at)

@@ -32,16 +32,16 @@ export const contactFormFields = [
     type: "text",
     id: ContactFormInputIds.Name,
     name: ContactFormInputIds.Name,
-    placeholder: "Type your name here",
+    placeholder: "Type your name here...",
     ["aria-label"]: "name",
-    minLength: 3,
     required: true,
+    minLength: 3,
   },
   {
     type: "email",
     id: ContactFormInputIds.Email,
     name: ContactFormInputIds.Email,
-    placeholder: "Type your email here",
+    placeholder: "Type your email here...",
     ["aria-label"]: "email",
     required: {
       value: true,
@@ -54,8 +54,7 @@ export const contactFormFields = [
     type: "textarea",
     id: ContactFormInputIds.Message,
     name: ContactFormInputIds.Message,
-    placeholder: "Type your message here",
-    rows: 7,
+    placeholder: "Type your message here...",
     ["aria-label"]: "message",
     required: {
       value: true,
@@ -65,6 +64,7 @@ export const contactFormFields = [
       value: 10,
       message: "More context is required for this message",
     },
+    rows: 7,
   },
 ] as IFormField<{
   [key in ContactFormInputIds]: string;
