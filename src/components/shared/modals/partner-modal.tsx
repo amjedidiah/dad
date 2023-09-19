@@ -31,6 +31,7 @@ export default function PartnerModal() {
                   alt="partner-with-paystack"
                   width={123}
                   height={57}
+                  style={{ width: "auto", height: "auto" }}
                 />
               </Link>
             </div>
@@ -46,6 +47,7 @@ export default function PartnerModal() {
                   alt="partner-with-flutterwave"
                   width={210}
                   height={50}
+                  style={{ width: "auto", height: "auto" }}
                 />
               </Link>
             </div>

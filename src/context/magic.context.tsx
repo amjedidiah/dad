@@ -20,7 +20,7 @@ import { ModalTitles } from "./modal/types";
 
 const MagicContext = createContext<{
   magicClient?: Magic;
-  magicLogin: (userData: UserData) => Promise<string | undefined>;
+  magicLogin: (userData: UserData) => Promise<void>;
   magicLogout: (openModal?: boolean) => Promise<void>;
 }>({
   magicLogin: async () => undefined,
@@ -34,7 +34,7 @@ const performLogin = async (magic: Magic, onMount: boolean, email?: string) => {
     const { issuer } = await magic.user.getInfo();
     if (!issuer) throw "An error occurred. Please reload the page";
 
-    store.dispatch(userFetchById(issuer));
+    await store.dispatch(userFetchById(issuer));
   } else if (!isLoggedIn && !onMount) {
     if (!email) throw "Email is required to login.";
 
@@ -71,7 +71,7 @@ export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
         return;
       } catch (error) {
         console.error(error);
-        return (error.message || "An error occurred.") as string;
+        throw error.message || "An error occurred.";
       }
     },
     [magic]

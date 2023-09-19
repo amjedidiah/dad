@@ -39,11 +39,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       >
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <MagicProvider>
-              <ModalContext.Provider value={modalContextValue}>
+            <ModalContext.Provider value={modalContextValue}>
+              <MagicProvider>
                 <Component {...pageProps} />
-              </ModalContext.Provider>
-            </MagicProvider>
+              </MagicProvider>
+            </ModalContext.Provider>
           </PersistGate>
         </Provider>
       </SWRConfig>

@@ -38,10 +38,9 @@ export default async function handler(
                   updated_at = NOW();
                 RETURNING *
               `;
-    const { created_at, updated_at, ...user } = userQuery[0];
 
     res.status(HttpStatus.OK).json({
-      data: user,
+      data: userQuery[0],
       message: "User created successfully",
       error: false,
     });

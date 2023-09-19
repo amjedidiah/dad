@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
 type MailData = {
-  name?: string;
+  name: string;
   email: string;
   message: string;
 };

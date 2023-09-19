@@ -2,17 +2,14 @@ import { ReviewData } from "@/hooks/use-rating";
 import { Dispatch, SetStateAction, createContext } from "react";
 
 export type IContentData = {
-  id: string;
+  id: number;
   type: "book" | "message";
 };
 
 export type IRatingContext = {
   rating: number;
   setRating: Dispatch<SetStateAction<number>>;
-  handleReview: (
-    contentData: IContentData,
-    review?: ReviewData
-  ) => Promise<any>;
+  handleReview: (contentData: IContentData, review: ReviewData) => Promise<any>;
   isRating: boolean;
 };
 

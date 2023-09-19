@@ -1,7 +1,10 @@
+import { useMagic } from "@/context/magic.context";
 import { IContentData } from "@/context/rating/rating.context";
 import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
+import { selectActiveUserId } from "@/redux/slices/user.slice";
+import { useAppSelector } from "./types";
 
 export type ReviewData = {
   image?: string;
@@ -14,19 +17,25 @@ export default function useRating() {
   const [rating, setRating] = useState(0);
   const [isRating, setIsRating] = useState(false);
   const { mutate } = useSWRConfig();
+  const { magicLogin } = useMagic();
+  const issuer = useAppSelector(selectActiveUserId);
 
   const handleReview = useCallback(
-    async (contentData: IContentData, review?: ReviewData) => {
+    async (contentData: IContentData, review: ReviewData) => {
       setIsRating(true);
-      const hasReview = !!review;
-      const data = { rating, ...review, hasReview, ...contentData };
+      await magicLogin(review);
 
       const response = await fetch("/api/review", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          issuer,
+          ...contentData,
+          rating,
+          content: review.content,
+        }),
       });
       const result = response.json();
       const { error, message } = await result;
@@ -36,7 +45,7 @@ export default function useRating() {
 
       return result;
     },
-    [mutate, rating]
+    [issuer, magicLogin, mutate, rating]
   );
 
   return {

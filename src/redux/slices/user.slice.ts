@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { AppDispatch, CommonStateStatus, RootState } from "@/redux/store";
 
 export type UserData = {
@@ -91,5 +96,30 @@ export const userCrupdate = createAsyncThunk<
 );
 
 export const { userSet, userUnset } = userSlice.actions;
+
+const selectActiveUser = ({ user: { activeUser } }: RootState) => activeUser;
+
+export const selectActiveUserId = createSelector(
+  [selectActiveUser],
+  (activeUser) => activeUser?.id
+);
+
+const selectUserName = createSelector(
+  [selectActiveUser],
+  (activeUser) => activeUser?.name
+);
+const selectUserEmail = createSelector(
+  [selectActiveUser],
+  (activeUser) => activeUser?.email
+);
+const selectUserPhoneNumber = createSelector(
+  [selectActiveUser],
+  (activeUser) => activeUser?.phoneNumber
+);
+
+export const selectUserContactDetails = createSelector(
+  [selectUserName, selectUserEmail, selectUserPhoneNumber],
+  (name, email, phoneNumber) => ({ name, email, phoneNumber })
+);
 
 export default userSlice.reducer;

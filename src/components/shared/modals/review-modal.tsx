@@ -17,10 +17,7 @@ export default function ReviewModal() {
   const handleSubmit = async (data: any) => {
     try {
       const { error, message } = await handleReview(contentData, data);
-      if (error) {
-        console.error(error);
-        throw message;
-      }
+      if (error) throw message;
 
       return message;
     } catch (error) {
