@@ -12,4 +12,5 @@ export enum ModalTitles {
   partner = "partner",
   rate = "rate",
   review = "review",
+  login = "login",
 }

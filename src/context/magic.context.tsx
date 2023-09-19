@@ -2,6 +2,7 @@ import {
   UserData,
   userCrupdate,
   userFetchById,
+  userUnset,
 } from "@/redux/slices/user.slice";
 import store from "@/redux/store";
 import { Magic } from "magic-sdk";
@@ -14,12 +15,16 @@ import {
   useEffect,
   useMemo,
 } from "react";
+import { ModalContext } from "./modal/modal.context";
+import { ModalTitles } from "./modal/types";
 
 const MagicContext = createContext<{
   magicClient?: Magic;
   magicLogin: (userData: UserData) => Promise<string | undefined>;
+  magicLogout: (openModal?: boolean) => Promise<void>;
 }>({
   magicLogin: async () => undefined,
+  magicLogout: async () => undefined,
 });
 
 const performLogin = async (magic: Magic, onMount: boolean, email?: string) => {
@@ -45,10 +50,11 @@ const performUserCrupdate = async (magic: Magic, data?: UserData) => {
   const { issuer, email } = await magic.user.getInfo();
   if (!issuer || !email) throw "An error occurred. Please reload the page";
 
-  store.dispatch(userCrupdate({ ...data, email, id: issuer as string }));
+  await store.dispatch(userCrupdate({ ...data, email, id: issuer as string }));
 };
 
 export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
+  const { toggleModal } = useContext(ModalContext);
   const magic = useMemo(() => {
     if (typeof window === "undefined") return;
     return new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string);
@@ -71,6 +77,21 @@ export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
     [magic]
   );
 
+  const magicLogout = useCallback(
+    async (openModal = false) => {
+      if (!magic) return;
+
+      const isLoggedIn = await magic.user.isLoggedIn();
+      if (!isLoggedIn) return;
+
+      await magic.user.logout();
+      await store.dispatch(userUnset());
+
+      if (openModal) toggleModal(ModalTitles.login);
+    },
+    [magic, toggleModal]
+  );
+
   useEffect(() => {
     if (!magic) return;
 
@@ -83,6 +104,7 @@ export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
       value={{
         magicClient: magic,
         magicLogin,
+        magicLogout,
       }}
     >
       {children}
