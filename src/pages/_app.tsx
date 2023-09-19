@@ -39,11 +39,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       >
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <MagicProvider
-              publishableAPIKey={
-                process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string
-              }
-            >
+            <MagicProvider>
               <ModalContext.Provider value={modalContextValue}>
                 <Component {...pageProps} />
               </ModalContext.Provider>

@@ -16,6 +16,7 @@ export enum HttpStatus {
 export enum HttpMethods {
   GET = "GET",
   POST = "POST",
+  PATCH = "PATCH",
   PUT = "PUT",
   DELETE = "DELETE",
 }
@@ -91,13 +92,11 @@ export function validateRequest(
   {
     methods,
     requiredHeaders,
-    requiredBodyFields,
     requiredFields,
     requiredParams,
   }: {
     methods: Set<HttpMethods>;
     requiredHeaders?: string[];
-    requiredBodyFields?: string[];
     requiredFields?: string[];
     requiredParams?: string[];
   }
@@ -156,5 +155,61 @@ export async function validatePhone(phone: string) {
   } catch (error) {
     console.error(error);
     return false;
+  }
+}
+
+export async function validateImage(imageUrl: string) {
+  if (!imageUrl) return false;
+
+  return fetch(imageUrl, {
+    method: "HEAD",
+  })
+    .then(() => true)
+    .catch(() => false);
+}
+
+export async function validateUserData({
+  body: { email, name, imageUrl, phoneNumber, issuer },
+  method,
+}: NextApiRequest) {
+  const isValidEmail = await validateEmail(email);
+
+  switch (true) {
+    case !isValidEmail:
+      throw {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: "Email is invalid",
+        devMessage: "Email is invalid",
+        data: email,
+      };
+    case name && name.length < 3:
+      throw {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: "Name must be at least 3 characters",
+        devMessage: "Name must be at least 3 characters",
+        data: name,
+      };
+    case Boolean(imageUrl):
+      const isValidImage = await validateImage(imageUrl as string);
+      if (!isValidImage)
+        throw {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Image is invalid",
+          devMessage: "Image is invalid",
+          data: imageUrl,
+        };
+      break;
+    case Boolean(phoneNumber):
+      const isValidPhoneNumber = await validatePhone(phoneNumber as string);
+      if (!isValidPhoneNumber)
+        throw {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Image is invalid",
+          devMessage: "Image is invalid",
+          data: imageUrl,
+        };
+      break;
+    default:
+      break;
   }
 }

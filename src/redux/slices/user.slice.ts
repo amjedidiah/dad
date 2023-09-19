@@ -1,16 +1,11 @@
-import {
-  createAsyncThunk,
-  createSelector,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch, CommonStateStatus, RootState } from "@/redux/store";
 
 export type UserData = {
-  id: string;
-  name: string;
+  id?: string;
+  name?: string;
   email: string;
-  phone_number?: string;
+  phoneNumber?: string;
   imageUrl?: string;
 };
 
@@ -71,27 +66,30 @@ export const userFetchById = createAsyncThunk<
     })
 );
 
+export const userCrupdate = createAsyncThunk<
+  UserState["activeUser"],
+  UserData,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>("user/fetchById", (user, thunkApi) =>
+  fetch("/api/user/crupdate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ...thunkApi.getState().user.activeUser, ...user }),
+  })
+    .then((res) => res.json())
+    .then(({ data, message }) => {
+      if (!data) throw message;
+
+      const { created_at, updated_at, ...user } = data;
+      return user;
+    })
+);
+
 export const { userSet, userUnset } = userSlice.actions;
-
-export const selectActiveUser = ({ user: { activeUser } }: RootState) =>
-  activeUser;
-
-const selectUserName = createSelector(
-  [selectActiveUser],
-  (activeUser) => activeUser?.name
-);
-const selectUserEmail = createSelector(
-  [selectActiveUser],
-  (activeUser) => activeUser?.email
-);
-const selectUserPhoneNumber = createSelector(
-  [selectActiveUser],
-  (activeUser) => activeUser?.phone_number
-);
-
-export const selectUserContactDetails = createSelector(
-  [selectUserName, selectUserEmail, selectUserPhoneNumber],
-  (name, email, phone_number) => ({ name, email, phone_number })
-);
 
 export default userSlice.reducer;
