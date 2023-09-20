@@ -86,11 +86,6 @@ export default function Form<F extends FieldValues>({
   onSubmit,
   defaultValues,
 }: IForm<F>) {
-  const userData = useAppSelector(selectActiveUser);
-  const updatedDefaultValues = {
-    ...defaultValues,
-    ...userData,
-  } as DefaultValues<F>;
   const {
     register,
     formState: { isValid, isLoading, errors, isSubmitting },
@@ -99,13 +94,13 @@ export default function Form<F extends FieldValues>({
     shouldPraise,
     setValue,
     control,
-  } = useSharedForm<F>(onSubmit, successMessage, updatedDefaultValues);
+  } = useSharedForm<F>(onSubmit, successMessage, defaultValues);
 
   useEffect(() => {
     fields.forEach((field) => {
-      if (field.name === "email" && defaultValues?.email) field.readOnly = true;
+      if (field.name === "email") field.readOnly = true;
     });
-  }, [defaultValues?.email, fields]);
+  }, [fields]);
 
   return (
     <form css={styles} className="form" onSubmit={submitForm}>
@@ -197,6 +192,7 @@ Form.Field = forwardRef<
     message: string;
   }>({ message: field.options?.helperMessage || "" });
   const countryCode = useAppSelector(selectCountryCode);
+  const userData = useAppSelector(selectActiveUser);
 
   const handleSuccess: CldUploadWidgetProps["onSuccess"] = ({ info }) => {
     if (!info || typeof info === "string") return;
@@ -238,6 +234,18 @@ Form.Field = forwardRef<
       );
     }
   };
+
+  useEffect(() => {
+    if ("type" in field && field.type === "file") {
+      const fileName = userData?.imageUrl?.split("/").at(-1);
+      if (fileName)
+        setFileUploadMessage({
+          type: "success",
+          message: fileName,
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userData?.imageUrl]);
 
   if ("rows" in field)
     return (

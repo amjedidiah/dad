@@ -143,6 +143,12 @@ export const contactFormButtons = [
 
 export const reviewFormButtons = [
   {
+    key: "review-modal-form",
+    className: "bold full",
+    type: "submit",
+    value: "Submit",
+  },
+  {
     key: "review-modal-form-back",
     className: "bold full",
     type: "button",
@@ -150,12 +156,6 @@ export const reviewFormButtons = [
     outlined: true,
     noIcon: true,
     ["data-modal"]: ModalTitles.rate,
-  },
-  {
-    key: "review-modal-form",
-    className: "bold full",
-    type: "submit",
-    value: "Submit",
   },
 ] as IButton[];
 
