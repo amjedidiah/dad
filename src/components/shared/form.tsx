@@ -94,14 +94,7 @@ export default function Form<F extends FieldValues>({
     shouldPraise,
     setValue,
     control,
-  } = useSharedForm<F>(onSubmit, successMessage, defaultValues);
-
-  useEffect(() => {
-    fields.forEach((field) => {
-      if (field.name === "email") field.readOnly = true;
-    });
-  }, [fields]);
-
+  } = useSharedForm<F>(onSubmit, successMessage, fields, defaultValues);
   return (
     <form css={styles} className="form" onSubmit={submitForm}>
       {fields.map(({ value, ...field }) => {

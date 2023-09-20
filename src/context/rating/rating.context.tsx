@@ -9,7 +9,7 @@ export type IContentData = {
 export type IRatingContext = {
   rating: number;
   setRating: Dispatch<SetStateAction<number>>;
-  handleReview: (contentData: IContentData, review: ReviewData) => Promise<any>;
+  handleReview: (review: ReviewData) => Promise<any>;
   isRating: boolean;
 };
 

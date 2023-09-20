@@ -10,7 +10,11 @@ import {
   UseFormSetValue,
   useForm,
 } from "react-hook-form";
-import { IFormResponse, IFormHelperTypes } from "@/components/shared/form";
+import {
+  IFormResponse,
+  IFormHelperTypes,
+  IFormField,
+} from "@/components/shared/form";
 import { useAppSelector } from "./types";
 import { selectActiveUser } from "@/redux/slices/user.slice";
 
@@ -28,6 +32,7 @@ type IUseSharedForm<F extends FieldValues> = Pick<
 export default function useSharedForm<F extends FieldValues>(
   onSubmit: SubmitHandler<F>,
   successMessage: string,
+  fields: IFormField<F>[],
   defaultValues?: DefaultValues<F>
 ): IUseSharedForm<F> {
   const userData = useAppSelector(selectActiveUser);
@@ -95,6 +100,12 @@ export default function useSharedForm<F extends FieldValues>(
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formFieldNames.length, setValue, userData]);
+
+  useEffect(() => {
+    fields.forEach((field) => {
+      field.readOnly = Boolean(field.name === "email" && userData?.email);
+    });
+  }, [fields, userData?.email]);
 
   return {
     register,

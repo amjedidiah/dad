@@ -1,9 +1,4 @@
-import {
-  createAsyncThunk,
-  createSelector,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch, CommonStateStatus, RootState } from "@/redux/store";
 
 export type UserData = {
@@ -21,7 +16,7 @@ export type UserState = {
 
 const initialState: UserState = {
   activeUser: undefined,
-  status: "idle",
+  status: { value: "idle" },
 };
 
 const userSlice = createSlice({
@@ -38,17 +33,30 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(userFetchById.pending, (state) => {
-        state.status = "loading";
+        state.status = { value: "loading" };
       })
       .addCase(
         userFetchById.fulfilled,
         (state, action: PayloadAction<UserState["activeUser"]>) => {
-          state.status = "idle";
+          state.status = { value: "idle" };
           if (action.payload) state.activeUser = action.payload;
         }
       )
-      .addCase(userFetchById.rejected, (state) => {
-        state.status = "failed";
+      .addCase(userFetchById.rejected, (state, action) => {
+        state.status = { value: "failed", message: action.error.message };
+      })
+      .addCase(userCrupdate.pending, (state) => {
+        state.status = { value: "loading" };
+      })
+      .addCase(
+        userCrupdate.fulfilled,
+        (state, action: PayloadAction<UserState["activeUser"]>) => {
+          state.status = { value: "idle" };
+          if (action.payload) state.activeUser = action.payload;
+        }
+      )
+      .addCase(userCrupdate.rejected, (state, action) => {
+        state.status = { value: "failed", message: action.error.message };
       });
   },
 });
@@ -63,11 +71,15 @@ export const userFetchById = createAsyncThunk<
 >("user/fetchById", (userId, thunkApi) =>
   fetch(`/api/user/${userId}`)
     .then((res) => res.json())
-    .then(({ data }) => {
-      if (!data || thunkApi.getState().user.activeUser) return;
+    .then(({ data, error, message }) => {
+      if (thunkApi.getState().user.activeUser) return;
+      if (error) throw message;
 
       const { created_at, updated_at, ...user } = data;
       return user;
+    })
+    .catch((error) => {
+      throw error;
     })
 );
 
@@ -78,7 +90,7 @@ export const userCrupdate = createAsyncThunk<
     dispatch: AppDispatch;
     state: RootState;
   }
->("user/fetchById", (user, thunkApi) =>
+>("user/crupdate", (user, thunkApi) =>
   fetch("/api/user/crupdate", {
     method: "POST",
     headers: {
@@ -87,39 +99,22 @@ export const userCrupdate = createAsyncThunk<
     body: JSON.stringify({ ...thunkApi.getState().user.activeUser, ...user }),
   })
     .then((res) => res.json())
-    .then(({ data, message }) => {
-      if (!data) throw message;
+    .then(({ data, message, error }) => {
+      if (error) throw message;
 
       const { created_at, updated_at, ...user } = data;
       return user;
+    })
+    .catch((error) => {
+      throw error;
     })
 );
 
 export const { userSet, userUnset } = userSlice.actions;
 
-const selectActiveUser = ({ user: { activeUser } }: RootState) => activeUser;
+export const selectActiveUser = ({ user: { activeUser } }: RootState) =>
+  activeUser;
 
-export const selectActiveUserId = createSelector(
-  [selectActiveUser],
-  (activeUser) => activeUser?.id
-);
-
-const selectUserName = createSelector(
-  [selectActiveUser],
-  (activeUser) => activeUser?.name
-);
-const selectUserEmail = createSelector(
-  [selectActiveUser],
-  (activeUser) => activeUser?.email
-);
-const selectUserPhoneNumber = createSelector(
-  [selectActiveUser],
-  (activeUser) => activeUser?.phoneNumber
-);
-
-export const selectUserContactDetails = createSelector(
-  [selectUserName, selectUserEmail, selectUserPhoneNumber],
-  (name, email, phoneNumber) => ({ name, email, phoneNumber })
-);
+export const selectUserStatus = ({ user: { status } }: RootState) => status;
 
 export default userSlice.reducer;

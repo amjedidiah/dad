@@ -52,9 +52,13 @@ function validateRequestParams(
   );
   const message = (
     {
-      query: "Required query params are missing",
-      body: "Required fields are missing",
-      headers: "An error occurred",
+      query: `Required query params are missing: ${missingRequiredParamFields.join(
+        ", "
+      )}`,
+      body: `Required fields are missing: ${missingRequiredParamFields.join(
+        ", "
+      )}`,
+      headers: "An error occurred. Please try again later.",
     } as { [param: string]: string }
   )[param];
   const devMessage =
@@ -115,7 +119,6 @@ export async function validateEmail(email: string) {
     console.info({ success: response.success, error: response.error });
     return response.isSuccess();
   } catch (error) {
-    console.error(error);
     return false;
   }
 }
@@ -135,7 +138,6 @@ export async function validatePhone(phone: string) {
     const { valid } = await response.json();
     return valid;
   } catch (error) {
-    console.error(error);
     return false;
   }
 }

@@ -8,7 +8,7 @@ import { listenerMiddleware } from "@/redux/middlewares";
 const persistConfig = {
   key: "root",
   storage,
-  // whitelist: ["cart"],
+  blacklist: ["user"],
 };
 
 const rootReducer = combineReducers({
@@ -34,7 +34,10 @@ export type RootState = ReturnType<typeof store.getState>;
 
 export type AppDispatch = typeof store.dispatch;
 
-export type CommonStateStatus = "idle" | "loading" | "failed";
+export type CommonStateStatus = {
+  value: "idle" | "loading" | "failed";
+  message?: string;
+};
 
 export const persistor = persistStore(store);
 

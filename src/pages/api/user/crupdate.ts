@@ -17,7 +17,7 @@ export default async function handler(
   try {
     validateRequest(req, {
       methods: new Set([HttpMethods.POST, HttpMethods.PATCH]),
-      requiredFields: ["issuer", "email"],
+      requiredFields: ["id", "email"],
     });
     validateUserData(req.body);
 
@@ -35,7 +35,7 @@ export default async function handler(
                   image_url = COALESCE(EXCLUDED.image_url, users.image_url),
                   phone_number = COALESCE(EXCLUDED.phone_number, users.phone_number),
                   name = COALESCE(EXCLUDED.name, users.name),
-                  updated_at = NOW();
+                  updated_at = NOW()
                 RETURNING *
               `;
 

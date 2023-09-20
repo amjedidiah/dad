@@ -1,10 +1,8 @@
 import { useMagic } from "@/context/magic.context";
-import { IContentData } from "@/context/rating/rating.context";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
-import { selectActiveUserId } from "@/redux/slices/user.slice";
-import { useAppSelector } from "./types";
+import { ModalContext } from "@/context/modal/modal.context";
 
 export type ReviewData = {
   imageUrl?: string;
@@ -18,34 +16,46 @@ export default function useRating() {
   const [isRating, setIsRating] = useState(false);
   const { mutate } = useSWRConfig();
   const { magicLogin } = useMagic();
-  const issuer = useAppSelector(selectActiveUserId);
+  const { toggleModal, modalData: contentData } = useContext(ModalContext);
 
   const handleReview = useCallback(
-    async (contentData: IContentData, review: ReviewData) => {
-      setIsRating(true);
-      await magicLogin(review);
+    async (review: ReviewData) => {
+      try {
+        setIsRating(true);
 
-      const response = await fetch("/api/review", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          issuer,
-          ...contentData,
-          rating,
-          content: review.content,
-        }),
-      });
-      const result = response.json();
-      const { error, message } = await result;
+        const issuer = await magicLogin(review);
+        const response = await fetch("/api/review", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            issuer,
+            ...contentData,
+            rating,
+            content: review.content,
+          }),
+        });
 
-      toast[error ? "error" : "success"](message);
-      await mutate(`/api/best-selling?type=${contentData.type}`);
+        const { error, message } = await response.json();
+        if (error) throw message;
 
-      return result;
+        await mutate(`/api/best-selling?type=${contentData.type}`);
+
+        toast.success(message);
+        toggleModal();
+      } catch (error) {
+        const errorMessage = error?.message || error;
+        if (!review.content) {
+          console.error(error);
+          toast.error(errorMessage);
+        }
+        return { error: true, message: errorMessage };
+      } finally {
+        setIsRating(false);
+      }
     },
-    [issuer, magicLogin, mutate, rating]
+    [contentData, magicLogin, mutate, rating, toggleModal]
   );
 
   return {

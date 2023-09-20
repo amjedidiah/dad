@@ -20,17 +20,17 @@ import { ModalTitles } from "./modal/types";
 
 const MagicContext = createContext<{
   magicClient?: Magic;
-  magicLogin: (userData: UserData) => Promise<void>;
+  magicLogin: (userData: UserData) => Promise<string | null>;
   magicLogout: (openModal?: boolean) => Promise<void>;
 }>({
-  magicLogin: async () => undefined,
+  magicLogin: async () => null,
   magicLogout: async () => undefined,
 });
 
 const performLogin = async (magic: Magic, onMount: boolean, email?: string) => {
   const isLoggedIn = await magic.user.isLoggedIn();
 
-  if (isLoggedIn && onMount) {
+  if (isLoggedIn) {
     const { issuer } = await magic.user.getInfo();
     if (!issuer) throw "An error occurred. Please reload the page";
 
@@ -51,6 +51,9 @@ const performUserCrupdate = async (magic: Magic, data?: UserData) => {
   if (!issuer || !email) throw "An error occurred. Please reload the page";
 
   await store.dispatch(userCrupdate({ ...data, email, id: issuer as string }));
+
+  const { value, message } = store.getState().user.status;
+  if (value === "failed") throw message;
 };
 
 export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -68,10 +71,10 @@ export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
         await performLogin(magic, onMount, data?.email);
         if (!onMount) await performUserCrupdate(magic, data);
 
-        return;
+        const { issuer } = await magic.user.getInfo();
+        return issuer;
       } catch (error) {
-        console.error(error);
-        throw error.message || "An error occurred.";
+        throw error.message || error || "An error occurred.";
       }
     },
     [magic]

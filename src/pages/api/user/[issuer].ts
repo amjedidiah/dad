@@ -14,7 +14,7 @@ export default async function handler(
       requiredParams: ["issuer"],
     });
 
-    const userQuery = await db`SELECT * FROM users WHERE issuer = ${
+    const userQuery = await db`SELECT * FROM users WHERE id = ${
       issuer as string
     } LIMIT 1`;
 

@@ -9,7 +9,7 @@ type LocationState = {
 
 const initialState = {
   countryCode: undefined,
-  status: "idle",
+  status: { value: "idle" },
 } as LocationState;
 
 const locationSlice = createSlice({
@@ -19,17 +19,17 @@ const locationSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchLocationData.pending, (state) => {
-        state.status = "loading";
+        state.status = { value: "loading" };
       })
       .addCase(
         fetchLocationData.fulfilled,
         (state, action: PayloadAction<LocationState["countryCode"]>) => {
-          state.status = "idle";
+          state.status = { value: "idle" };
           state.countryCode = action.payload;
         }
       )
-      .addCase(fetchLocationData.rejected, (state) => {
-        state.status = "failed";
+      .addCase(fetchLocationData.rejected, (state, action) => {
+        state.status = { value: "failed", message: action.error.message };
       });
   },
 });
