@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import {
   Control,
+  DefaultValues,
   FieldValues,
   SubmitHandler,
   UseFormReturn,
@@ -22,11 +23,13 @@ type IUseSharedForm<F extends FieldValues> = Pick<
 
 export default function useSharedForm<F extends FieldValues>(
   onSubmit: SubmitHandler<F>,
-  successMessage: string
+  successMessage: string,
+  defaultValues?: DefaultValues<F>
 ): IUseSharedForm<F> {
   const { register, handleSubmit, formState, reset, setValue, control } =
     useForm<F>({
       mode: "onChange",
+      defaultValues,
     });
   const [formResponse, setFormResponse] = useState<IFormResponse | undefined>();
   const shouldPraise = useMemo(

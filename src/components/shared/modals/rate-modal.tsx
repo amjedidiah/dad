@@ -8,7 +8,7 @@ import { useTheme } from "@emotion/react";
 import { cx } from "@emotion/css";
 import RatingContext from "@/context/rating/rating.context";
 import { ModalContext } from "@/context/modal/modal.context";
-import { selectUserContactDetails } from "@/redux/slices/user.slice";
+import { selectActiveUser } from "@/redux/slices/user.slice";
 import { useAppSelector } from "@/hooks/types";
 
 const buttons: IButton[] = [
@@ -29,7 +29,7 @@ export default function RateModal() {
   const { rating, setRating, handleReview, isRating } =
     useContext(RatingContext);
   const { modalData: contentData, toggleModal } = useContext(ModalContext);
-  const contactDetails = useAppSelector(selectUserContactDetails);
+  const userData = useAppSelector(selectActiveUser);
 
   const reviewButtons = useMemo(
     () =>
@@ -39,9 +39,10 @@ export default function RateModal() {
           button.key === "review"
             ? button.onClick
             : async () => {
+                if (!userData?.email) return;
                 await handleReview(contentData, {
-                  name: contactDetails.name as string,
-                  email: contactDetails.email as string,
+                  name: userData.name as string,
+                  email: userData.email as string,
                   content: "",
                 });
                 toggleModal();
@@ -49,16 +50,16 @@ export default function RateModal() {
         disabled:
           rating === 0 ||
           isRating ||
-          (button.key === "rate" && !contactDetails.name),
+          (button.key === "rate" && !userData?.email),
         isLoading: button.key === "rate" && isRating,
       })),
     [
-      contactDetails.email,
-      contactDetails.name,
-      contentData,
-      handleReview,
-      isRating,
       rating,
+      isRating,
+      userData?.name,
+      userData?.email,
+      handleReview,
+      contentData,
       toggleModal,
     ]
   ) as IButton[];

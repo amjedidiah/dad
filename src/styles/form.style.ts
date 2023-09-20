@@ -66,6 +66,11 @@ const styles: Interpolation<Theme> = ({
       &[aria-invalid="true"] {
         border-color: ${warning};
       }
+
+      &[readonly] {
+        -webkit-box-shadow: 0 0 0 1000px ${isDarkMode ? grey1 : greyLighter}
+          inset;
+      }
     }
 
     .field-tel input {

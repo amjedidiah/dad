@@ -22,7 +22,7 @@ export enum ContactFormInputIds {
 
 export enum ReviewFormInputIds {
   Name = "name",
-  Image = "image",
+  Image = "imageUrl",
   Email = "email",
   Content = "content",
 }

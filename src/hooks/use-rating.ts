@@ -7,7 +7,7 @@ import { selectActiveUserId } from "@/redux/slices/user.slice";
 import { useAppSelector } from "./types";
 
 export type ReviewData = {
-  image?: string;
+  imageUrl?: string;
   name: string;
   email: string;
   content: string;

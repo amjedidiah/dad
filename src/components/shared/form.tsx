@@ -4,10 +4,12 @@ import {
   LabelHTMLAttributes,
   TextareaHTMLAttributes,
   forwardRef,
+  useEffect,
   useState,
 } from "react";
 import {
   Control,
+  DefaultValues,
   FieldValues,
   Path,
   PathValue,
@@ -31,8 +33,9 @@ import { useTheme } from "@emotion/react";
 import { toast } from "react-toastify";
 import PhoneInput from "react-phone-number-input/react-hook-form";
 import "react-phone-number-input/style.css";
-import { useSelector } from "react-redux";
 import { selectCountryCode } from "@/redux/slices/location.slice";
+import { useAppSelector } from "@/hooks/types";
+import { selectActiveUser } from "@/redux/slices/user.slice";
 
 type IForm<F extends FieldValues> = {
   fields: IFormField<F>[];
@@ -40,6 +43,7 @@ type IForm<F extends FieldValues> = {
   praise: string;
   successMessage: string;
   onSubmit: SubmitHandler<F>;
+  defaultValues?: DefaultValues<F>;
 } & React.FormHTMLAttributes<HTMLFormElement>;
 
 type IFormFieldOptions = CldUploadWidgetPropsOptions & {
@@ -80,7 +84,13 @@ export default function Form<F extends FieldValues>({
   praise,
   successMessage,
   onSubmit,
+  defaultValues,
 }: IForm<F>) {
+  const userData = useAppSelector(selectActiveUser);
+  const updatedDefaultValues = {
+    ...defaultValues,
+    ...userData,
+  } as DefaultValues<F>;
   const {
     register,
     formState: { isValid, isLoading, errors, isSubmitting },
@@ -89,7 +99,13 @@ export default function Form<F extends FieldValues>({
     shouldPraise,
     setValue,
     control,
-  } = useSharedForm<F>(onSubmit, successMessage);
+  } = useSharedForm<F>(onSubmit, successMessage, updatedDefaultValues);
+
+  useEffect(() => {
+    fields.forEach((field) => {
+      if (field.name === "email" && defaultValues?.email) field.readOnly = true;
+    });
+  }, [defaultValues?.email, fields]);
 
   return (
     <form css={styles} className="form" onSubmit={submitForm}>
@@ -180,7 +196,7 @@ Form.Field = forwardRef<
     type?: string;
     message: string;
   }>({ message: field.options?.helperMessage || "" });
-  const countryCode = useSelector(selectCountryCode);
+  const countryCode = useAppSelector(selectCountryCode);
 
   const handleSuccess: CldUploadWidgetProps["onSuccess"] = ({ info }) => {
     if (!info || typeof info === "string") return;
