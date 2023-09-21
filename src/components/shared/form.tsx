@@ -2,6 +2,7 @@
 import {
   InputHTMLAttributes,
   LabelHTMLAttributes,
+  PropsWithChildren,
   TextareaHTMLAttributes,
   forwardRef,
   useEffect,
@@ -22,7 +23,6 @@ import { cx } from "@emotion/css";
 import Button, { IButton } from "@/components/shared/button/index.button";
 import useSharedForm from "@/hooks/use-shared-form";
 import styles from "@/styles/form.style";
-import { IComponentWithChildren } from "@/utils/types";
 import {
   CldUploadWidget,
   CldUploadWidgetProps,
@@ -63,7 +63,7 @@ export type IFormField<T extends FieldValues> = {
 
 type IFormHelper = {
   type?: IFormHelperTypes;
-} & IComponentWithChildren;
+} & PropsWithChildren;
 
 export enum IFormHelperTypes {
   Error = "error",
@@ -85,6 +85,7 @@ export default function Form<F extends FieldValues>({
   successMessage,
   onSubmit,
   defaultValues,
+  className,
 }: IForm<F>) {
   const {
     register,
@@ -96,7 +97,11 @@ export default function Form<F extends FieldValues>({
     control,
   } = useSharedForm<F>(onSubmit, successMessage, fields, defaultValues);
   return (
-    <form css={styles} className="form" onSubmit={submitForm}>
+    <form
+      css={styles}
+      className={cx(`form ${className}`)}
+      onSubmit={submitForm}
+    >
       {fields.map(({ value, ...field }) => {
         field["aria-invalid"] = errors[field.id] ? "true" : "false";
         field.setValue = setValue;
@@ -104,10 +109,12 @@ export default function Form<F extends FieldValues>({
 
         return (
           <Form.Group key={field.id}>
-            <Form.Label htmlFor={field.id}>
-              {field["aria-label"]}
-              {field.required && <span className="asterisk">*</span>}
-            </Form.Label>
+            {field["aria-label"] && (
+              <Form.Label htmlFor={field.id}>
+                {field["aria-label"]}
+                {field.required && <span className="asterisk">*</span>}
+              </Form.Label>
+            )}
             <Form.Field
               {...field}
               {...register(
@@ -124,19 +131,19 @@ export default function Form<F extends FieldValues>({
         );
       })}
       {shouldPraise && !isSubmitting && (
-        <Form.Group>
+        <Form.Group className="group-message">
           <Form.Helper type={IFormHelperTypes.Praise}>{praise}</Form.Helper>
         </Form.Group>
       )}
       {formResponse && (
-        <Form.Group>
+        <Form.Group className="group-message">
           <Form.Helper type={formResponse.type}>
             {formResponse.message}
           </Form.Helper>
         </Form.Group>
       )}
       {buttons.map((button) => (
-        <Form.Group key={button.key}>
+        <Form.Group className="group-button" key={button.key}>
           <Button
             {...button}
             disabled={
@@ -157,8 +164,11 @@ export default function Form<F extends FieldValues>({
   );
 }
 
-Form.Group = function FormGroup({ children }: IComponentWithChildren) {
-  return <div className="group">{children}</div>;
+Form.Group = function FormGroup({
+  children,
+  className,
+}: PropsWithChildren & { className?: string }) {
+  return <div className={cx(`group ${className}`)}>{children}</div>;
 };
 
 Form.Label = function FormLabel({

@@ -1,13 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import { Fragment, useContext } from "react";
+import { Fragment, PropsWithChildren, useContext } from "react";
 import Head from "next/head";
 import { useTheme } from "@emotion/react";
 import Header from "@/components/shared/layout/header";
 import Modal from "@/components/shared/layout/modal";
 import ModeSwitch from "@/components/shared/layout/mode-switch";
-import styles from "@/styles/layout.style";
-import { IComponentWithChildren } from "@/utils/types";
 import { ModalContext } from "@/context/modal/modal.context";
+import Footer from "@/components/shared/layout/footer";
 
 type Props = {
   title: string;
@@ -20,7 +18,7 @@ export default function RootLayout({
   title,
   description,
   noHeader = false,
-}: IComponentWithChildren & Props) {
+}: PropsWithChildren & Props) {
   const theme = useTheme();
   const { modalTitle } = useContext(ModalContext);
 
@@ -35,12 +33,13 @@ export default function RootLayout({
         <link rel="icon" href="/images/512x512.png" />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
-      <main css={styles}>
-        {!noHeader && <Header />}
+      {!noHeader && <Header />}
+      <main className="flex-1">
         <div id="top" />
         {children}
         <ModeSwitch />
       </main>
+      <Footer />
       {modalTitle && <Modal />}
     </Fragment>
   );

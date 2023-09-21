@@ -14,82 +14,62 @@ export enum Roles {
   Pastor = "Pastor",
 }
 
-export enum ContactFormInputIds {
+export enum FormInputIds {
   Name = "name",
   Email = "email",
-  Message = "message",
-}
-
-export enum ReviewFormInputIds {
-  Name = "name",
   Image = "imageUrl",
-  Email = "email",
   Content = "content",
 }
 
-export const contactFormFields = [
-  {
+const fieldObjects = {
+  name: {
     type: "text",
-    id: ContactFormInputIds.Name,
-    name: ContactFormInputIds.Name,
+    id: FormInputIds.Name,
+    name: FormInputIds.Name,
     placeholder: "Type your name here...",
-    ["aria-label"]: "name",
-    required: true,
-    minLength: 3,
-  },
-  {
-    type: "email",
-    id: ContactFormInputIds.Email,
-    name: ContactFormInputIds.Email,
-    placeholder: "Type your email here...",
-    ["aria-label"]: "email",
-    required: {
-      value: true,
-      message: "Email is required",
-    },
-    pattern:
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
-  },
-  {
-    type: "textarea",
-    id: ContactFormInputIds.Message,
-    name: ContactFormInputIds.Message,
-    placeholder: "Type your message here...",
-    ["aria-label"]: "message",
-    required: {
-      value: true,
-      message: "A message is required",
-    },
-    minLength: {
-      value: 10,
-      message: "More context is required for this message",
-    },
-    rows: 7,
-  },
-] as IFormField<{
-  [key in ContactFormInputIds]: string;
-}>[];
-
-export const reviewFormFields = [
-  {
-    type: "text",
-    id: ReviewFormInputIds.Name,
-    name: ReviewFormInputIds.Name,
-    placeholder: "Type your name here",
-    ["aria-label"]: "name",
+    ["aria-label"]: FormInputIds.Name,
     required: {
       value: true,
       message: "Name is required",
-    },
+    } as any,
     minLength: {
       value: 3,
       message: "Name must be at least 3 characters",
-    },
+    } as any,
   },
-  {
+  email: {
+    type: "email",
+    id: FormInputIds.Email,
+    name: FormInputIds.Email,
+    placeholder: "Type your email here...",
+    ["aria-label"]: FormInputIds.Email,
+    required: {
+      value: true,
+      message: "Email is required",
+    } as any,
+    pattern:
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i as any,
+  },
+  textarea: {
+    type: "textarea",
+    id: FormInputIds.Content,
+    name: FormInputIds.Content,
+    placeholder: "Type your content here...",
+    ["aria-label"]: FormInputIds.Content,
+    required: {
+      value: true,
+      message: "Content is required",
+    },
+    minLength: {
+      value: 10,
+      message: "Content is to short",
+    },
+    rows: 7,
+  },
+  file: {
     type: "file",
-    id: ReviewFormInputIds.Image,
-    name: ReviewFormInputIds.Image,
+    id: FormInputIds.Image,
+    name: FormInputIds.Image,
     accept: "image/png, image/jpeg",
     ["aria-label"]: "Upload Photo",
     options: {
@@ -99,37 +79,53 @@ export const reviewFormFields = [
       helperMessage: "Max size is 2MB of either jpg, jpeg or png image",
     },
   },
+};
+
+export const contactFormFields = [
+  fieldObjects.name,
+  fieldObjects.email,
   {
-    type: "email",
-    id: ReviewFormInputIds.Email,
-    name: ReviewFormInputIds.Email,
-    placeholder: "Type your email here",
-    ["aria-label"]: "email",
+    ...fieldObjects.textarea,
+    placeholder: "Type your message here...",
+    ["aria-label"]: "message",
     required: {
-      value: true,
-      message: "Email is required",
-    },
-    pattern:
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
-  },
-  {
-    type: "textarea",
-    id: ReviewFormInputIds.Content,
-    name: ReviewFormInputIds.Content,
-    placeholder: "Type your review here",
-    rows: 7,
-    ["aria-label"]: "review",
-    required: {
-      value: true,
-      message: "A review is required",
+      ...fieldObjects.textarea.required,
+      message: "Message is required",
     },
     minLength: {
-      value: 10,
-      message: "More context is required for this review",
+      ...fieldObjects.textarea.minLength,
+      message: "Message is to short",
     },
   },
 ] as IFormField<{
-  [key in ReviewFormInputIds]: string;
+  [key in FormInputIds]: string;
+}>[];
+
+export const reviewFormFields = [
+  fieldObjects.name,
+  fieldObjects.file,
+  fieldObjects.email,
+  {
+    ...fieldObjects.textarea,
+    placeholder: "Type your review here...",
+    ["aria-label"]: "review",
+    required: {
+      ...fieldObjects.textarea.required,
+      message: "A review is required",
+    },
+    minLength: {
+      ...fieldObjects.textarea.minLength,
+      message: "Review is too short",
+    },
+  },
+] as IFormField<{
+  [key in FormInputIds]: string;
+}>[];
+
+export const footerFormFields = [
+  { ...fieldObjects.email, ["aria-label"]: undefined },
+] as IFormField<{
+  [key in FormInputIds]: string;
 }>[];
 
 export const contactFormButtons = [
@@ -159,13 +155,26 @@ export const reviewFormButtons = [
   },
 ] as IButton[];
 
+export const footerFormButtons = [
+  {
+    key: "footer-form",
+    className: "bold full",
+    type: "submit",
+    value: "Subscribe",
+  },
+] as IButton[];
+
 export const contactFormPraise = `You did good, 💪🏾. You can proceed to send your message`;
 
 export const reviewFormPraise = `You did good, 💪🏾. You can proceed to submit your review`;
 
+export const footerFormPraise = `You did good, 💪🏾. You can hit the subscribe button`;
+
 export const contactFormSuccess = `Your message has been sent to Dr. Passy. He will get back to you as soon as possible`;
 
 export const reviewFormSuccess = `Your review has been recorded. You will get feedback once it has been approved or denied`;
+
+export const footerFormSuccess = `You have been subscribed to receive life changing articles once every week from Dr. Passy`;
 
 export const ministries = [
   { key: "Successful family" },
