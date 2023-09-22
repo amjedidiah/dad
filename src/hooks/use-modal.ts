@@ -5,6 +5,7 @@ import { IModalContext, ModalTitles } from "@/context/modal/types";
 import RateModal from "@/components/shared/modals/rate-modal";
 import ReviewModal from "@/components/shared/modals/review-modal";
 // import CartModal from "@/components/shared/modals/cart-modal";
+import LoginModal from "@/components/shared/modals/login-modal";
 
 export default function useModal(): IModalContext {
   const [modalTitle, setModalTitle] = useState<IModalContext["modalTitle"]>();
@@ -19,7 +20,7 @@ export default function useModal(): IModalContext {
         [ModalTitles.partner]: PartnerModal,
         [ModalTitles.rate]: RateModal,
         [ModalTitles.review]: ReviewModal,
-        [ModalTitles.login]: null,
+        [ModalTitles.login]: LoginModal,
         // [ModalTitles.cart]: CartModal,
       }[modalTitle] || null
     );

@@ -14,6 +14,10 @@ export enum Roles {
   Pastor = "Pastor",
 }
 
+export enum LoginFormInputIds {
+  Email = "email",
+}
+
 export enum ContactFormInputIds {
   Name = "name",
   Email = "email",
@@ -132,6 +136,24 @@ export const reviewFormFields = [
   [key in ReviewFormInputIds]: string;
 }>[];
 
+export const loginFormFields = [
+  {
+    type: "email",
+    id: LoginFormInputIds.Email,
+    name: LoginFormInputIds.Email,
+    placeholder: "Type your email here...",
+    ["aria-label"]: LoginFormInputIds.Email,
+    required: {
+      value: true,
+      message: "Email is required",
+    } as any,
+    pattern:
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i as any,
+  },
+] as IFormField<{
+  [key in LoginFormInputIds]: string;
+}>[];
+
 export const contactFormButtons = [
   {
     key: "contact-modal-form",
@@ -159,13 +181,26 @@ export const reviewFormButtons = [
   },
 ] as IButton[];
 
+export const loginFormButtons = [
+  {
+    key: "login-modal-form",
+    className: "bold full",
+    type: "submit",
+    value: "Login",
+  },
+] as IButton[];
+
 export const contactFormPraise = `You did good, 💪🏾. You can proceed to send your message`;
 
 export const reviewFormPraise = `You did good, 💪🏾. You can proceed to submit your review`;
 
+export const loginFormPraise = `You did good, 💪🏾. You can proceed to login`;
+
 export const contactFormSuccess = `Your message has been sent to Dr. Passy. He will get back to you as soon as possible`;
 
 export const reviewFormSuccess = `Your review has been recorded. You will get feedback once it has been approved or denied`;
+
+export const loginFormSuccess = `You are logged in.`;
 
 export const ministries = [
   { key: "Successful family" },
