@@ -34,7 +34,7 @@ yarn dev
 
 - Fixes: `fix/`
 
-- Chores / other tasks: `chore/`
+- Chores or other tasks: `chore/`
 
 ### Commit conventions
 
@@ -48,6 +48,8 @@ yarn dev
 
 - For PRs, reach out for approval from @amjedidiah, before merging into `develop`.
 - Confirm that all other checks pass before reaching out for approval
+
+> Never commit `yarn.lock` file
 
 #### Important Branches
 
