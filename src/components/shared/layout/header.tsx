@@ -9,6 +9,9 @@ import useActionButtons from "@/hooks/use-action-buttons";
 import useStickyHeader from "@/hooks/use-sticky-header";
 import { CartIcon } from "@/icons";
 import styles from "@/styles/header.style";
+import { useAppSelector } from "@/hooks/types";
+import { selectCartItemsCount } from "@/redux/slices/cart.slice";
+import { useTheme } from "@emotion/react";
 
 const navItems = ["about", "books", "messages", "testimonies", "blog", "cart"];
 
@@ -16,6 +19,8 @@ export default function Header() {
   const isHeaderSticky = useStickyHeader();
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const headerButtons = useActionButtons();
+  const cartItemsCount = useAppSelector(selectCartItemsCount);
+  const { isDarkMode } = useTheme();
 
   const toggleNavbar = () => setIsNavbarOpen((prev) => !prev);
 
@@ -59,9 +64,22 @@ export default function Header() {
                 >
                   {item}
                   {item === "cart" && (
-                    <span>
-                      <CartIcon />
-                    </span>
+                    <div className="flex items-center relative -top-1 ">
+                      <span>
+                        <CartIcon />
+                      </span>
+                      <span
+                        className={cx(
+                          {
+                            "bg-black text-white": !isDarkMode,
+                            "bg-white text-black": isDarkMode,
+                          },
+                          "absolute flex items-center justify-center -mt-4 -left-3 p-1 rounded-full w-4 h-4"
+                        )}
+                      >
+                        {cartItemsCount}
+                      </span>
+                    </div>
                   )}
                 </Link>
               </li>

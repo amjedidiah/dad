@@ -15,12 +15,26 @@ import { CartIcon } from "@/icons";
 import styles from "@/styles/best-selling-content.style";
 import { useRouter } from "next/router";
 import { IContentData } from "@/context/rating/rating.context";
+import { useAppDispatch, useAppSelector } from "@/hooks/types";
+import {
+  cartAdd,
+  cartRemove,
+  selectCartStatus,
+  selectIsItemInCart,
+  selectItemQuantity,
+} from "@/redux/slices/cart.slice";
 
 type Props = {
   type: IContentData["type"];
 };
 
 export default function BestSellingContent({ type }: Props) {
+  const { data, isLoading } = useSWR(`/api/best-selling?type=${type}`);
+  const book = data?.data ?? {};
+  const dispatch = useAppDispatch();
+  const isInCart = useAppSelector(selectIsItemInCart(book.id));
+  const cartItemQuantity = useAppSelector(selectItemQuantity(book.id));
+  const cartStatus = useAppSelector(selectCartStatus);
   const router = useRouter();
   const { isDarkMode } = useTheme();
   const { toggleModal } = useContext(ModalContext);
@@ -39,18 +53,29 @@ export default function BestSellingContent({ type }: Props) {
 
     if (type === "book")
       buttons.push({
-        key: "add to cart",
-        value: "Add To Cart",
+        key: isInCart ? "remove from cart" : "add to cart",
+        value: isInCart ? "Remove From Cart" : "Add To Cart",
         className: "rounded",
         Icon: CartIcon,
+        onClick: () =>
+          isInCart
+            ? dispatch(cartRemove({ id: book.id, quantity: cartItemQuantity }))
+            : dispatch(cartAdd(book.id)),
+        disabled: !book.id || cartStatus.value === "pending",
+        isLoading: cartStatus.value === "pending",
       } as IButton);
 
     return buttons;
-  }, [type, router]);
-  const { data, isLoading } = useSWR(`/api/best-selling?type=${type}`);
-
+  }, [
+    type,
+    isInCart,
+    book.id,
+    cartStatus.value,
+    router,
+    dispatch,
+    cartItemQuantity,
+  ]);
   if (!isLoading && !data?.data) return null;
-  const book = data?.data ?? {};
 
   const formattedPrice =
     book.price &&

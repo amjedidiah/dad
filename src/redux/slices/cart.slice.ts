@@ -46,6 +46,13 @@ const cartSlice = createSlice({
       const id = action.payload;
       delete state.items[id];
     },
+    cartClear(state) {
+      state.items = initialState.items;
+      state.status = initialState.status;
+    },
+    cartRestore(state, action: PayloadAction<CartItems>) {
+      state.items = action.payload;
+    },
     cartUpdateItem(state, action: PayloadAction<CartItem>) {
       const { id, quantity } = action.payload;
       state.items[id].quantity = quantity;
@@ -86,7 +93,9 @@ const cartSlice = createSlice({
       .addCase(cartLoad.fulfilled, cartSlice.caseReducers.cartActionDone)
       .addCase(cartLoad.rejected, (state, action) => {
         state.status = { value: "idle", message: action.error.message };
-      });
+      })
+      .addCase(cartClear.pending, cartSlice.caseReducers.cartActionPending)
+      .addCase(cartClear.fulfilled, cartSlice.caseReducers.cartActionDone);
   },
 });
 
@@ -160,6 +169,32 @@ export const cartRemove = createAsyncThunk<
   await cartRequest("DELETE", { userId, bookId: id });
 });
 
+export const cartClear = createAsyncThunk<
+  void,
+  void,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>("cart/cartClear", async (_, { dispatch, getState }) => {
+  const userId = getState().user.activeUser?.id;
+  const isLoggedIn = !!userId;
+  const cartItems = getState().cart.items;
+
+  // clear items from redux store optimistically
+  dispatch(cartSlice.actions.cartClear());
+
+  // if not logged in, return
+  if (!isLoggedIn) return;
+
+  try {
+    // if logged in, send request to server
+    await cartRequest("PUT", { userId });
+  } catch (error) {
+    dispatch(cartSlice.actions.cartRestore(cartItems));
+  }
+});
+
 export const cartUpdate = createAsyncThunk<
   void,
   { id: string; quantity: number },
@@ -203,7 +238,7 @@ export const cartLoad = createAsyncThunk<
   const items: CartItem[] = await cartRequest("GET", { userId });
 
   // update items in redux store
-  dispatch(cartSlice.actions.cartUpdate(items));
+  await dispatch(cartSlice.actions.cartUpdate(items));
 });
 
 export const selectCartStatus = ({ cart: { status } }: RootState) => status;

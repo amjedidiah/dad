@@ -8,7 +8,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const hasQueryParams =
-    req.method === HttpMethods.GET || req.method === HttpMethods.DELETE;
+    req.method === HttpMethods.GET ||
+    req.method === HttpMethods.DELETE ||
+    req.method === HttpMethods.PUT;
   const {
     userId: user_id,
     bookId: book_id,
@@ -24,6 +26,7 @@ export default async function handler(
         HttpMethods.PATCH,
         HttpMethods.DELETE,
         HttpMethods.GET,
+        HttpMethods.PUT,
       ]),
       requiredFields,
       requiredParams,
@@ -39,19 +42,25 @@ export default async function handler(
           return db`UPDATE cart SET quantity = ${quantity} WHERE user_id = ${user_id} AND book_id = ${book_id};`;
         case HttpMethods.GET:
           return db`SELECT * FROM cart WHERE user_id = ${user_id};`;
+        case HttpMethods.PUT:
+          return db`DELETE FROM cart WHERE user_id = ${user_id};`;
       }
     })() as PendingQuery<Row[]>;
     const items = await db`${dbString}`;
-    const refinedItems = items.map((item) => ({
-      id: item.book_id,
-      quantity: item.quantity,
-    }));
+    const refinedItems = items.length
+      ? items.map((item) => ({
+          id: item.book_id,
+          quantity: item.quantity,
+        }))
+      : [];
 
     const actionMessage = (() =>
       ({
         [HttpMethods.POST]: "added to",
         [HttpMethods.DELETE]: "removed from",
         [HttpMethods.PATCH]: "updated in",
+        [HttpMethods.GET]: "fetched from",
+        [HttpMethods.PUT]: "cleared from",
       }[req.method as string]))();
 
     res.status(HttpStatus.OK).json({

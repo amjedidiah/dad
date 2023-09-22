@@ -6,6 +6,8 @@ export enum Features {
   WhyChooseHim = "why-choose-him",
   CldOGImage = "og-images",
   CldImage = "cld-images",
+  Footer = "footer",
+  Cart = "cart",
 }
 
 export const features = {
@@ -41,5 +43,15 @@ export const features = {
     status: false,
     reason:
       "move all images to cloudinary update Image to CldImage component using this article: https://cloudinary.com/guides/front-end-development/integrating-cloudinary-with-next-js",
+  },
+  [Features.Footer]: {
+    title: Features.Footer,
+    status: false,
+    reason: "Only show subscribe form when logged in user is not subscribed",
+  },
+  [Features.Cart]: {
+    title: Features.Cart,
+    status: false,
+    reason: "Get cart to work with shimmer loaders",
   },
 };
