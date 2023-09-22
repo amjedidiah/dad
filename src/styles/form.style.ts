@@ -112,6 +112,9 @@ const styles: Interpolation<Theme> = ({
     &.warning {
       color: ${warning};
     }
+    &.info {
+      color: ${isDarkMode ? white : black};
+    }
     &.praise {
       color: ${primary};
       font-size: 0.85rem;

@@ -27,6 +27,7 @@ type IUseSharedForm<F extends FieldValues> = Pick<
   shouldPraise: boolean;
   setValue: UseFormSetValue<F>;
   control: Control<F, any>;
+  showSwitchUserText: boolean;
 };
 
 export default function useSharedForm<F extends FieldValues>(
@@ -57,6 +58,10 @@ export default function useSharedForm<F extends FieldValues>(
   const formFieldNames = useMemo(
     () => Object.keys(formFieldsObject),
     [formFieldsObject]
+  );
+  const showSwitchUserText = useMemo(
+    () => !!userData?.email,
+    [userData?.email]
   );
 
   const submitForm = useCallback(
@@ -101,12 +106,6 @@ export default function useSharedForm<F extends FieldValues>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formFieldNames.length, setValue, userData]);
 
-  useEffect(() => {
-    fields.forEach((field) => {
-      field.readOnly = Boolean(field.name === "email" && userData?.email);
-    });
-  }, [fields, userData?.email]);
-
   return {
     register,
     formState,
@@ -115,5 +114,6 @@ export default function useSharedForm<F extends FieldValues>(
     shouldPraise,
     setValue,
     control,
+    showSwitchUserText,
   };
 }

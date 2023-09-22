@@ -21,7 +21,7 @@ import { ModalTitles } from "./modal/types";
 const MagicContext = createContext<{
   magicClient?: Magic;
   magicLogin: (userData: UserData) => Promise<string | null>;
-  magicLogout: (openModal?: boolean) => Promise<void>;
+  magicLogout: (modalTitle?: ModalTitles) => Promise<void>;
 }>({
   magicLogin: async () => null,
   magicLogout: async () => undefined,
@@ -81,7 +81,7 @@ export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
   );
 
   const magicLogout = useCallback(
-    async (openModal = false) => {
+    async (modalTite?: ModalTitles) => {
       if (!magic) return;
 
       const isLoggedIn = await magic.user.isLoggedIn();
@@ -90,7 +90,7 @@ export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
       await magic.user.logout();
       await store.dispatch(userUnset());
 
-      if (openModal) toggleModal(ModalTitles.login);
+      if (modalTite) toggleModal(ModalTitles.login, modalTite);
     },
     [magic, toggleModal]
   );
@@ -99,7 +99,7 @@ export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
     if (!magic) return;
 
     magic.preload();
-    magicLogin(undefined, true);
+    performLogin(magic, true);
   }, [magic, magicLogin]);
 
   return (

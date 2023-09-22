@@ -4,6 +4,7 @@ import {
   LabelHTMLAttributes,
   TextareaHTMLAttributes,
   forwardRef,
+  useContext,
   useEffect,
   useState,
 } from "react";
@@ -36,6 +37,8 @@ import "react-phone-number-input/style.css";
 import { selectCountryCode } from "@/redux/slices/location.slice";
 import { useAppSelector } from "@/hooks/types";
 import { selectActiveUser } from "@/redux/slices/user.slice";
+import { ModalContext } from "@/context/modal/modal.context";
+import { useMagic } from "@/context/magic.context";
 
 type IForm<F extends FieldValues> = {
   fields: IFormField<F>[];
@@ -70,6 +73,7 @@ export enum IFormHelperTypes {
   Praise = "praise",
   Success = "success",
   Warning = "warning",
+  Info = "info",
 }
 
 export type IFormResponse = {
@@ -86,6 +90,8 @@ export default function Form<F extends FieldValues>({
   onSubmit,
   defaultValues,
 }: IForm<F>) {
+  const { modalTitle } = useContext(ModalContext);
+  const { magicLogout } = useMagic();
   const {
     register,
     formState: { isValid, isLoading, errors, isSubmitting },
@@ -94,6 +100,7 @@ export default function Form<F extends FieldValues>({
     shouldPraise,
     setValue,
     control,
+    showSwitchUserText,
   } = useSharedForm<F>(onSubmit, successMessage, fields, defaultValues);
   return (
     <form css={styles} className="form" onSubmit={submitForm}>
@@ -118,6 +125,19 @@ export default function Form<F extends FieldValues>({
             {errors[field.id] && (
               <Form.Helper type={IFormHelperTypes.Warning}>
                 {errors[field.id]?.message as string}
+              </Form.Helper>
+            )}
+            {showSwitchUserText && field.name === "email" && (
+              <Form.Helper type={IFormHelperTypes.Info}>
+                You are currently logged in with this email.
+                {!isSubmitting && (
+                  <span
+                    className="cursor-pointer underline font-medium text-primary ms-1"
+                    onClick={() => magicLogout(modalTitle)}
+                  >
+                    Switch user?
+                  </span>
+                )}
               </Form.Helper>
             )}
           </Form.Group>
@@ -313,7 +333,15 @@ Form.Field = forwardRef<
           defaultCountry={countryCode}
         />
       );
-    else return <input className="field" ref={ref} {...field} />;
+    else {
+      const isEmailField = field.name === "email";
+      if (isEmailField && userData?.email) field = { ...field, readOnly: true };
+      else if (isEmailField && !userData?.email) {
+        const { readOnly, ...rest } = field;
+        field = rest;
+      }
+      return <input className="field" ref={ref} {...field} />;
+    }
 
   return null;
 });
