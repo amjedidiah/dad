@@ -4,6 +4,7 @@ const globalStyles: Interpolation<Theme> = ({
   isDarkMode,
   colors: { black, white },
   font,
+  breakpoints,
 }) => css`
   @keyframes slide-fade-in {
     from {
@@ -40,6 +41,17 @@ const globalStyles: Interpolation<Theme> = ({
 
     &:hover {
       transform: scaleY(1.05);
+    }
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1376px;
+    margin: 0 auto;
+    padding: 0 clamp(2rem, 4.76%, 4.5rem);
+
+    @media (min-width: ${breakpoints.laptopL}px) {
+      padding: 0;
     }
   }
 

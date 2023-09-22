@@ -7,8 +7,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { issuer, id, type, rating, content: message } = req.body;
-  const hasReview = !!message;
+  const { issuer, id, type, rating, content } = req.body;
+  const hasReview = !!content;
 
   try {
     validateRequest(req, {
@@ -31,19 +31,19 @@ export default async function handler(
           devMessage: "Content type is invalid",
           data: type,
         };
-      case hasReview && message.length < 10:
+      case hasReview && content.length < 10:
         throw {
           statusCode: HttpStatus.BAD_REQUEST,
-          message: "Message is too short",
-          devMessage: "Message is too short",
-          data: message,
+          message: "Review content is too short",
+          devMessage: "Review content is too short",
+          data: content,
         };
       case rating < 0:
         throw {
           statusCode: HttpStatus.BAD_REQUEST,
           message: "Rating is invalid",
           devMessage: "Rating is invalid",
-          data: message,
+          data: rating,
         };
       default:
         break;
@@ -51,7 +51,7 @@ export default async function handler(
 
     const userQuery =
       await db`INSERT INTO ratings (user_id, content_id, type, review, rating)
-          VALUES (${issuer}, ${id}, ${type}, ${message || ""}, ${rating})
+          VALUES (${issuer}, ${id}, ${type}, ${content || ""}, ${rating})
         `;
 
     res.status(HttpStatus.OK).json({

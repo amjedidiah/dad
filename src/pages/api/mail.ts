@@ -20,21 +20,21 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { name, email, message } = req.body;
+  const { name, email, content } = req.body;
 
   try {
     validateRequest(req, {
       methods: new Set([HttpMethods.POST]),
-      requiredFields: ["name", "email", "message"],
+      requiredFields: ["name", "email", "content"],
     });
     validateUserData(req.body);
 
-    if (message.length < 10)
+    if (content.length < 10)
       throw {
         statusCode: HttpStatus.BAD_REQUEST,
         message: "Message is too short",
         devMessage: "Message is too short",
-        data: message,
+        data: content,
       };
 
     await resend.emails.send({
@@ -43,7 +43,7 @@ export default async function handler(
       cc,
       reply_to: email,
       subject: "New message!",
-      react: EmailTemplate({ name, message }),
+      react: EmailTemplate({ name, message: content }),
     });
 
     res.status(HttpStatus.OK).json({

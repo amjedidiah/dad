@@ -10,7 +10,7 @@ const styles: Interpolation<Theme> = ({
   gap: 2rem;
   position: fixed;
   right: clamp(3.175rem, 4.76%, 4.5rem);
-  bottom: clamp(3.175rem, 4.76%, 4.5rem);
+  bottom: 5.5rem;
   z-index: 1000;
 
   button {

@@ -19,6 +19,8 @@ module.exports = {
       screens: {
         mdx: "834px",
         lgx: "1199px",
+        laptopL: "1440px",
+        xl: "1280px",
       },
       gridTemplateColumns: {
         "auto-1fr": "auto 1fr",
