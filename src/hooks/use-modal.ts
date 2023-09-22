@@ -4,7 +4,6 @@ import PartnerModal from "@/components/shared/modals/partner-modal";
 import { IModalContext, ModalTitles } from "@/context/modal/types";
 import RateModal from "@/components/shared/modals/rate-modal";
 import ReviewModal from "@/components/shared/modals/review-modal";
-// import CartModal from "@/components/shared/modals/cart-modal";
 import LoginModal from "@/components/shared/modals/login-modal";
 
 export default function useModal(): IModalContext {
@@ -21,7 +20,6 @@ export default function useModal(): IModalContext {
         [ModalTitles.rate]: RateModal,
         [ModalTitles.review]: ReviewModal,
         [ModalTitles.login]: LoginModal,
-        // [ModalTitles.cart]: CartModal,
       }[modalTitle] || null
     );
   }, [modalTitle]);

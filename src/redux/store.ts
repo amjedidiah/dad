@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import locationReducer from "@/redux/slices/location.slice";
 import userReducer from "@/redux/slices/user.slice";
+import cartReducer from "@/redux/slices/cart.slice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { listenerMiddleware } from "@/redux/middlewares";
@@ -8,12 +9,13 @@ import { listenerMiddleware } from "@/redux/middlewares";
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["user"],
+  whitelist: ["cart"],
 };
 
 const rootReducer = combineReducers({
   user: userReducer,
   location: locationReducer,
+  cart: cartReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -35,7 +37,7 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export type CommonStateStatus = {
-  value: "idle" | "loading" | "failed";
+  value: "idle" | "pending" | "rejected" | "fulfilled";
   message?: string;
 };
 

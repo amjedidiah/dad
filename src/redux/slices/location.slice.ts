@@ -19,7 +19,7 @@ const locationSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchLocationData.pending, (state) => {
-        state.status = { value: "loading" };
+        state.status = { value: "pending" };
       })
       .addCase(
         fetchLocationData.fulfilled,
@@ -29,7 +29,7 @@ const locationSlice = createSlice({
         }
       )
       .addCase(fetchLocationData.rejected, (state, action) => {
-        state.status = { value: "failed", message: action.error.message };
+        state.status = { value: "rejected", message: action.error.message };
       });
   },
 });

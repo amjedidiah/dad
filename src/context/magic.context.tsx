@@ -53,7 +53,7 @@ const performUserCrupdate = async (magic: Magic, data?: UserData) => {
   await store.dispatch(userCrupdate({ ...data, email, id: issuer as string }));
 
   const { value, message } = store.getState().user.status;
-  if (value === "failed") throw message;
+  if (value === "rejected") throw message;
 };
 
 export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {

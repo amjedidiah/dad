@@ -33,7 +33,7 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(userFetchById.pending, (state) => {
-        state.status = { value: "loading" };
+        state.status = { value: "pending" };
       })
       .addCase(
         userFetchById.fulfilled,
@@ -43,10 +43,10 @@ const userSlice = createSlice({
         }
       )
       .addCase(userFetchById.rejected, (state, action) => {
-        state.status = { value: "failed", message: action.error.message };
+        state.status = { value: "rejected", message: action.error.message };
       })
       .addCase(userCrupdate.pending, (state) => {
-        state.status = { value: "loading" };
+        state.status = { value: "pending" };
       })
       .addCase(
         userCrupdate.fulfilled,
@@ -56,7 +56,7 @@ const userSlice = createSlice({
         }
       )
       .addCase(userCrupdate.rejected, (state, action) => {
-        state.status = { value: "failed", message: action.error.message };
+        state.status = { value: "rejected", message: action.error.message };
       });
   },
 });

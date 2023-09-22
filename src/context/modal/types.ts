@@ -13,5 +13,4 @@ export enum ModalTitles {
   rate = "rate",
   review = "review",
   login = "login",
-  // cart = "cart",
 }
