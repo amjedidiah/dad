@@ -3,9 +3,10 @@ import { useEffect } from "react";
 import { useAnimate } from "framer-motion";
 import { IRolesItems } from "@/components/landing/jumbo/index.jumbo";
 import styles from "@/styles/scrolling.style";
+import { IStreamsItems } from "@/components/about/intro";
 
 type Props = {
-  items: IRolesItems[];
+  items: Array<IRolesItems | IStreamsItems>;
 };
 
 export default function Scrolling({ items }: Props) {

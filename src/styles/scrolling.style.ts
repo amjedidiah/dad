@@ -13,6 +13,11 @@ const styles: Interpolation<Theme> = () => css`
     list-style: none;
     justify-content: space-between;
     gap: clamp(3rem, 12%, 12rem);
+    .role-item {
+      display: flex;
+      // justify-content: space-between;
+      align-items: center;
+    }
 
     &.roles-1,
     &.roles-3 {
