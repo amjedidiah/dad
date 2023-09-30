@@ -80,7 +80,6 @@ export default async function handler(
       error: false,
     });
   } catch (error) {
-    console.log("cartw");
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)

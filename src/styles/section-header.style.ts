@@ -21,6 +21,37 @@ const styles: Interpolation<Theme> = ({
     @media (min-width: ${breakpoints.md}px) {
       font-size: 4rem;
     }
+
+    &.page-title {
+      font-weight: 700;
+      line-height: 93.75%;
+      font-size: 6rem;
+
+      @media (min-width: ${breakpoints.md}px) {
+        font-size: 8rem;
+      }
+    }
+  }
+
+  .extra-title {
+    font-weight: 700;
+    line-height: 104%;
+    letter-spacing: 0.12rem;
+    font-size: 3rem;
+    color: ${isDarkMode ? black : white};
+    text-shadow: ${!isDarkMode
+      ? `-1px 1px 2px #000,
+            1px 1px 2px #000,
+            1px -1px 0 #000;
+  -1px -1px 0 #000`
+      : ` -1px 1px 2px #fff,
+            1px 1px 2px #fff,
+  1px -1px 0 #fff;
+  -1px -1px 0 #fff`};
+
+    @media (min-width: ${breakpoints.md}px) {
+      font-size: 6rem;
+    }
   }
 
   .sub-title {
