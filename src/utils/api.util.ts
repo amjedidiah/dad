@@ -48,7 +48,9 @@ function validateRequestParams(
   const missingRequiredParamFields = requiredArray.filter((field) =>
     param === "query" || param === "headers"
       ? !(field in req[param])
-      : !req.body[field]
+      : req.body[field] === null ||
+        req.body[field] === undefined ||
+        req.body[field] === ""
   );
   const message = (
     {

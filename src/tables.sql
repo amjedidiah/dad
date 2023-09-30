@@ -7,15 +7,16 @@
 -- Users Table Schema
 CREATE TABLE users (
   id VARCHAR(255) PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
+  name VARCHAR(255),
   email VARCHAR(255) NOT NULL,
   phone_number VARCHAR(255),
   image_url VARCHAR(255),
+  is_subscribed BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
   
   -- Add a unique constraint on email and phone_number
-  CONSTRAINT user_contact_info_unique UNIQUE (email, phone_number)
+  CONSTRAINT user_contact_info_unique UNIQUE (email)
 );
 
 -- Books Table Schema
@@ -86,7 +87,7 @@ CREATE TABLE cart (
 
   FOREIGN KEY (content_id) REFERENCES books(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  -- Add a unique constraint on user_id and book_id
+  -- Add a unique constraint on user_id and content_id
   CONSTRAINT cart_user_book_unique UNIQUE (user_id, content_id)
 );
 

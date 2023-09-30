@@ -8,19 +8,49 @@ import {
   footerFormSuccess,
 } from "@/utils/constants";
 import Form from "@/components/shared/form";
+import { useSelector } from "react-redux";
+import {
+  selectUserIsSubscribed,
+  selectUserStatus,
+  userSubscribe,
+} from "@/redux/slices/user.slice";
+import { useMagic } from "@/context/magic.context";
+import { useAppDispatch, useAppSelector } from "@/hooks/types";
 
 export default function Footer() {
+  const { magicLogin } = useMagic();
   const { isDarkMode } = useTheme();
+  const isSubscribed = useSelector(selectUserIsSubscribed);
+  const dispatch = useAppDispatch();
+  const userStatus = useAppSelector(selectUserStatus);
+  const updatedFooterFormButtons = footerFormButtons.map(
+    (button) => ({
+      ...button,
+      value: isSubscribed ? "Unsubscribe" : "Subscribe",
+    }),
+    [isSubscribed]
+  );
+  const handleSubscribe = async (data: any) => {
+    const { message: userMessage, ...userData } = data;
+    await magicLogin(userData);
+
+    await dispatch(userSubscribe(data.email));
+
+    const { value, message } = userStatus;
+    if (value === "rejected") throw message;
+
+    return message;
+  };
 
   return (
-    <footer className="bottom-0 left-0 right-0 border-white border-t bg-black mt-44 pb-12">
+    <footer className="bottom-0 left-0 right-0 border-white border-t bg-black py-8 mt-44">
       <div className="container">
         <div
           className={cx(
             {
               "border border-white": isDarkMode,
             },
-            "pt-24 px-8 mdx:px-12 relative -top-24 bg-black"
+            "py-16 px-8 mdx:px-12 relative -top-24 bg-black"
           )}
         >
           <div className="flex flex-wrap items-center gap-10">
@@ -28,12 +58,12 @@ export default function Footer() {
               Subscribe to life-changing messages
             </h4>
             <Form
-              buttons={footerFormButtons}
+              buttons={updatedFooterFormButtons}
               fields={footerFormFields}
-              onSubmit={console.log}
+              onSubmit={handleSubscribe}
               praise={footerFormPraise}
               successMessage={footerFormSuccess}
-              className="flex-1 grid gap-y-5 sm:grid-cols-[3fr_2fr] sm:grid-rows-[auto_auto] sm:[&_.group-button]:row-start-1 sm:[&_.group-button]:row-end-2  sm:[&_.group-button]:col-start-2  sm:[&_.group-button]:col-end-3 sm:[&_.group-message]:col-start-1 sm:[&_.group-message]:col-end-3 [&_button[type=submit]]:bg-white [&_button[type=submit]]:border [&_button[type=submit]]:border-white [&_button[type=submit]]:text-black [&_button[type=submit]_svg_path]:stroke-black"
+              className="flex-1 grid gap-y-5 sm:grid-cols-[3fr_2fr] sm:grid-rows-[auto_auto] [&_[type=submit]]:h-[42px] sm:[&_.group-button]:row-start-1 sm:[&_.group-button]:row-end-2  sm:[&_.group-button]:col-start-2 sm:[&_.group-button]:col-end-3 sm:[&_.group-message]:col-start-1 sm:[&_.group-message]:col-end-3 [&_button[type=submit]]:bg-white [&_button[type=submit]]:border [&_button[type=submit]]:border-white [&_button[type=submit]]:text-black [&_button[type=submit]_svg_path]:stroke-black [&_span.info.helper]:text-white"
             />
           </div>
         </div>

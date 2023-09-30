@@ -73,11 +73,10 @@ export default function Content({ type, contentId, showReview }: Props) {
         isLoading: cartStatus.value === "pending",
       } as IButton);
     else
-      buttons.unshift({
-        key: `listen to ${type}`,
-        value: `Listen To ${type}`,
+      buttons.push({
+        key: `listen`,
+        value: `Listen`,
         className: "rounded",
-        outlined: true,
         onClick: () => window.open(content.audio_url, "_blank"),
       } as IButton);
 
@@ -129,7 +128,7 @@ export default function Content({ type, contentId, showReview }: Props) {
                   <Image
                     src={content.front_cover}
                     alt="front cover"
-                    className="group-hover:hidden"
+                    className={cx({ "group-hover:hidden": isBook })}
                     fill
                     sizes="100%"
                   />

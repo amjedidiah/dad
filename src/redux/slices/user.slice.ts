@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { AppDispatch, CommonStateStatus, RootState } from "@/redux/store";
 
 export type UserData = {
@@ -7,6 +12,7 @@ export type UserData = {
   email: string;
   phoneNumber?: string;
   imageUrl?: string;
+  isSubscribed?: boolean;
 };
 
 export type UserState = {
@@ -45,6 +51,11 @@ const userSlice = createSlice({
       .addCase(userCrupdate.fulfilled, userSlice.caseReducers.userSet)
       .addCase(userCrupdate.rejected, (state, action) => {
         state.status = { value: "rejected", message: action.error.message };
+      })
+      .addCase(userSubscribe.pending, userSlice.caseReducers.userActionPending)
+      .addCase(userSubscribe.fulfilled, userSlice.caseReducers.userSet)
+      .addCase(userSubscribe.rejected, (state, action) => {
+        state.status = { value: "rejected", message: action.error.message };
       });
   },
 });
@@ -63,8 +74,20 @@ export const userFetchById = createAsyncThunk<
       if (thunkApi.getState().user.activeUser) return;
       if (error) throw message;
 
-      const { created_at, updated_at, ...user } = data;
-      return user;
+      const {
+        created_at,
+        updated_at,
+        phone_number,
+        image_url,
+        is_subscribed,
+        ...user
+      } = data;
+      return {
+        ...user,
+        phoneNumber: phone_number,
+        imageUrl: image_url,
+        isSubscribed: is_subscribed,
+      };
     })
     .catch((error) => {
       throw error;
@@ -90,8 +113,60 @@ export const userCrupdate = createAsyncThunk<
     .then(({ data, message, error }) => {
       if (error) throw message;
 
-      const { created_at, updated_at, ...user } = data;
-      return user;
+      const {
+        created_at,
+        updated_at,
+        phone_number,
+        image_url,
+        is_subscribed,
+        ...user
+      } = data;
+      return {
+        ...user,
+        phoneNumber: phone_number,
+        imageUrl: image_url,
+        isSubscribed: is_subscribed,
+      };
+    })
+    .catch((error) => {
+      throw error;
+    })
+);
+
+export const userSubscribe = createAsyncThunk<
+  UserState["activeUser"],
+  string,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>("user/subscribe", (email, thunkApi) =>
+  fetch("/api/users/subscribe", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  })
+    .then((res) => res.json())
+    .then(({ data, message, error }) => {
+      if (error) throw message;
+
+      const {
+        created_at,
+        updated_at,
+        phone_number,
+        image_url,
+        is_subscribed,
+        ...user
+      } = data;
+
+      return {
+        ...user,
+        phoneNumber: phone_number,
+        imageUrl: image_url,
+        isSubscribed: is_subscribed,
+      };
     })
     .catch((error) => {
       throw error;
@@ -104,5 +179,10 @@ export const selectActiveUser = ({ user: { activeUser } }: RootState) =>
   activeUser;
 
 export const selectUserStatus = ({ user: { status } }: RootState) => status;
+
+export const selectUserIsSubscribed = createSelector(
+  [selectActiveUser],
+  (activeUser) => Boolean(activeUser?.isSubscribed)
+);
 
 export default userSlice.reducer;

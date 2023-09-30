@@ -191,7 +191,7 @@ export const reviewFormSuccess = `Your review has been recorded. You will get fe
 
 export const loginFormSuccess = `You are logged in.`;
 
-export const footerFormSuccess = `You have been subscribed to receive life changing articles once every week from Dr. Passy`;
+export const footerFormSuccess = `Subscription status updated for life changing weekly articles from Dr. Passy`;
 
 export const ministries = [
   { key: "Successful family" },

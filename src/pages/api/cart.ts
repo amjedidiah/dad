@@ -35,21 +35,23 @@ export default async function handler(
     const dbString = (() => {
       switch (req.method) {
         case HttpMethods.POST:
-          return db`INSERT INTO cart (user_id, book_id, quantity) VALUES (${user_id}, ${book_id}, ${quantity})`;
+          return db`INSERT INTO cart (user_id, content_id, quantity) VALUES (${user_id}, ${book_id}, ${quantity})`;
         case HttpMethods.DELETE:
-          return db`DELETE FROM cart WHERE user_id = ${user_id} AND book_id = ${book_id};`;
+          return db`DELETE FROM cart WHERE user_id = ${user_id} AND content_id = ${book_id};`;
         case HttpMethods.PATCH:
-          return db`UPDATE cart SET quantity = ${quantity} WHERE user_id = ${user_id} AND book_id = ${book_id};`;
+          return db`UPDATE cart SET quantity = ${quantity} WHERE user_id = ${user_id} AND content_id = ${book_id};`;
         case HttpMethods.GET:
           return db`SELECT * FROM cart WHERE user_id = ${user_id};`;
         case HttpMethods.PUT: {
-          return req.body.items
-            ? db`${req.body.items.map(
-                (item: any) =>
-                  db`INSERT INTO cart (user_id, book_id, quantity) VALUES (${user_id}, ${item.id}, ${item.quantity})
-                  ON CONFLICT (user_id, book_id) DO UPDATE SET quantity = ${item.quantity}`
-              )}`
-            : db`DELETE FROM cart WHERE user_id = ${user_id};`;
+          if (!req.body.items)
+            return db`DELETE FROM cart WHERE user_id = ${user_id};`;
+          else if (req.body.items.length > 0)
+            return db`${req.body.items.map(
+              (item: any) =>
+                db`INSERT INTO cart (user_id, content_id, quantity) VALUES (${user_id}, ${item.id}, ${item.quantity})
+                  ON CONFLICT (user_id, content_id) DO UPDATE SET quantity = ${item.quantity}`
+            )}`;
+          else return db`SELECT * FROM cart WHERE user_id = ${user_id};`;
         }
       }
     })() as PendingQuery<Row[]>;

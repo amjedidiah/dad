@@ -6,25 +6,23 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  try {
-    const { ids } = req.body;
+  const { email } = req.body;
 
+  try {
     validateRequest(req, {
-      methods: new Set([HttpMethods.POST]),
-      requiredFields: ["ids"],
+      methods: new Set([HttpMethods.PATCH]),
+      requiredFields: ["email"],
     });
 
-    const returnedBooks = ids.length
-      ? await db` 
-        SELECT * FROM books
-        WHERE id IN (${ids})
-        `
-      : [];
+    const userQuery =
+      await db`UPDATE users SET is_subscribed = CASE WHEN is_subscribed = true THEN false ELSE true END WHERE email = ${email} RETURNING *`;
 
     res.status(HttpStatus.OK).json({
-      message: "Books returned successfully",
+      data: userQuery[0],
+      message: `${
+        userQuery[0]?.is_subscribed ? "Subscribed" : "Unsubscribed"
+      } successfully`,
       error: false,
-      data: returnedBooks,
     });
   } catch (error) {
     console.error(error);

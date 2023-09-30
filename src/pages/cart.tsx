@@ -42,9 +42,9 @@ export default function Cart() {
     data: any[];
     message: string;
     error: boolean;
-  }>(items.length ? "/api/book" : null, (arg) =>
+  }>(items.length ? "/api/books/get" : null, (arg) =>
     fetch(arg, {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
