@@ -4,7 +4,7 @@ import { MouseEventHandler, useCallback } from "react";
 import { cx } from "@emotion/css";
 
 type Props = {
-  value: number;
+  value?: number;
   isActive?: boolean;
   onRating?: (rating: number) => void;
 };

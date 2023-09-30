@@ -50,7 +50,7 @@ export default async function handler(
     }
 
     const userQuery =
-      await db`INSERT INTO ratings (user_id, content_id, type, review, rating)
+      await db`INSERT INTO reviews (user_id, content_id, type, review, rating)
           VALUES (${issuer}, ${id}, ${type}, ${message || ""}, ${rating})
         `;
 

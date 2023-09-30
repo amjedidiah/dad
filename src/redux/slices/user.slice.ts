@@ -69,7 +69,7 @@ export const userFetchById = createAsyncThunk<
     state: RootState;
   }
 >("user/fetchById", (userId, thunkApi) =>
-  fetch(`/api/user/${userId}`)
+  fetch(`/api/users/${userId}`)
     .then((res) => res.json())
     .then(({ data, error, message }) => {
       if (thunkApi.getState().user.activeUser) return;
@@ -91,7 +91,7 @@ export const userCrupdate = createAsyncThunk<
     state: RootState;
   }
 >("user/crupdate", (user, thunkApi) =>
-  fetch("/api/user/crupdate", {
+  fetch("/api/users/crupdate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

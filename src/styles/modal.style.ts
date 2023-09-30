@@ -20,7 +20,7 @@ const styles: Interpolation<Theme> = ({ isDarkMode }) => css`
       margin: 0 auto;
       padding: 1.5rem clamp(2rem, 4.76%, 4.5rem);
       max-height: 90vh;
-      overflow-y: scroll;
+      overflow-y: auto;
 
       &.full {
         width: 100%;
