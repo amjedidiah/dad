@@ -34,6 +34,10 @@ const styles: Interpolation<Theme> = ({
 
     .field {
       border: 1px solid ${greyLighter};
+    }
+
+    .field,
+    .field-tel {
       padding: 0.5rem;
       font-size: 1rem;
       background: transparent;
@@ -62,6 +66,35 @@ const styles: Interpolation<Theme> = ({
       &[aria-invalid="true"] {
         border-color: ${warning};
       }
+
+      &[readonly] {
+        -webkit-box-shadow: 0 0 0 1000px ${isDarkMode ? grey1 : greyLighter}
+          inset;
+      }
+    }
+
+    .field-tel input {
+      padding: 0 0.5rem;
+      background: transparent;
+
+      &:hover,
+      &:focus,
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus {
+        outline: none;
+        -webkit-box-shadow: 0 0 0 1000px ${isDarkMode ? black : white} inset;
+      }
+
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus {
+        -webkit-text-fill-color: ${isDarkMode ? white : black};
+      }
+
+      &::-webkit-input-placeholder {
+        color: ${isDarkMode ? grey1 : secondGrey};
+      }
     }
   }
   .helper {
@@ -78,6 +111,9 @@ const styles: Interpolation<Theme> = ({
     }
     &.warning {
       color: ${warning};
+    }
+    &.info {
+      color: ${isDarkMode ? white : black};
     }
     &.praise {
       color: ${primary};

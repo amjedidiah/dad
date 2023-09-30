@@ -1,14 +1,22 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Control,
+  DefaultValues,
   FieldValues,
+  Path,
+  PathValue,
   SubmitHandler,
   UseFormReturn,
+  UseFormSetValue,
   useForm,
 } from "react-hook-form";
 import {
   IFormResponse,
   IFormHelperTypes,
-} from "@/components/shared/form/index.form";
+  IFormField,
+} from "@/components/shared/form";
+import { useAppSelector } from "./types";
+import { selectActiveUser } from "@/redux/slices/user.slice";
 
 type IUseSharedForm<F extends FieldValues> = Pick<
   UseFormReturn<F>,
@@ -17,19 +25,43 @@ type IUseSharedForm<F extends FieldValues> = Pick<
   submitForm: any;
   formResponse?: IFormResponse;
   shouldPraise: boolean;
+  setValue: UseFormSetValue<F>;
+  control: Control<F, any>;
+  showSwitchUserText: boolean;
 };
 
 export default function useSharedForm<F extends FieldValues>(
   onSubmit: SubmitHandler<F>,
-  successMessage: string
+  successMessage: string,
+  fields: IFormField<F>[],
+  defaultValues?: DefaultValues<F>
 ): IUseSharedForm<F> {
-  const { register, handleSubmit, formState, reset } = useForm<F>({
-    mode: "onChange",
-  });
+  const userData = useAppSelector(selectActiveUser);
+  const updatedFormValues = useMemo(
+    () => ({
+      ...defaultValues,
+      ...userData,
+    }),
+    [defaultValues, userData]
+  ) as DefaultValues<F>;
+  const { register, handleSubmit, formState, reset, setValue, control, watch } =
+    useForm<F>({
+      mode: "onChange",
+      defaultValues: updatedFormValues,
+    });
   const [formResponse, setFormResponse] = useState<IFormResponse | undefined>();
   const shouldPraise = useMemo(
     () => formState.isValid && !formResponse,
     [formState.isValid, formResponse]
+  );
+  const formFieldsObject = watch();
+  const formFieldNames = useMemo(
+    () => Object.keys(formFieldsObject),
+    [formFieldsObject]
+  );
+  const showSwitchUserText = useMemo(
+    () => !!userData?.email,
+    [userData?.email]
   );
 
   const submitForm = useCallback(
@@ -62,11 +94,26 @@ export default function useSharedForm<F extends FieldValues>(
     [handleSubmit, onSubmit, reset, successMessage]
   );
 
+  useEffect(() => {
+    if (!formFieldNames.length || !userData?.email) return;
+    formFieldNames.forEach((fieldName) => {
+      const value = userData[fieldName as keyof typeof userData] as PathValue<
+        F,
+        Path<F>
+      >;
+      if (value) setValue(fieldName as Path<F>, value);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formFieldNames.length, setValue, userData]);
+
   return {
     register,
     formState,
     submitForm,
     formResponse,
     shouldPraise,
+    setValue,
+    control,
+    showSwitchUserText,
   };
 }

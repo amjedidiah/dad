@@ -31,8 +31,8 @@ const styles: Interpolation<Theme> = ({
       text-transform: capitalize;
       color: ${isDarkMode ? white : grey1};
       font-size: 1.5rem;
-      font-weight: 500;
       line-height: 1.5rem;
+      font-weight: 500;
     }
   }
 

@@ -28,6 +28,7 @@ const initTheme = {
     grey2: "#808080",
     secondGrey: "#999999",
     greyLighter: "#e6e6e6",
+    gold: "#F3B619",
   },
   font,
 };
