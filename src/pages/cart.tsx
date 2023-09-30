@@ -88,7 +88,7 @@ export default function Cart() {
               <ShouldRender
                 if={
                   (requestError && !isLoading && !cartItems.length) ||
-                  (requestError && !isLoading && !cartItems.length)
+                  (!requestError && !isLoading && !cartItems.length)
                 }
               >
                 <div className="flex flex-col items-center justify-center h-fit p-8">

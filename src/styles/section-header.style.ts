@@ -25,7 +25,8 @@ const styles: Interpolation<Theme> = ({
     &.page-title {
       font-weight: 700;
       line-height: 93.75%;
-      font-size: 6rem;
+      font-size: 4rem;
+      max-width: unset;
 
       @media (min-width: ${breakpoints.md}px) {
         font-size: 8rem;

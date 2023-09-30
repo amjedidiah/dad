@@ -28,6 +28,8 @@ type Props = {
   isLoading: boolean;
   back_cover?: string;
   front_cover: string;
+  duration?: string;
+  recorded_at?: string;
 };
 
 export default function ContentItem({
@@ -126,14 +128,36 @@ export default function ContentItem({
           </ShouldRender>
         </div>
         <div className="flex flex-wrap items-center justify-between font-medium theme-text gap-4">
-          <div className="grid gap-2">
+          <div className="grid gap-2 w-full">
             <ShouldRender if={!title}>
               <p className="w-40 h-8 bg-greyLoading animate-pulse" />
             </ShouldRender>
             <ShouldRender if={!!title}>
               <p className="text-2xl leading-8">{title}</p>
             </ShouldRender>
-            {rest.average_rating ?? <Rating value={rest.average_rating} />}
+            <ShouldRender if={isBook}>
+              {rest.average_rating ?? <Rating value={rest.average_rating} />}
+            </ShouldRender>
+            <ShouldRender if={!isBook}>
+              <p className="flex flex-wrap justify-between items-center">
+                {rest.recorded_at ? (
+                  <span>
+                    {new Date(rest.recorded_at).toLocaleDateString("en-NG", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
+                ) : (
+                  <span className="h-5 w-32 flex-1 animate-pulse bg-greyLoading rounded" />
+                )}
+                {rest.duration ? (
+                  <span>{rest.duration}</span>
+                ) : (
+                  <span className="h-5 w-60 flex-1 animate-pulse bg-greyLoading rounded" />
+                )}
+              </p>
+            </ShouldRender>
           </div>
           {rest.price && (
             <p className="leading-5">
