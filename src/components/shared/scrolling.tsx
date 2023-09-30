@@ -3,7 +3,7 @@ import Image from "next/image";
 import Marquee from "react-fast-marquee";
 import styles from "@/styles/scrolling.style";
 
-type Props = {
+export type ScrollingProps = {
   items: Array<{
     key: string;
     Component?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
@@ -13,7 +13,11 @@ type Props = {
   delay?: number;
 };
 
-export default function Scrolling({ items, speed = 75, delay = 0 }: Props) {
+export default function Scrolling({
+  items,
+  speed = 75,
+  delay = 0,
+}: ScrollingProps) {
   return (
     <ul css={styles}>
       <Marquee pauseOnHover speed={speed} delay={delay}>

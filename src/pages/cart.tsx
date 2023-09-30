@@ -80,6 +80,7 @@ export default function Cart() {
           <SectionHeader
             title="Cart"
             subtitle="Welcome to your personalized cart"
+            pageTitle
           />
 
           <article className="flex flex-wrap gap-16 xl:gap-32 mt-8">
