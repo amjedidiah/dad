@@ -45,7 +45,7 @@ export default function Content({ type, contentId, showReview }: Props) {
   const { toggleModal } = useContext(ModalContext);
   const isBook = type === "book";
   const headerTitle = isBook ? "His Best Selling Book" : "His Latest Message";
-  const headerSubtitle = isBook ? "Live changing read" : "Fresh manner";
+  const headerSubtitle = isBook ? "A live changing read" : "Fresh manner";
   const typeButtons = useMemo(() => {
     const buttons = [
       {

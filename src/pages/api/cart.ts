@@ -53,6 +53,8 @@ export default async function handler(
             )}`;
           else return db`SELECT * FROM cart WHERE user_id = ${user_id};`;
         }
+        default:
+          return db`SELECT * FROM cart WHERE user_id = ${user_id};`;
       }
     })() as PendingQuery<Row[]>;
     const items = await db`${dbString}`;
@@ -78,6 +80,7 @@ export default async function handler(
       error: false,
     });
   } catch (error) {
+    console.log("cartw");
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
