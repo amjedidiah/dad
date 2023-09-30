@@ -42,8 +42,15 @@ export default async function handler(
           return db`UPDATE cart SET quantity = ${quantity} WHERE user_id = ${user_id} AND book_id = ${book_id};`;
         case HttpMethods.GET:
           return db`SELECT * FROM cart WHERE user_id = ${user_id};`;
-        case HttpMethods.PUT:
-          return db`DELETE FROM cart WHERE user_id = ${user_id};`;
+        case HttpMethods.PUT: {
+          return req.body.items
+            ? db`${req.body.items.map(
+                (item: any) =>
+                  db`INSERT INTO cart (user_id, book_id, quantity) VALUES (${user_id}, ${item.id}, ${item.quantity})
+                  ON CONFLICT (user_id, book_id) DO UPDATE SET quantity = ${item.quantity}`
+              )}`
+            : db`DELETE FROM cart WHERE user_id = ${user_id};`;
+        }
       }
     })() as PendingQuery<Row[]>;
     const items = await db`${dbString}`;

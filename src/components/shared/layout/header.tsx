@@ -68,17 +68,19 @@ export default function Header() {
                       <span>
                         <CartIcon />
                       </span>
-                      <span
-                        className={cx(
-                          {
-                            "bg-black text-white": !isDarkMode,
-                            "bg-white text-black": isDarkMode,
-                          },
-                          "absolute flex items-center justify-center -mt-4 -left-3 p-1 rounded-full w-4 h-4"
-                        )}
-                      >
-                        {cartItemsCount}
-                      </span>
+                      {cartItemsCount > 0 && (
+                        <span
+                          className={cx(
+                            {
+                              "bg-black text-white": !isDarkMode,
+                              "bg-white text-black": isDarkMode,
+                            },
+                            "absolute flex items-center justify-center -mt-4 -left-3 p-1 rounded-full w-4 h-4"
+                          )}
+                        >
+                          {cartItemsCount}
+                        </span>
+                      )}
                     </div>
                   )}
                 </Link>

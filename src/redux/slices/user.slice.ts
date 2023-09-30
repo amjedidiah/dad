@@ -23,8 +23,12 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    userActionPending(state) {
+      state.status = { value: "pending" };
+    },
     userSet(state, action: PayloadAction<UserState["activeUser"]>) {
-      state.activeUser = action.payload;
+      state.status = { value: "idle" };
+      if (action.payload) state.activeUser = action.payload;
     },
     userUnset(state) {
       state.activeUser = undefined;
@@ -32,29 +36,13 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(userFetchById.pending, (state) => {
-        state.status = { value: "pending" };
-      })
-      .addCase(
-        userFetchById.fulfilled,
-        (state, action: PayloadAction<UserState["activeUser"]>) => {
-          state.status = { value: "idle" };
-          if (action.payload) state.activeUser = action.payload;
-        }
-      )
+      .addCase(userFetchById.pending, userSlice.caseReducers.userActionPending)
+      .addCase(userFetchById.fulfilled, userSlice.caseReducers.userSet)
       .addCase(userFetchById.rejected, (state, action) => {
         state.status = { value: "rejected", message: action.error.message };
       })
-      .addCase(userCrupdate.pending, (state) => {
-        state.status = { value: "pending" };
-      })
-      .addCase(
-        userCrupdate.fulfilled,
-        (state, action: PayloadAction<UserState["activeUser"]>) => {
-          state.status = { value: "idle" };
-          if (action.payload) state.activeUser = action.payload;
-        }
-      )
+      .addCase(userCrupdate.pending, userSlice.caseReducers.userActionPending)
+      .addCase(userCrupdate.fulfilled, userSlice.caseReducers.userSet)
       .addCase(userCrupdate.rejected, (state, action) => {
         state.status = { value: "rejected", message: action.error.message };
       });

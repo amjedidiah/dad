@@ -46,7 +46,7 @@ const cartSlice = createSlice({
       const id = action.payload;
       delete state.items[id];
     },
-    cartClear(state) {
+    cartEmpty(state) {
       state.items = initialState.items;
       state.status = initialState.status;
     },
@@ -57,7 +57,7 @@ const cartSlice = createSlice({
       const { id, quantity } = action.payload;
       state.items[id].quantity = quantity;
     },
-    cartUpdate(state, action: PayloadAction<CartItem[]>) {
+    cartRefresh(state, action: PayloadAction<CartItem[]>) {
       const dbItems = action.payload.reduce((acc, item) => {
         acc[item.id] = item;
         return acc;
@@ -82,6 +82,8 @@ const cartSlice = createSlice({
         state.items[id] = { id, quantity };
         state.status = { value: "idle", message: action.error.message };
       })
+      .addCase(cartClear.pending, cartSlice.caseReducers.cartActionPending)
+      .addCase(cartClear.fulfilled, cartSlice.caseReducers.cartActionDone)
       .addCase(cartUpdate.pending, cartSlice.caseReducers.cartActionPending)
       .addCase(cartUpdate.fulfilled, cartSlice.caseReducers.cartActionDone)
       .addCase(cartUpdate.rejected, (state, action) => {
@@ -93,15 +95,18 @@ const cartSlice = createSlice({
       .addCase(cartLoad.fulfilled, cartSlice.caseReducers.cartActionDone)
       .addCase(cartLoad.rejected, (state, action) => {
         state.status = { value: "idle", message: action.error.message };
-      })
-      .addCase(cartClear.pending, cartSlice.caseReducers.cartActionPending)
-      .addCase(cartClear.fulfilled, cartSlice.caseReducers.cartActionDone);
+      });
   },
 });
 
 function cartRequest(
   method: HTTP_METHOD,
-  value: { userId: string; bookId?: string; quantity?: number }
+  value: {
+    userId: string;
+    bookId?: string;
+    quantity?: number;
+    items?: CartItem[];
+  }
 ) {
   const queryParams = new URLSearchParams({
     userId: value.userId,
@@ -112,7 +117,10 @@ function cartRequest(
     headers: {
       "Content-Type": "application/json",
     },
-    body: method !== "DELETE" ? JSON.stringify(value) : undefined,
+    body:
+      method === "DELETE" || method === "GET"
+        ? undefined
+        : JSON.stringify(value),
   })
     .then((res) => res.json())
     .then(({ data, message, error }) => {
@@ -136,7 +144,7 @@ export const cartAdd = createAsyncThunk<
   const item = { id, quantity: 1 };
 
   // add item to redux store optimistically
-  dispatch(cartSlice.actions.cartAddItem(item));
+  await dispatch(cartSlice.actions.cartAddItem(item));
 
   // if not logged in, return
   if (!isLoggedIn) return;
@@ -160,7 +168,7 @@ export const cartRemove = createAsyncThunk<
   const isLoggedIn = !!userId;
 
   // remove item from redux store optimistically
-  dispatch(cartSlice.actions.cartRemoveItem(id));
+  await dispatch(cartSlice.actions.cartRemoveItem(id));
 
   // if not logged in, return
   if (!isLoggedIn) return;
@@ -182,7 +190,7 @@ export const cartClear = createAsyncThunk<
   const cartItems = getState().cart.items;
 
   // clear items from redux store optimistically
-  dispatch(cartSlice.actions.cartClear());
+  await dispatch(cartSlice.actions.cartEmpty());
 
   // if not logged in, return
   if (!isLoggedIn) return;
@@ -191,7 +199,7 @@ export const cartClear = createAsyncThunk<
     // if logged in, send request to server
     await cartRequest("PUT", { userId });
   } catch (error) {
-    dispatch(cartSlice.actions.cartRestore(cartItems));
+    await dispatch(cartSlice.actions.cartRestore(cartItems));
   }
 });
 
@@ -207,12 +215,12 @@ export const cartUpdate = createAsyncThunk<
   const isLoggedIn = !!userId;
 
   if (quantity === 0) {
-    dispatch(cartRemove({ id, quantity }));
+    await dispatch(cartRemove({ id, quantity }));
     return;
   }
 
   // update item in redux store optimistically
-  dispatch(cartSlice.actions.cartUpdateItem({ id, quantity }));
+  await dispatch(cartSlice.actions.cartUpdateItem({ id, quantity }));
 
   // if not logged in, return
   if (!isLoggedIn) return;
@@ -231,6 +239,7 @@ export const cartLoad = createAsyncThunk<
 >("cart/cartLoad", async (_, { dispatch, getState }) => {
   const userId = getState().user.activeUser?.id;
   const isLoggedIn = !!userId;
+  const initCartItems = getState().cart.items;
 
   if (!isLoggedIn) return;
 
@@ -238,13 +247,24 @@ export const cartLoad = createAsyncThunk<
   const items: CartItem[] = await cartRequest("GET", { userId });
 
   // update items in redux store
-  await dispatch(cartSlice.actions.cartUpdate(items));
+  await dispatch(cartSlice.actions.cartRefresh(items));
+
+  try {
+    const newItems = Object.values(getState().cart.items);
+    // batch update items in server
+    await cartRequest("PUT", { userId, items: newItems });
+  } catch (error) {
+    await dispatch(cartSlice.actions.cartRestore(initCartItems));
+  }
 });
 
 export const selectCartStatus = ({ cart: { status } }: RootState) => status;
 
-export const selectCartItems = (state: RootState) =>
-  Object.values(state.cart.items);
+const selectCartItemsMap = ({ cart: { items } }: RootState) => items;
+
+export const selectCartItems = createSelector([selectCartItemsMap], (items) =>
+  Object.values(items)
+);
 
 export const selectCartItemsCount = createSelector([selectCartItems], (items) =>
   items.reduce((acc, item) => acc + item.quantity, 0)

@@ -3,7 +3,13 @@ import RootLayout from "@/components/shared/layout/root-layout";
 import Rating from "@/components/shared/rating";
 import SectionHeader from "@/components/shared/section-header";
 import ShouldRender from "@/components/shared/should-render";
+import { useAppDispatch, useAppSelector } from "@/hooks/types";
 import { DeleteIcon } from "@/icons";
+import {
+  cartUpdate,
+  selectCartItems,
+  selectCartStatus,
+} from "@/redux/slices/cart.slice";
 import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 import { CldOgImage } from "next-cloudinary";
@@ -14,6 +20,7 @@ import {
   AiOutlinePlus,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
+import useSWR from "swr";
 
 type CartItem = {
   title: string;
@@ -23,33 +30,45 @@ type CartItem = {
   imageUrl: string;
 };
 
-const cartItems: CartItem[] = [
-  {
-    title: "The Power of the Mind",
-    rating: 5,
-    price: 50,
-    quantity: 2,
-    imageUrl: "/images/books/the-royal-bride/front_cover.webp",
-  },
-  {
-    title: "The Power of the Mind",
-    rating: 5,
-    price: 50,
-    quantity: 2,
-    imageUrl: "/images/books/the-royal-bride/front_cover.webp",
-  },
-];
-
 export default function Cart() {
   const {
     isDarkMode,
     colors: { white, secondGrey },
   } = useTheme();
+  const items = useAppSelector(selectCartItems);
+  const cartIsLoading = useAppSelector(selectCartStatus).value === "pending";
+  const dispatch = useAppDispatch();
+  const { data, isLoading, error } = useSWR<{
+    data: any[];
+    message: string;
+    error: boolean;
+  }>(items.length ? "/api/book" : null, (arg) =>
+    fetch(arg, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ids: items.map((item) => item.id) }),
+    }).then((res) => res.json())
+  );
+  const prunedData = (data?.data || []).map((item) => ({
+    id: item.id,
+    title: item.title,
+    rating: item.average_rating,
+    price: item.price,
+    imageUrl: item.front_cover,
+  }));
+  const cartItems = items.map((item) => ({
+    ...item,
+    ...prunedData?.find(({ id }: any) => id == item.id),
+  }));
   const totalQty = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalCost = cartItems.reduce(
-    (acc, item) => acc + item.quantity * item.price,
+    (acc, item) => acc + (item.quantity * item.price || 0),
     0
   );
+  const requestError = data?.error || !!error;
+
   return (
     <RootLayout
       title="Cart | Dr Passy Amaraegbu | Living a life of purity, power and prosperity"
@@ -65,32 +84,52 @@ export default function Cart() {
 
           <article className="flex flex-wrap gap-16 xl:gap-32 mt-8">
             <div className="flex-1 grid gap-6">
-              <ShouldRender if={!!cartItems.length}>
-                {cartItems.map((item) => (
+              <ShouldRender if={!!cartItems.length || isLoading}>
+                {(cartItems.length
+                  ? cartItems
+                  : Array.from({ length: 3 }).fill(0)
+                ).map((item: any) => (
                   <div
-                    key={item.title}
+                    key={item.id || Math.random()}
                     className="flex flex-wrap border border-greyLighter p-6 gap-8"
                   >
-                    <div className="w-[2.45in] h-[3.675in] relative group border border-danger">
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.title}
-                        fill
-                        sizes="100%"
-                      />
-                    </div>
+                    <ShouldRender if={isLoading}>
+                      <div className="w-[2.45in] h-[3.675in] animate-pulse bg-greyLoading rounded" />
+                    </ShouldRender>
+                    <ShouldRender if={!isLoading}>
+                      <div className="w-[2.45in] h-[3.675in] relative group border border-danger">
+                        <Image
+                          src={item.imageUrl || "/images/book.png"}
+                          alt={item.title || "Book"}
+                          fill
+                          sizes="100%"
+                        />
+                      </div>
+                    </ShouldRender>
                     <div className="min-w-[320px] flex flex-col flex-1 gap-16 justify-between">
                       <div className="flex gap-8 justify-between theme-text">
                         <div className="grid gap-4 flex-1">
-                          <h4 className="text-2xl font-medium">{item.title}</h4>
+                          <ShouldRender if={isLoading}>
+                            <div className="w-44 h-8 animate-pulse bg-greyLoading rounded" />
+                          </ShouldRender>
+                          <ShouldRender if={!isLoading}>
+                            <h4 className="text-2xl font-medium">
+                              {item.title}
+                            </h4>
+                          </ShouldRender>
                           <Rating value={item.rating} />
                         </div>
-                        <p className="text-2xl font-medium">
-                          {new Intl.NumberFormat("en-US", {
-                            style: "currency",
-                            currency: "USD",
-                          }).format(item.price)}
-                        </p>
+                        <ShouldRender if={isLoading}>
+                          <p className="w-16 h-10 animate-pulse bg-greyLoading rounded" />
+                        </ShouldRender>
+                        <ShouldRender if={!isLoading}>
+                          <p className="text-2xl font-medium">
+                            {new Intl.NumberFormat("en-US", {
+                              style: "currency",
+                              currency: "USD",
+                            }).format(item.price || 0)}
+                          </p>
+                        </ShouldRender>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex gap-8 items-center">
@@ -109,37 +148,70 @@ export default function Cart() {
                             <Button
                               key="cart-minus"
                               value={(<AiOutlineMinus />) as any}
-                              className="group [&_span.text]:text-2xl "
+                              className="group [&_span.text]:text-2xl"
                               noIcon
+                              disabled={isLoading || cartIsLoading}
+                              onClick={() =>
+                                dispatch(
+                                  cartUpdate({
+                                    id: item.id,
+                                    quantity: item.quantity - 1,
+                                  })
+                                )
+                              }
                             />
-                            <span
-                              className={cx(
-                                {
-                                  "text-greyLighter": isDarkMode,
-                                  "text-white": !isDarkMode,
-                                },
-                                "py-1 px-4 font-medium text-2xl"
-                              )}
-                            >
-                              {item.quantity}
-                            </span>
+                            <ShouldRender if={!isLoading}>
+                              <span
+                                className={cx(
+                                  {
+                                    "text-greyLighter": isDarkMode,
+                                    "text-white": !isDarkMode,
+                                  },
+                                  "py-1 px-4 font-medium text-2xl theme-text"
+                                )}
+                              >
+                                {item.quantity}
+                              </span>
+                            </ShouldRender>
+                            <ShouldRender if={isLoading}>
+                              <span className="w-10 h-10 animate-pulse bg-greyLoading rounded" />
+                            </ShouldRender>
                             <Button
                               key="cart-plus"
                               value={(<AiOutlinePlus />) as any}
                               className="group [&_span.text]:text-2xl "
                               noIcon
+                              disabled={isLoading || cartIsLoading}
+                              onClick={() =>
+                                dispatch(
+                                  cartUpdate({
+                                    id: item.id,
+                                    quantity: item.quantity + 1,
+                                  })
+                                )
+                              }
                             />
                           </p>
                         </div>
-                        <span>
-                          <DeleteIcon />
-                        </span>
+                        <Button
+                          key="cart-remove"
+                          value={(<DeleteIcon />) as any}
+                          className="group [&_span.text]:text-2xl "
+                          noIcon
+                          outlined
+                          disabled={isLoading}
+                        />
                       </div>
                     </div>
                   </div>
                 ))}
               </ShouldRender>
-              <ShouldRender if={!cartItems.length}>
+              <ShouldRender
+                if={
+                  (requestError && !isLoading && !cartItems.length) ||
+                  (requestError && !isLoading && !cartItems.length)
+                }
+              >
                 <div className="flex flex-col items-center justify-center h-fit p-8">
                   <IconContext.Provider
                     value={{
@@ -153,16 +225,19 @@ export default function Cart() {
                   </IconContext.Provider>
                   <p
                     className={cx({
-                      "text-white": isDarkMode,
-                      "text-secondGrey": !isDarkMode,
+                      "text-white": isDarkMode && !requestError,
+                      "text-secondGrey": !isDarkMode && !requestError,
+                      "text-red-500": requestError,
                     })}
                   >
-                    Add items to your cart to see them here
+                    {requestError
+                      ? "Error loading cart "
+                      : "Add items to your cart to see them here"}
                   </p>
                 </div>
               </ShouldRender>
             </div>
-            <ShouldRender if={!!cartItems.length}>
+            <ShouldRender if={!!cartItems.length && !isLoading}>
               <div className="min-w-full lgx:min-w-[392px] border border-greyLighter h-fit p-4 theme-text">
                 <h4 className="text-[2rem] font-medium leading-8">
                   Cart Summary
