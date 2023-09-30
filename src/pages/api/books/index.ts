@@ -7,19 +7,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const { ids } = req.body;
-
     validateRequest(req, {
       methods: new Set([HttpMethods.GET]),
-      requiredFields: ["ids"],
     });
 
-    const returnedBooks = ids.length
-      ? await db` 
-        SELECT * FROM books
-        WHERE id IN (${ids})
-        `
-      : [];
+    const returnedBooks =
+      await db`SELECT * FROM books WHERE is_best_selling = false`;
 
     res.status(HttpStatus.OK).json({
       message: "Books returned successfully",

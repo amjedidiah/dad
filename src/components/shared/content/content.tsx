@@ -22,16 +22,23 @@ import {
   selectIsItemInCart,
   selectItemQuantity,
 } from "@/redux/slices/cart.slice";
-import ContentReviews from "@/components/shared/content-reviews";
+import ContentReviews from "@/components/shared/content/content-reviews";
 import { cx } from "@emotion/css";
+import Price from "../price";
 
 type Props = {
   type: IContentData["type"];
   contentId?: number;
   showReview?: boolean;
+  noHeader?: boolean;
 };
 
-export default function Content({ type, contentId, showReview }: Props) {
+export default function Content({
+  type,
+  contentId,
+  showReview,
+  noHeader = false,
+}: Props) {
   const { data, isLoading } = useSWR(
     !contentId ? `/api/best-selling?type=${type}` : `/api/${type}s/${contentId}`
   );
@@ -53,7 +60,15 @@ export default function Content({ type, contentId, showReview }: Props) {
         value: `See More ${type}s`,
         className: "rounded",
         outlined: true,
-        onClick: () => router.push(`/${type}s`),
+        onClick: () => {
+          toggleModal();
+          router.push({
+            pathname: `/${type}s`,
+            query: {
+              target: `more${type}s`,
+            },
+          });
+        },
       },
     ] as IButton[];
 
@@ -88,6 +103,7 @@ export default function Content({ type, contentId, showReview }: Props) {
     content.id,
     content.audio_url,
     cartStatus.value,
+    toggleModal,
     router,
     dispatch,
     cartItemQuantity,
@@ -95,17 +111,10 @@ export default function Content({ type, contentId, showReview }: Props) {
 
   if (!isLoading && !data?.data) return null;
 
-  const formattedPrice = content.price
-    ? new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(content.price)
-    : 0;
-
   return (
     <section css={styles} className="load-in py-[4.5rem]">
       <div className="container flex flex-col gap-10 md:gap-[5.2rem]">
-        {!contentId && (
+        {!noHeader && (
           <SectionHeader title={headerTitle} subtitle={headerSubtitle} />
         )}
 
@@ -194,7 +203,7 @@ export default function Content({ type, contentId, showReview }: Props) {
               </div>
               <div className="w-full sm:w-auto flex sm:flex-col items-center justify-between sm:justify-center gap-2">
                 <ShouldRender if={isBook}>
-                  {formattedPrice ? (
+                  {content.price ? (
                     <p
                       className={`text-xl font-medium leading-6 py-2 px-8 ${
                         isDarkMode
@@ -202,7 +211,7 @@ export default function Content({ type, contentId, showReview }: Props) {
                           : "bg-black text-white"
                       } `}
                     >
-                      {formattedPrice}
+                      <Price value={content.price} />
                     </p>
                   ) : (
                     <div className="h-14 w-32 animate-pulse bg-greyLoading rounded" />
