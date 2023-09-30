@@ -1,46 +1,33 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect } from "react";
-import { useAnimate } from "framer-motion";
-import { IRolesItems } from "@/components/landing/jumbo/index.jumbo";
+import Image from "next/image";
+import Marquee from "react-fast-marquee";
 import styles from "@/styles/scrolling.style";
-import { IStreamsItems } from "@/components/about/intro";
 
 type Props = {
-  items: Array<IRolesItems | IStreamsItems>;
+  items: Array<{
+    key: string;
+    Component?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+    imageLink?: string;
+  }>;
+  speed?: number;
+  delay?: number;
 };
 
-export default function Scrolling({ items }: Props) {
-  const [scope, animate] = useAnimate();
-
-  useEffect(() => {
-    animate(
-      "ul.roles-1",
-      { x: ["0em", "-65em", "65em", "0em"], opacity: [1, 0, 0, 1] },
-      { ease: "easeInOut", duration: 15, repeat: Infinity, delay: 2 }
-    );
-    animate(
-      "ul.roles-2",
-      { x: ["65em", "0em", "-65em", "65em"], opacity: [0, 1, 0, 0] },
-      { ease: "easeInOut", duration: 15, repeat: Infinity, delay: 2 }
-    );
-    animate(
-      "ul.roles-3",
-      { x: ["65em", "65em", "0em", "-65em"], opacity: [0, 0, 1, 1] },
-      { ease: "easeInOut", duration: 15, repeat: Infinity, delay: 2 }
-    );
-  }, [scope, animate]);
-
+export default function Scrolling({ items, speed = 75, delay = 0 }: Props) {
   return (
-    <div css={styles} ref={scope}>
-      {items.map((_, i) => (
-        <ul key={i} className={`roles roles-${i + 1}`}>
-          {items.map(({ key, Component }) => (
-            <li key={key} className="role-item">
-              <Component /> {key}
-            </li>
-          ))}
-        </ul>
-      ))}
-    </div>
+    <ul css={styles}>
+      <Marquee pauseOnHover speed={speed} delay={delay}>
+        {items.map(({ key, Component, imageLink }) => (
+          <li key={key} className="scroll-item">
+            {Component && <Component />} {!imageLink && key}
+            {imageLink && (
+              <div className="scroll-image-container">
+                <Image src={imageLink} alt={key} fill sizes="100%" />
+              </div>
+            )}
+          </li>
+        ))}
+      </Marquee>
+    </ul>
   );
 }

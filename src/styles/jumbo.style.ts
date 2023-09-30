@@ -5,20 +5,13 @@ const styles: Interpolation<Theme> = ({
   colors: { white, grey2, black },
   breakpoints,
 }) => css`
-  padding: 75px 0;
-
-  @media (min-width: ${breakpoints.lg}px) {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+  padding: 4.5rem 0;
 
   .top {
     display: grid;
     align-items: center;
 
-    @media (min-width: ${breakpoints.mdx}px) {
+    @media (min-width: ${breakpoints.lgx}px) {
       grid-template-columns: 3fr 450px;
     }
 
@@ -28,7 +21,7 @@ const styles: Interpolation<Theme> = ({
       border: 10px solid ${isDarkMode ? grey2 : black};
       overflow: hidden;
 
-      @media (min-width: ${breakpoints.mdx}px) {
+      @media (min-width: ${breakpoints.lgx}px) {
         display: block;
       }
 
@@ -61,11 +54,25 @@ const styles: Interpolation<Theme> = ({
   .explore {
     text-align: center;
     margin: 4rem 0;
+    cursor: pointer;
+
+    a {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: fit-content;
+      margin: 0 auto;
+    }
 
     .theme-text {
       display: block;
       font-weight: 500;
       line-height: 175%;
+    }
+
+    .theme-icon-fill {
+      display: inline-flex;
+      justify-content: center;
     }
 
     @media (min-width: ${breakpoints.md}px) {
@@ -101,11 +108,12 @@ const styles: Interpolation<Theme> = ({
       }
     }
 
-    .role-item {
+    .scroll-item {
+      margin: 0 clamp(1.5rem, 6%, 6rem);
+      text-transform: uppercase;
+      color: ${grey2};
       font-size: 2.25rem;
       line-height: 133%;
-      color: ${grey2};
-      text-transform: uppercase;
       display: flex;
       align-items: center;
       gap: 0.5rem;

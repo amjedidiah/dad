@@ -1,28 +1,14 @@
 import { Interpolation, Theme, css } from "@emotion/react";
 
-const styles: Interpolation<Theme> = () => css`
+const styles: Interpolation<Theme> = css`
   flex: 1;
-  overflow-x: hidden;
-  min-width: 350px;
+  min-width: 450px;
   display: flex;
-  flex-direction: column;
-  position: relative;
+  list-style: none;
+  justify-content: space-between;
 
-  .roles {
-    display: flex;
-    list-style: none;
-    justify-content: space-between;
-    gap: clamp(3rem, 12%, 12rem);
-    .role-item {
-      display: flex;
-      // justify-content: space-between;
-      align-items: center;
-    }
-
-    &.roles-1,
-    &.roles-3 {
-      position: absolute;
-    }
+  .scroll-image-container {
+    position: relative;
   }
 `;
 

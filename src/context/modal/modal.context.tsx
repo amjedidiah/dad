@@ -5,4 +5,5 @@ export const ModalContext = createContext<IModalContext>({
   modalTitle: undefined,
   ModalComponent: null,
   toggleModal: () => {},
+  modalData: null,
 });

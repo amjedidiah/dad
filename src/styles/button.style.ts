@@ -13,11 +13,20 @@ const styles: Interpolation<Theme> = ({
   background: ${isDarkMode ? white : black};
   color: ${isDarkMode ? black : white};
   border: 1px solid ${isDarkMode ? white : black};
-  cursor: pointer;
 
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  &:not(:disabled):hover {
+    cursor: pointer;
+
+    &.expand {
+      transform: scale(1.05);
+      box-shadow: ${isDarkMode
+        ? "0 4px 20px rgba(100, 100, 100, 0.25)"
+        : "0 4px 20px rgba(0, 0, 0, 0.25)"};
+    }
   }
 
   .text {
@@ -27,10 +36,6 @@ const styles: Interpolation<Theme> = ({
   .icon svg,
   .icon svg path {
     stroke: ${isDarkMode ? black : white};
-  }
-
-  &.rounded {
-    border-radius: 0.5rem;
   }
 
   &.bold {
@@ -57,7 +62,7 @@ const styles: Interpolation<Theme> = ({
     }
   }
 
-  &.outline {
+  &.outlined {
     background: transparent;
     color: ${isDarkMode ? white : black};
     border-color: ${isDarkMode ? white : black};

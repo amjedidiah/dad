@@ -8,8 +8,9 @@ const initTheme = {
     mobileL: 425,
     sm: 640,
     md: 768,
-    mdx: 1199,
+    mdx: 834,
     lg: 1024,
+    lgx: 1199,
     xl: 1280,
     laptopL: 1440,
     "2xl": 1536,
@@ -27,6 +28,7 @@ const initTheme = {
     grey2: "#808080",
     secondGrey: "#999999",
     greyLighter: "#e6e6e6",
+    gold: "#F3B619",
   },
   font,
 };
