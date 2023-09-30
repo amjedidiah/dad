@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useContext, useMemo } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useTheme } from "@emotion/react";
 import useSWR from "swr";
 import ButtonGroup from "@/components/shared/button/button-group";
@@ -23,13 +22,18 @@ import {
   selectIsItemInCart,
   selectItemQuantity,
 } from "@/redux/slices/cart.slice";
+import ContentReviews from "@/components/shared/content-reviews";
 
 type Props = {
   type: IContentData["type"];
+  contentId?: number;
+  showReview?: boolean;
 };
 
-export default function BestSellingContent({ type }: Props) {
-  const { data, isLoading } = useSWR(`/api/best-selling?type=${type}`);
+export default function Content({ type, contentId, showReview }: Props) {
+  const { data, isLoading } = useSWR(
+    !contentId ? `/api/best-selling?type=${type}` : `/api/${type}s/${contentId}`
+  );
   const book = data?.data ?? {};
   const dispatch = useAppDispatch();
   const isInCart = useAppSelector(selectIsItemInCart(book.id));
@@ -39,7 +43,7 @@ export default function BestSellingContent({ type }: Props) {
   const { isDarkMode } = useTheme();
   const { toggleModal } = useContext(ModalContext);
   const headerTitle =
-    type === "book" ? "His Best Selling Book" : "His Best Selling Album";
+    type === "book" ? "His Best Selling Book" : "His Latest Message";
   const typeButtons = useMemo(() => {
     const buttons = [
       {
@@ -75,6 +79,7 @@ export default function BestSellingContent({ type }: Props) {
     dispatch,
     cartItemQuantity,
   ]);
+
   if (!isLoading && !data?.data) return null;
 
   const formattedPrice =
@@ -87,10 +92,12 @@ export default function BestSellingContent({ type }: Props) {
   return (
     <section css={styles} className="load-in py-[4.5rem]">
       <div className="container flex flex-col gap-10 md:gap-[5.2rem]">
-        <SectionHeader
-          title={headerTitle}
-          subtitle={`The ${type} that has changed the most lives`}
-        />
+        {!contentId && (
+          <SectionHeader
+            title={headerTitle}
+            subtitle={`The ${type} that has changed the most lives`}
+          />
+        )}
 
         <article className="grid mdx:grid-cols-auto-1fr gap-12 mdx:gap-6">
           <div className="flex flex-col gap-2 lgx:px-10">
@@ -128,18 +135,14 @@ export default function BestSellingContent({ type }: Props) {
                 <p className="theme-text">Rating:</p>
                 <Rating value={book.average_rating} />
               </div>
-              <Link
-                href={{
-                  pathname: `/books/${book.slug}`,
-                  query: {
-                    target: "book-reviews",
-                  },
-                }}
-              >
-                <span className="theme-text text-xl leading-6 font-medium underline">
+              {!showReview && (
+                <span
+                  className="theme-text text-xl leading-6 font-medium underline cursor-pointer"
+                  onClick={() => toggleModal(ModalTitles.content)}
+                >
                   View Reviews
                 </span>
-              </Link>
+              )}
             </header>
             <div className="flex flex-wrap gap-4 items-center justify-between">
               <div>
@@ -254,6 +257,8 @@ export default function BestSellingContent({ type }: Props) {
             </footer>
           </div>
         </article>
+
+        {showReview && <ContentReviews id={book.id} type={type} />}
       </div>
     </section>
   );

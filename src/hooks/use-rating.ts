@@ -24,7 +24,7 @@ export default function useRating() {
         setIsRating(true);
 
         const issuer = await magicLogin(review);
-        const response = await fetch("/api/review", {
+        const response = await fetch("/api/reviews/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
