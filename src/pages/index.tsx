@@ -26,6 +26,7 @@ export default function Home() {
       <Testimonies />
       <AppearedOn />
       <Content type="book" />
+      <Content type="message" />
     </RootLayout>
   );
 }

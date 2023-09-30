@@ -15,7 +15,7 @@ export default async function handler(
     const queryString =
       req.query.type === "book"
         ? db`SELECT * FROM books WHERE is_best_selling = true`
-        : db`SELECT * FROM messages WHERE is_best_selling = true`;
+        : db`SELECT * FROM messages ORDER BY recorded_at DESC LIMIT 1`;
     const contents = await db`${queryString}`;
 
     if (!contents.length)

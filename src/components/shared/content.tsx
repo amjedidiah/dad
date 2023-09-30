@@ -23,6 +23,7 @@ import {
   selectItemQuantity,
 } from "@/redux/slices/cart.slice";
 import ContentReviews from "@/components/shared/content-reviews";
+import { cx } from "@emotion/css";
 
 type Props = {
   type: IContentData["type"];
@@ -34,16 +35,17 @@ export default function Content({ type, contentId, showReview }: Props) {
   const { data, isLoading } = useSWR(
     !contentId ? `/api/best-selling?type=${type}` : `/api/${type}s/${contentId}`
   );
-  const book = data?.data ?? {};
+  const content = data?.data ?? {};
   const dispatch = useAppDispatch();
-  const isInCart = useAppSelector(selectIsItemInCart(book.id));
-  const cartItemQuantity = useAppSelector(selectItemQuantity(book.id));
+  const isInCart = useAppSelector(selectIsItemInCart(content.id));
+  const cartItemQuantity = useAppSelector(selectItemQuantity(content.id));
   const cartStatus = useAppSelector(selectCartStatus);
   const router = useRouter();
   const { isDarkMode } = useTheme();
   const { toggleModal } = useContext(ModalContext);
-  const headerTitle =
-    type === "book" ? "His Best Selling Book" : "His Latest Message";
+  const isBook = type === "book";
+  const headerTitle = isBook ? "His Best Selling Book" : "His Latest Message";
+  const headerSubtitle = isBook ? "Live changing read" : "Fresh manner";
   const typeButtons = useMemo(() => {
     const buttons = [
       {
@@ -55,7 +57,7 @@ export default function Content({ type, contentId, showReview }: Props) {
       },
     ] as IButton[];
 
-    if (type === "book")
+    if (isBook)
       buttons.push({
         key: isInCart ? "remove from cart" : "add to cart",
         value: isInCart ? "Remove From Cart" : "Add To Cart",
@@ -63,17 +65,29 @@ export default function Content({ type, contentId, showReview }: Props) {
         Icon: CartIcon,
         onClick: () =>
           isInCart
-            ? dispatch(cartRemove({ id: book.id, quantity: cartItemQuantity }))
-            : dispatch(cartAdd(book.id)),
-        disabled: !book.id || cartStatus.value === "pending",
+            ? dispatch(
+                cartRemove({ id: content.id, quantity: cartItemQuantity })
+              )
+            : dispatch(cartAdd(content.id)),
+        disabled: !content.id || cartStatus.value === "pending",
         isLoading: cartStatus.value === "pending",
+      } as IButton);
+    else
+      buttons.unshift({
+        key: `listen to ${type}`,
+        value: `Listen To ${type}`,
+        className: "rounded",
+        outlined: true,
+        onClick: () => window.open(content.audio_url, "_blank"),
       } as IButton);
 
     return buttons;
   }, [
     type,
+    isBook,
     isInCart,
-    book.id,
+    content.id,
+    content.audio_url,
     cartStatus.value,
     router,
     dispatch,
@@ -82,45 +96,52 @@ export default function Content({ type, contentId, showReview }: Props) {
 
   if (!isLoading && !data?.data) return null;
 
-  const formattedPrice =
-    book.price &&
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(book.price);
+  const formattedPrice = content.price
+    ? new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(content.price)
+    : 0;
 
   return (
     <section css={styles} className="load-in py-[4.5rem]">
       <div className="container flex flex-col gap-10 md:gap-[5.2rem]">
         {!contentId && (
-          <SectionHeader
-            title={headerTitle}
-            subtitle={`The ${type} that has changed the most lives`}
-          />
+          <SectionHeader title={headerTitle} subtitle={headerSubtitle} />
         )}
 
         <article className="grid mdx:grid-cols-auto-1fr gap-12 mdx:gap-6">
           <div className="flex flex-col gap-2 lgx:px-10">
             <div className="flex flex-1 justify-center items-center">
-              <div className="w-[2.45in] mdx:w-[3.5in] h-[3.675in] mdx:h-[5.25in] relative group">
+              <div
+                className={cx(
+                  {
+                    "h-[3.675in] mdx:h-[5.25in]": isBook,
+                    "h-[2.45in] mdx:h-[3.5in]": !isBook,
+                  },
+                  "w-[2.45in] mdx:w-[3.5in] relative group rounded"
+                )}
+              >
                 <ShouldRender if={isLoading}>
                   <div className="w-full h-full animate-pulse bg-greyLoading rounded" />
                 </ShouldRender>
                 <ShouldRender if={!isLoading}>
                   <Image
-                    src={book.front_cover}
+                    src={content.front_cover}
                     alt="front cover"
                     className="group-hover:hidden"
                     fill
                     sizes="100%"
                   />
-                  <Image
-                    src={book.back_cover}
-                    alt="back cover"
-                    className="hidden group-hover:block"
-                    fill
-                    sizes="100%"
-                  />
+                  <ShouldRender if={isBook}>
+                    <Image
+                      src={content.back_cover}
+                      alt="back cover"
+                      className="hidden group-hover:block"
+                      fill
+                      sizes="100%"
+                    />
+                  </ShouldRender>
                 </ShouldRender>
               </div>
             </div>
@@ -130,65 +151,91 @@ export default function Content({ type, contentId, showReview }: Props) {
               isDarkMode ? "text-greyLighter" : "text-grey2"
             } gap-2`}
           >
-            <header className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-4">
-                <p className="theme-text">Rating:</p>
-                <Rating value={book.average_rating} />
-              </div>
-              {!showReview && (
-                <span
-                  className="theme-text text-xl leading-6 font-medium underline cursor-pointer"
-                  onClick={() => toggleModal(ModalTitles.content)}
-                >
-                  View Reviews
-                </span>
-              )}
-            </header>
+            <ShouldRender if={isBook}>
+              <header className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-4">
+                  <p className="theme-text">Rating:</p>
+                  <Rating value={content.average_rating} />
+                </div>
+                {!showReview && (
+                  <span
+                    className="theme-text text-xl leading-6 font-medium underline cursor-pointer"
+                    onClick={() => toggleModal(ModalTitles.content)}
+                  >
+                    View Reviews
+                  </span>
+                )}
+              </header>
+            </ShouldRender>
             <div className="flex flex-wrap gap-4 items-center justify-between">
               <div>
-                {book.title ? (
+                {content.title ? (
                   <h3 className="theme-text text-[2.5rem] font-medium leading-[140%]">
-                    {book.title}
+                    {content.title}
                   </h3>
                 ) : (
                   <div className="h-14 w-full animate-pulse bg-greyLoading rounded" />
                 )}
-                <p className="mt-2 text-xl leading-6 flex flex-wrap gap-[10px]">
-                  <span
-                    className={`${
-                      isDarkMode ? "text-white" : "text-grey1"
-                    } font-medium`}
-                  >
-                    Published By:
-                  </span>{" "}
-                  {book.publisher ? (
-                    <span>{book.publisher}</span>
-                  ) : (
-                    <span className="h-5 w-60 flex-1 animate-pulse bg-greyLoading rounded" />
-                  )}
-                </p>
+                <ShouldRender if={isBook}>
+                  <p className="mt-2 text-xl leading-6 flex flex-wrap gap-[10px]">
+                    <span
+                      className={`${
+                        isDarkMode ? "text-white" : "text-grey1"
+                      } font-medium`}
+                    >
+                      Published By:
+                    </span>{" "}
+                    {content.publisher ? (
+                      <span>{content.publisher}</span>
+                    ) : (
+                      <span className="h-5 w-60 flex-1 animate-pulse bg-greyLoading rounded" />
+                    )}
+                  </p>
+                </ShouldRender>
               </div>
               <div className="w-full sm:w-auto flex sm:flex-col items-center justify-between sm:justify-center gap-2">
-                {formattedPrice ? (
-                  <p
-                    className={`text-xl font-medium leading-6 py-2 px-8 ${
-                      isDarkMode ? "bg-white text-black" : "bg-black text-white"
-                    } `}
-                  >
-                    {formattedPrice}
-                  </p>
-                ) : (
-                  <div className="h-14 w-32 animate-pulse bg-greyLoading rounded" />
-                )}
-                <p className="text-base flex gap-1 justify-center">
-                  &#40;
-                  {book.copies_sold ? (
-                    <span>{book.copies_sold}</span>
+                <ShouldRender if={isBook}>
+                  {formattedPrice ? (
+                    <p
+                      className={`text-xl font-medium leading-6 py-2 px-8 ${
+                        isDarkMode
+                          ? "bg-white text-black"
+                          : "bg-black text-white"
+                      } `}
+                    >
+                      {formattedPrice}
+                    </p>
                   ) : (
-                    <span className="h-5 w-5 flex-1 animate-pulse bg-greyLoading rounded" />
+                    <div className="h-14 w-32 animate-pulse bg-greyLoading rounded" />
                   )}
-                  <span>Copies Sold</span>&#41;
-                </p>
+                </ShouldRender>
+                <ShouldRender if={isBook}>
+                  <p className="text-base flex gap-1 justify-center">
+                    &#40;
+                    {content.copies_sold ? (
+                      <span>{content.copies_sold}</span>
+                    ) : (
+                      <span className="h-5 w-5 flex-1 animate-pulse bg-greyLoading rounded" />
+                    )}
+                    <span>Copies Sold</span>&#41;
+                  </p>
+                </ShouldRender>
+                <ShouldRender if={!isBook}>
+                  <p className="mt-2 text-xl leading-6 flex flex-wrap gap-[10px]">
+                    <span
+                      className={`${
+                        isDarkMode ? "text-white" : "text-grey1"
+                      } font-medium`}
+                    >
+                      Duration:
+                    </span>{" "}
+                    {content.duration ? (
+                      <span>{content.duration}</span>
+                    ) : (
+                      <span className="h-5 w-60 flex-1 animate-pulse bg-greyLoading rounded" />
+                    )}
+                  </p>
+                </ShouldRender>
               </div>
             </div>
             <div className="grid gap-1 mt-3">
@@ -198,23 +245,41 @@ export default function Content({ type, contentId, showReview }: Props) {
                     isDarkMode ? "text-white" : "text-grey1"
                   } font-medium`}
                 >
-                  Foreword By:
+                  {isBook ? "Foreword By" : "Summary"}:
                 </span>{" "}
-                {book.foreword_author_title ? (
-                  <span>
-                    {book.foreword_author_title} - {book.foreword_author_name}
-                  </span>
-                ) : (
-                  <span className="h-5 flex-1 animate-pulse bg-greyLoading rounded" />
-                )}
+                <ShouldRender if={isBook}>
+                  {content.foreword_author_title ? (
+                    <span>
+                      {content.foreword_author_title} -{" "}
+                      {content.foreword_author_name}
+                    </span>
+                  ) : (
+                    <span className="h-5 flex-1 animate-pulse bg-greyLoading rounded" />
+                  )}
+                </ShouldRender>
               </p>
-              {book.foreword_content ? (
-                <div
-                  dangerouslySetInnerHTML={{ __html: book.foreword_content }}
-                />
-              ) : (
-                <div className="h-14 w-full animate-pulse bg-greyLoading rounded" />
-              )}
+              <ShouldRender if={isBook}>
+                {content.foreword_content ? (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: content.foreword_content,
+                    }}
+                  />
+                ) : (
+                  <div className="h-14 w-full animate-pulse bg-greyLoading rounded" />
+                )}
+              </ShouldRender>
+              <ShouldRender if={!isBook}>
+                {content.summary ? (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: content.summary,
+                    }}
+                  />
+                ) : (
+                  <div className="h-14 w-full animate-pulse bg-greyLoading rounded" />
+                )}
+              </ShouldRender>
             </div>
 
             <footer>
@@ -225,40 +290,65 @@ export default function Content({ type, contentId, showReview }: Props) {
                       isDarkMode ? "text-white" : "text-grey1"
                     } font-medium`}
                   >
-                    Publish Date:
+                    {isBook ? "Publish" : "Recorded"} Date:
                   </span>{" "}
-                  {book.publish_date ? (
-                    <span>
-                      {new Date(book.publish_date).toLocaleDateString("en-NG", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
+                  <ShouldRender if={isBook}>
+                    {content.publish_date ? (
+                      <span>
+                        {new Date(content.publish_date).toLocaleDateString(
+                          "en-NG",
+                          {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
+                      </span>
+                    ) : (
+                      <span className="h-5 w-32 flex-1 animate-pulse bg-greyLoading rounded" />
+                    )}
+                  </ShouldRender>
+                  <ShouldRender if={!isBook}>
+                    {content.recorded_at ? (
+                      <span>
+                        {new Date(content.recorded_at).toLocaleDateString(
+                          "en-NG",
+                          {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
+                      </span>
+                    ) : (
+                      <span className="h-5 w-32 flex-1 animate-pulse bg-greyLoading rounded" />
+                    )}
+                  </ShouldRender>
+                </p>
+                <ShouldRender if={isBook}>
+                  <p className="theme-text text-xl leading-6 font-medium underline cursor-pointer">
+                    <span
+                      onClick={() =>
+                        toggleModal(ModalTitles.rate, { type, id: content.id })
+                      }
+                    >
+                      Rate this {type}
                     </span>
-                  ) : (
-                    <span className="h-5 w-32 flex-1 animate-pulse bg-greyLoading rounded" />
-                  )}
-                </p>
-                <p className="theme-text text-xl leading-6 font-medium underline cursor-pointer">
-                  <span
-                    onClick={() =>
-                      toggleModal(ModalTitles.rate, { type, id: book.id })
-                    }
-                  >
-                    Rate this {type}
-                  </span>
-                </p>
+                  </p>
+                </ShouldRender>
               </div>
 
               <ButtonGroup
-                className="content-button-group justify-between"
+                className="content-button-group justify-between flex-1"
                 buttons={typeButtons}
               />
             </footer>
           </div>
         </article>
 
-        {showReview && <ContentReviews id={book.id} type={type} />}
+        <ShouldRender if={isBook}>
+          {showReview && <ContentReviews id={content.id} type={type} />}
+        </ShouldRender>
       </div>
     </section>
   );
