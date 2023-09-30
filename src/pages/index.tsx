@@ -1,5 +1,5 @@
 import AppearedOn from "@/components/landing/appeared-on";
-import Content from "@/components/shared/content";
+import Content from "@/components/shared/content/content";
 import Jumbo from "@/components/landing/jumbo/index.jumbo";
 import Testimonies from "@/components/landing/testimonies";
 import WhyChooseHim from "@/components/landing/why-choose-him";

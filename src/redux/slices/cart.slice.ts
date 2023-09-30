@@ -13,7 +13,7 @@ type CartState = {
 };
 
 type CartItem = {
-  id: string;
+  id: number;
   quantity: number;
 };
 
@@ -42,7 +42,7 @@ const cartSlice = createSlice({
         [action.payload.id]: action.payload,
       };
     },
-    cartRemoveItem(state, action: PayloadAction<string>) {
+    cartRemoveItem(state, action: PayloadAction<number>) {
       const id = action.payload;
       delete state.items[id];
     },
@@ -103,14 +103,14 @@ function cartRequest(
   method: HTTP_METHOD,
   value: {
     userId: string;
-    bookId?: string;
+    bookId?: number;
     quantity?: number;
     items?: CartItem[];
   }
 ) {
   const queryParams = new URLSearchParams({
     userId: value.userId,
-    bookId: value.bookId || "",
+    bookId: value.bookId + "" || "",
   }).toString();
   return fetch(`/api/cart?${queryParams}`, {
     method,
@@ -133,7 +133,7 @@ function cartRequest(
 
 export const cartAdd = createAsyncThunk<
   void,
-  string,
+  number,
   {
     dispatch: AppDispatch;
     state: RootState;
@@ -156,7 +156,7 @@ export const cartAdd = createAsyncThunk<
 export const cartRemove = createAsyncThunk<
   void,
   {
-    id: string;
+    id: number;
     quantity: number;
   },
   {
@@ -205,7 +205,7 @@ export const cartClear = createAsyncThunk<
 
 export const cartUpdate = createAsyncThunk<
   void,
-  { id: string; quantity: number },
+  { id: number; quantity: number },
   {
     dispatch: AppDispatch;
     state: RootState;
@@ -270,10 +270,10 @@ export const selectCartItemsCount = createSelector([selectCartItems], (items) =>
   items.reduce((acc, item) => acc + item.quantity, 0)
 );
 
-export const selectIsItemInCart = (id: string) => (state: RootState) =>
+export const selectIsItemInCart = (id: number) => (state: RootState) =>
   !!state.cart.items[id];
 
-export const selectItemQuantity = (id: string) => (state: RootState) =>
+export const selectItemQuantity = (id: number) => (state: RootState) =>
   state.cart.items[id]?.quantity || 0;
 
 export default cartSlice.reducer;

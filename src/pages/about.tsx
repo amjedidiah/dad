@@ -5,7 +5,7 @@ import SectionHeader from "@/components/shared/section-header";
 
 export default function About() {
   return (
-    <RootLayout title="About Dr Passy Amaraegbu | Living a life of purity, power and prosperity">
+    <RootLayout title="About - Dr Passy Amaraegbu | Living a life of purity, power and prosperity">
       <section className="load-in pt-5">
         <div className="container">
           <SectionHeader

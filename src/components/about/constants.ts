@@ -1,8 +1,8 @@
-import purity from "../../../public/images/purity.webp";
-import father from "../../../public/images/father.webp";
-import psychologist from "../../../public/images/psychologist.webp";
-import pastor from "../../../public/images/pastor.webp";
-import author from "../../../public/images/author.webp";
+import purity from "../../../public/images/about/purity.webp";
+import father from "../../../public/images/about/father.webp";
+import psychologist from "../../../public/images/about/psychologist.webp";
+import pastor from "../../../public/images/about/pastor.webp";
+import author from "../../../public/images/about/author.webp";
 
 export const AboutContents = [
   {
