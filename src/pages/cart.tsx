@@ -42,7 +42,7 @@ export default function Cart() {
     data: any[];
     message: string;
     error: boolean;
-  }>(items.length ? "/api/books/get" : null, (arg) =>
+  }>(items.length ? "/api/books/get" : null, (arg: any) =>
     fetch(arg, {
       method: "GET",
       headers: {
