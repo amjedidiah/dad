@@ -1,12 +1,12 @@
 import { StreamTitles, AboutContent } from "@/components/about/constants";
-import Layout from "@/components/shared/layout";
 import PageTitle from "@/components/shared/page-title";
 import Intro from "@/components/about/intro";
+import RootLayout from "@/components/shared/layout/root-layout";
 
 export default function About() {
   const selectedId = 21331;
   return (
-    <Layout
+    <RootLayout
       title="Dr Passy Amaraegbu | Living a life of purity, power and prosperity"
       description="Dr Passy Amaraegbu is a father, psychologist and pastor specializing in solving long standing issues in the lives of people"
     >
@@ -22,6 +22,6 @@ export default function About() {
           image={content.image}
         />
       ))}
-    </Layout>
+    </RootLayout>
   );
 }

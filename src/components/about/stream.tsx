@@ -3,9 +3,7 @@ import { StreamTitles } from "./constants";
 import { SpotifyIcon, AudiomackIcon, YoutubeMusicIcon } from "@/icons";
 
 export default function Stream() {
-  const streamTitles = useMemo(() => Object.keys(StreamTitles), []) as Array<
-    keyof StreamTitles
-  >;
+  const streamTitles = useMemo(() => Object.values(StreamTitles), []);
 
   return (
     <div>
@@ -13,7 +11,7 @@ export default function Stream() {
       <div>
         {streamTitles.map((title, i) => (
           <li key={i}>
-            {Component(title)} {title}
+            <Component title={title} /> {title}
           </li>
         ))}
       </div>
@@ -21,9 +19,9 @@ export default function Stream() {
   );
 }
 
-export const Component = (title: StreamTitles) =>
+export const Component = (props: { title: StreamTitles }) =>
   ({
-    [StreamTitles.Audiomack]: AudiomackIcon,
-    [StreamTitles.Spotify]: SpotifyIcon,
-    [StreamTitles.YoutubeMusic]: YoutubeMusicIcon,
-  }[title] || null);
+    [StreamTitles.Audiomack]: <AudiomackIcon />,
+    [StreamTitles.Spotify]: <SpotifyIcon />,
+    [StreamTitles.YoutubeMusic]: <YoutubeMusicIcon />,
+  }[props.title] || null);

@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import Image, { StaticImageData } from "next/image";
-import Button, { ButtonProps } from "@/components/shared/button";
 import purity from "../../../public/images/purity.png";
 import { AudiomackIcon, SpotifyIcon, YoutubeMusicIcon } from "@/icons";
 import styles from "../../styles/about.style";
 import Scrolling from "../shared/scrolling";
 import { StreamTitles } from "./constants";
 import { FC, useMemo } from "react";
+import Button from "../shared/button/index.button";
 
 export type IStreamsItems = {
   key: keyof typeof StreamTitles;
