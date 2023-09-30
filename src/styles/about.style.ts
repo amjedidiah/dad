@@ -66,17 +66,17 @@ const styles: Interpolation<Theme> = ({
     }
   }
 
-  .intro-subtitle {
-    font-size: 1.25rem;
-    line-height: 120%;
-    font-weight: 500;
-  }
-
   .intro-body {
     display: grid;
     gap: 1.5rem;
     line-height: 150%;
     letter-spacing: 0.02rem;
+
+    h4 {
+      font-size: 1.25rem;
+      line-height: 120%;
+      font-weight: 500;
+    }
   }
 
   .about-pic {

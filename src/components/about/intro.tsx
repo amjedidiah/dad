@@ -17,8 +17,7 @@ export default function Intro({ image, title, info, awards }: Props) {
         <div className="intro">
           <div className="intro-wrapper">
             <div className="intro-content">
-              <h4 className="intro-title">{title}</h4>
-              <h6 className="intro-subtitle">Summary</h6>
+              <h3 className="intro-title">{title}</h3>
               <div
                 className="intro-body"
                 dangerouslySetInnerHTML={{

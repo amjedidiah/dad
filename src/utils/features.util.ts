@@ -8,7 +8,6 @@ export enum Features {
   CldImage = "cld-images",
   Footer = "footer",
   Cart = "cart",
-  About = "about",
 }
 
 export const features = {
@@ -56,10 +55,5 @@ export const features = {
     title: Features.Cart,
     status: false,
     reason: "Get cart to work with shimmer loaders",
-  },
-  [Features.About]: {
-    title: Features.About,
-    status: false,
-    reason: "Images, summary and awards",
   },
 };
