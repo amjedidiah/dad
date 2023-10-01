@@ -3,6 +3,7 @@
     "aeonik",
     "autodocs",
     "Brightland",
+    "checkly",
     "Codacy",
     "dolor",
     "drpassy",
@@ -11,10 +12,15 @@
     "Flutterwave",
     "neue",
     "nextjs",
+    "passyamaraegbu",
     "Paystack",
+    "setValue",
     "upsell",
     "USSD",
     "Voluptates",
-    "voluptatum"
-  ]
+    "voluptatum",
+    "vuesax",
+    "xnww"
+  ],
+  "deepscan.enable": true
 }
