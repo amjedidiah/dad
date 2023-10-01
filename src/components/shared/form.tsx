@@ -145,6 +145,14 @@ export default function Form<F extends FieldValues>({
                     Switch user?
                   </span>
                 )}
+                {!isSubmitting && (
+                  <span
+                    className="cursor-pointer underline font-medium text-red-500 ms-1"
+                    onClick={() => magicLogout()}
+                  >
+                    Logout?
+                  </span>
+                )}
               </Form.Helper>
             )}
           </Form.Group>
