@@ -1,30 +1,176 @@
 {
-    "name": "Dr Passy Amaraegbu",
-    "short_name": "Passy Amaraegbu",
-    "description": "Personal website of Dr. Passy Amaraegbu",
-    "icons": [
+  "name": "Dr Passy Amaraegbu",
+  "short_name": "Dr. Passy",
+  "description": "Personal website of Dr. Passy Amaraegbu",
+  "icons": [
+    {
+      "src": "/images/icons/manifest-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/icons/manifest-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/icons/manifest-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/icons/manifest-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#724e91",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": ".",
+  "start_url": ".",
+  "shortcuts": [
+    {
+      "name": "About",
+      "url": "/about",
+      "description": "About - Dr Passy Amaraegbu",
+      "icons": [
         {
-            "src": "/images/128x128.png",
-            "sizes": "128x128",
-            "type": "image/png"
+          "src": "/images/icons/manifest-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
         },
         {
-            "src": "/images/256x256.png",
-            "sizes": "256x256",
-            "type": "image/png",
-            "purpose": "any"
+          "src": "/images/icons/manifest-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
         },
         {
-            "src": "/images/512x512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
+          "src": "/images/icons/manifest-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "/images/icons/manifest-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
         }
-    ],
-    "theme_color": "#724e91",
-    "background_color": "#ffffff",
-    "display": "standalone",
-    "scope": ".",
-    "start_url": ".",
-    "id": "com.passyamaraegbu"
+      ]
+    },
+    {
+      "name": "Books",
+      "url": "/books",
+      "description": "Life-changing Books by - Dr Passy Amaraegbu",
+      "icons": [
+        {
+          "src": "/images/icons/manifest-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "/images/icons/manifest-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        },
+        {
+          "src": "/images/icons/manifest-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "/images/icons/manifest-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "url": "/cart",
+      "description": "Personalised Cart on - Dr Passy Amaraegbu website",
+      "icons": [
+        {
+          "src": "/images/icons/manifest-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "/images/icons/manifest-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        },
+        {
+          "src": "/images/icons/manifest-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "/images/icons/manifest-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "url": "/messages",
+      "description": "Inspiring Messages by - Dr Passy Amaraegbu",
+      "icons": [
+        {
+          "src": "/images/icons/manifest-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "/images/icons/manifest-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        },
+        {
+          "src": "/images/icons/manifest-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "/images/icons/manifest-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    }
+  ],
+  "id": "com.passyamaraegbu",
+  "screenshots": [
+    {
+      "src": "/images/screenshots/1280x800-screenshot.png",
+      "sizes": "1280x800",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/screenshots/750x1334-screenshot.png",
+      "sizes": "750x1334",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait-primary"
 }

@@ -30,7 +30,7 @@ export default function Header() {
         <Link href="/" className="logo-container">
           <div className="logo-container__logo">
             <Image
-              src="/images/512x512.png"
+              src="/images/icons/manifest-icon-512.png"
               alt="logo"
               className="logo-container__logo"
               fill

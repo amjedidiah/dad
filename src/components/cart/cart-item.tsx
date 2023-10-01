@@ -8,7 +8,7 @@ import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 import Image from "next/image";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
-import { PrunedCartItem } from "./cart";
+import { PrunedCartItem } from "@/pages/cart";
 import Price from "@/components/shared/price";
 
 type CartItemProps = {

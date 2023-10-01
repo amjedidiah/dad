@@ -9,7 +9,7 @@ import { useTheme } from "@emotion/react";
 import { IconContext } from "react-icons";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import useSWR from "swr";
-import CartItem from "./cart-item";
+import CartItem from "@/components/cart/cart-item";
 import Price from "@/components/shared/price";
 
 export type PrunedCartItem = {

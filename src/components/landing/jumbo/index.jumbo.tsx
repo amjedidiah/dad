@@ -38,10 +38,10 @@ export default function Jumbo() {
           </div>
           <div className="image-container">
             <Image
-              src="/images/512x512.png"
+              src="/images/icons/manifest-icon-512.png"
               alt="drpassy"
-              width={400}
-              height={400}
+              width={500}
+              height={500}
             />
           </div>
         </article>

@@ -24,12 +24,6 @@ const styles: Interpolation<Theme> = ({
       @media (min-width: ${breakpoints.lgx}px) {
         display: block;
       }
-
-      img {
-        margin-top: 3rem;
-        position: relative;
-        left: -2%;
-      }
     }
   }
 
