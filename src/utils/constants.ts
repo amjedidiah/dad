@@ -229,3 +229,5 @@ export const testimonials: TestimonialProps[] = [
     image: "/images/testimonials/old-lady.png",
   },
 ];
+
+export const isDev = process.env.NODE_ENV === "development";

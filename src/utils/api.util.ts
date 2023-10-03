@@ -3,6 +3,7 @@ import { Api } from "zerobounce";
 import validate from "deep-email-validator";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { UserData } from "@/redux/slices/user.slice";
+import { isDev } from "@/utils/constants";
 
 export enum HttpStatus {
   OK = 200,
@@ -113,7 +114,7 @@ export async function validateEmail(email: string) {
       validateSMTP: true,
     });
     if (!isValidByDeepValidator) return false;
-    if (process.env.NODE_ENV === "development") return true;
+    if (isDev) return true;
 
     const api = new Api(process.env.ZEROBOUNCE_API_KEY as string);
     const response = await api.validate(email);
@@ -131,7 +132,7 @@ export async function validatePhone(phone: string) {
   const isValid = isValidPhoneNumber(phone);
   if (!isValid) return false;
 
-  if (process.env.NODE_ENV === "development") return true;
+  if (isDev) return true;
 
   try {
     const response = await fetch(
