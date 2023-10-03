@@ -7,6 +7,7 @@ import Header from "@/components/shared/layout/header";
 import RootLayout from "@/components/shared/layout/root-layout";
 import useVerifyPaystackPayment from "@/hooks/use-verify-paystack-payment";
 import useScrollTarget from "@/hooks/use-scroll-target";
+import { isDev } from "@/utils/constants";
 
 export default function Home() {
   useScrollTarget();
@@ -21,7 +22,7 @@ export default function Home() {
       <Jumbo />
       <Header />
       <WhyChooseHim />
-      <Testimonies />
+      {isDev && <Testimonies />}
       <AppearedOn />
       <Content type="book" />
       <Content type="message" />

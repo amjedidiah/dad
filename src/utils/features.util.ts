@@ -1,21 +1,14 @@
 export enum Features {
-  Follow = "follow",
   Ministries = "ministries",
   Testimonials = "testimonials",
   Donate = "donate",
-  WhyChooseHim = "why-choose-him",
   CldOGImage = "og-images",
   CldImage = "cld-images",
-  Footer = "footer",
   Cart = "cart",
+  DB = "db",
 }
 
 export const features = {
-  [Features.Follow]: {
-    title: Features.Follow,
-    status: false,
-    reason: "configure social media handles",
-  },
   [Features.Ministries]: {
     title: Features.Ministries,
     status: false,
@@ -24,7 +17,8 @@ export const features = {
   [Features.Testimonials]: {
     title: Features.Testimonials,
     status: false,
-    reason: "fill in testimonials with real values",
+    reason:
+      "fill in testimonials with real values: two men, one from abroad and nigeria, same for women",
   },
   [Features.Donate]: {
     title: Features.Donate,
@@ -46,14 +40,14 @@ export const features = {
     reason:
       "move all images to cloudinary update Image to CldImage component using this article: https://cloudinary.com/guides/front-end-development/integrating-cloudinary-with-next-js",
   },
-  [Features.Footer]: {
-    title: Features.Footer,
-    status: false,
-    reason: "Only show subscribe form when logged in user is not subscribed",
-  },
   [Features.Cart]: {
     title: Features.Cart,
     status: false,
-    reason: "Get cart to work with shimmer loaders",
+    reason: "Get cart checkout to work",
+  },
+  [Features.DB]: {
+    title: Features.DB,
+    status: false,
+    reason: "Swap DATABASE_URL env variable in production for a different one",
   },
 };
