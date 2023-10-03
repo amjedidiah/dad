@@ -17,6 +17,7 @@ import ButtonGroup from "../button/button-group";
 import { cx } from "@emotion/css";
 import ShouldRender from "../should-render";
 import Image from "next/image";
+import { isDev } from "@/utils/constants";
 
 type Props = {
   price?: number;
@@ -60,7 +61,7 @@ export default function ContentItem({
         ] as IButton[])
       : [];
 
-    if (isBook)
+    if (isBook && isDev)
       buttons.push({
         key: isInCart ? "remove from cart" : "add to cart",
         value: isInCart ? "Remove From Cart" : "Add To Cart",
@@ -73,7 +74,7 @@ export default function ContentItem({
         disabled: !id || cartStatus.value === "pending",
         isLoading: cartStatus.value === "pending",
       } as IButton);
-    else
+    else if (!isBook)
       buttons.push({
         key: `listen`,
         value: `Listen`,

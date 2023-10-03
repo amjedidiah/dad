@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { IButton } from "@/components/shared/button/index.button";
 import { ModalTitles } from "@/context/modal/types";
 import useMobileDetect from "@/hooks/use-mobile-detect";
-import { JumboButtonKeys } from "@/utils/constants";
+import { JumboButtonKeys, isDev } from "@/utils/constants";
 
 const buttons: IButton[] = [
   {
@@ -11,12 +11,14 @@ const buttons: IButton[] = [
     ["data-modal"]: ModalTitles.contact,
     outlined: true,
   },
-  {
+];
+
+if (isDev)
+  buttons.push({
     key: JumboButtonKeys.partner,
     value: "Partner",
     ["data-modal"]: ModalTitles.partner,
-  },
-];
+  });
 
 export default function useActionButtons() {
   const { isMobile } = useMobileDetect();
