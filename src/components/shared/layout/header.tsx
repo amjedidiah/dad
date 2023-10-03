@@ -12,8 +12,11 @@ import styles from "@/styles/header.style";
 import { useAppSelector } from "@/hooks/types";
 import { selectCartItemsCount } from "@/redux/slices/cart.slice";
 import { useTheme } from "@emotion/react";
+import { isDev } from "@/utils/constants";
 
-const navItems = ["about", "books", "messages", "testimonies", "blog", "cart"];
+const navItems = isDev
+  ? ["about", "books", "messages", "testimonies", "blog", "cart"]
+  : ["about", "books", "messages"];
 
 export default function Header() {
   const isHeaderSticky = useStickyHeader();
