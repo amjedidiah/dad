@@ -25,6 +25,7 @@ import {
 import ContentReviews from "@/components/shared/content/content-reviews";
 import { cx } from "@emotion/css";
 import Price from "../price";
+import { isDev } from "@/utils/constants";
 
 type Props = {
   type: IContentData["type"];
@@ -72,7 +73,7 @@ export default function Content({
       },
     ] as IButton[];
 
-    if (isBook)
+    if (isBook && isDev)
       buttons.push({
         key: isInCart ? "remove from cart" : "add to cart",
         value: isInCart ? "Remove From Cart" : "Add To Cart",
@@ -87,7 +88,7 @@ export default function Content({
         disabled: !content.id || cartStatus.value === "pending",
         isLoading: cartStatus.value === "pending",
       } as IButton);
-    else
+    else if (!isBook)
       buttons.push({
         key: `listen`,
         value: `Listen`,
