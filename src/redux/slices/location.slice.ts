@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { Country } from "react-phone-number-input";
 import { RootState, CommonStateStatus } from "@/redux/store";
+import { hydrate } from "@/redux/util";
 
 type LocationState = {
   countryCode?: Country;
@@ -46,7 +47,11 @@ const locationSlice = createSlice({
       )
       .addCase(fetchLocationData.rejected, (state, action) => {
         state.status = { value: "rejected", message: action.error.message };
-      });
+      })
+      .addCase(hydrate, (state, action) => ({
+        ...state,
+        ...action.payload.location,
+      }));
   },
 });
 
@@ -95,4 +100,4 @@ export const selectLocationPrice =
           currency: "USD",
         }).format(price * rate);
 
-export default locationSlice.reducer;
+export default locationSlice;

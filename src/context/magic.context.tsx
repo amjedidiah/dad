@@ -1,10 +1,10 @@
 import {
   UserData,
+  selectUserStatus,
   userCrupdate,
   userFetchById,
   userUnset,
 } from "@/redux/slices/user.slice";
-import store from "@/redux/store";
 import { Magic } from "magic-sdk";
 import {
   FC,
@@ -17,6 +17,7 @@ import {
 } from "react";
 import { ModalContext } from "./modal/modal.context";
 import { ModalTitles } from "./modal/types";
+import { useAppDispatch, useAppSelector } from "@/hooks/types";
 
 const MagicContext = createContext<{
   magicClient?: Magic;
@@ -27,41 +28,61 @@ const MagicContext = createContext<{
   magicLogout: async () => undefined,
 });
 
-const performLogin = async (magic: Magic, onMount: boolean, email?: string) => {
-  const isLoggedIn = await magic.user.isLoggedIn();
-
-  if (isLoggedIn) {
-    const { issuer } = await magic.user.getInfo();
-    if (!issuer) throw "An error occurred. Please reload the page";
-
-    await store.dispatch(userFetchById(issuer));
-  } else if (!isLoggedIn && !onMount) {
-    if (!email) throw "Email is required to login.";
-
-    const token = await magic.auth.loginWithMagicLink({
-      email,
-      showUI: false,
-    });
-    if (!token) throw "Error logging in. Please try again.";
-  }
-};
-
-const performUserCrupdate = async (magic: Magic, data?: UserData) => {
-  const { issuer, email } = await magic.user.getInfo();
-  if (!issuer || !email) throw "An error occurred. Please reload the page";
-
-  await store.dispatch(userCrupdate({ ...data, email, id: issuer as string }));
-
-  const { value, message } = store.getState().user.status;
-  if (value === "rejected") throw message;
-};
-
 export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
   const { toggleModal } = useContext(ModalContext);
   const magic = useMemo(() => {
     if (typeof window === "undefined") return;
     return new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string);
   }, []);
+  const dispatch = useAppDispatch();
+  const userStatus = useAppSelector(selectUserStatus);
+
+  const checkLoggedIn = async (magic: Magic) => {
+    const isLoggedIn = await magic.user.isLoggedIn();
+    if (isLoggedIn) {
+      const { issuer } = await magic.user.getInfo();
+      return { issuer, isLoggedIn };
+    }
+    return null;
+  };
+
+  const getUserInfo = useCallback(
+    (issuer: string) => dispatch(userFetchById(issuer)),
+    [dispatch]
+  );
+
+  const loginWithEmail = async (magic: Magic, email: string) => {
+    const token = await magic.auth.loginWithMagicLink({
+      email,
+      showUI: false,
+    });
+    if (!token) throw "Error logging in. Please try again.";
+  };
+
+  const performLogin = useCallback(
+    async (magic: Magic, onMount: boolean, email?: string) => {
+      const res = await checkLoggedIn(magic);
+      if (res?.issuer) await getUserInfo(res.issuer);
+      else if (!res?.isLoggedIn && !onMount) {
+        if (!email) throw "Email is required to login.";
+        await loginWithEmail(magic, email);
+      }
+    },
+    [getUserInfo]
+  );
+
+  const performUserCrupdate = useCallback(
+    async (magic: Magic, data?: UserData) => {
+      const { issuer, email } = await magic.user.getInfo();
+      if (!issuer || !email) throw "An error occurred. Please reload the page";
+
+      await dispatch(userCrupdate({ ...data, email, id: issuer as string }));
+
+      const { value, message } = userStatus;
+      if (value === "rejected") throw message;
+    },
+    [dispatch, userStatus]
+  );
 
   const magicLogin = useCallback(
     async (data?: UserData, onMount = false) => {
@@ -77,7 +98,7 @@ export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
         throw error.message || error || "An error occurred.";
       }
     },
-    [magic]
+    [magic, performLogin, performUserCrupdate]
   );
 
   const magicLogout = useCallback(
@@ -88,11 +109,11 @@ export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
       if (!isLoggedIn) return;
 
       await magic.user.logout();
-      await store.dispatch(userUnset());
+      await dispatch(userUnset());
 
       if (modalTite) toggleModal(ModalTitles.login, modalTite);
     },
-    [magic, toggleModal]
+    [dispatch, magic, toggleModal]
   );
 
   useEffect(() => {
@@ -100,7 +121,7 @@ export const MagicProvider: FC<PropsWithChildren> = ({ children }) => {
 
     magic.preload();
     performLogin(magic, true);
-  }, [magic, magicLogin]);
+  }, [magic, magicLogin, performLogin]);
 
   return (
     <MagicContext.Provider

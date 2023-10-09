@@ -5,6 +5,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import { AppDispatch, CommonStateStatus, RootState } from "@/redux/store";
+import { hydrate } from "@/redux/util";
 
 export type UserData = {
   id?: string;
@@ -56,7 +57,11 @@ const userSlice = createSlice({
       .addCase(userSubscribe.fulfilled, userSlice.caseReducers.userSet)
       .addCase(userSubscribe.rejected, (state, action) => {
         state.status = { value: "rejected", message: action.error.message };
-      });
+      })
+      .addCase(hydrate, (state, action) => ({
+        ...state,
+        ...action.payload.user,
+      }));
   },
 });
 
@@ -185,4 +190,4 @@ export const selectUserIsSubscribed = createSelector(
   (activeUser) => Boolean(activeUser?.isSubscribed)
 );
 
-export default userSlice.reducer;
+export default userSlice;

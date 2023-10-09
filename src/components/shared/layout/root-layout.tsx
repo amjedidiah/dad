@@ -20,7 +20,7 @@ export default function RootLayout({
   title,
   description = "Dr Passy Amaraegbu is a father, psychologist and pastor specializing in solving long standing issues in the lives of people",
   noHeader = false,
-  ogImage = "v1696133851/1280x800-screenshot_j4iup4.png",
+  ogImage = "v1696133851/1280x800-screenshot_j4iup4",
 }: PropsWithChildren & Props) {
   const theme = useTheme();
   const { modalTitle } = useContext(ModalContext);
