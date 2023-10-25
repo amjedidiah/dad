@@ -1,46 +1,28 @@
 /** @jsxImportSource @emotion/react */
-import { useContext, useMemo, FC } from "react";
+import { FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Link as ScrollLink } from "react-scroll";
 import BouncingArrow from "@/components/landing/jumbo/bouncing-arrow";
-import ButtonGroup from "@/components/shared/button-group";
+import ButtonGroup from "@/components/shared/button/button-group";
 import Scrolling from "@/components/shared/scrolling";
-import { ModalContext } from "@/context/modal/modal.context";
-import useMobileDetect from "@/hooks/use-mobile-detect";
+import useActionButtons from "@/hooks/use-action-buttons";
 import { LinkIcon, StarIcon } from "@/icons";
 import styles from "@/styles/jumbo.style";
-import { JumboButtonKeys, Roles, jumboButtons } from "@/utils/constants";
+import { Roles } from "@/utils/constants";
 
 export type IRolesItems = {
   key: keyof typeof Roles;
   Component: FC;
 };
 
+const rolesItems = Object.keys(Roles).map((key) => ({
+  key,
+  Component: StarIcon,
+})) as IRolesItems[];
+
 export default function Jumbo() {
-  const { toggleModal } = useContext(ModalContext);
-  const { isMobile } = useMobileDetect();
-
-  const updatedJumboButtons = useMemo(
-    () =>
-      jumboButtons.map((button) => ({
-        ...button,
-        onClick: () =>
-          button.key === JumboButtonKeys.contact && isMobile
-            ? window.open(`tel:${process.env.NEXT_PUBLIC_CONTACT_NUMBER}`)
-            : toggleModal(button["data-modal"]),
-        className: "rounded lg",
-      })),
-    [toggleModal, isMobile]
-  );
-
-  const rolesItems = useMemo(
-    () =>
-      Object.keys(Roles).map((key) => ({
-        key,
-        Component: StarIcon,
-      })),
-    []
-  ) as IRolesItems[];
+  const jumboButtons = useActionButtons();
 
   return (
     <section css={styles}>
@@ -52,21 +34,22 @@ export default function Jumbo() {
               <span className="highlight"> long standing issues?</span>
             </h1>
 
-            <ButtonGroup buttons={updatedJumboButtons} />
+            <ButtonGroup buttons={jumboButtons} />
           </div>
           <div className="image-container">
             <Image
-              src="/images/512x512.png"
+              src="/images/icons/manifest-icon-512.png"
               alt="drpassy"
-              width={400}
-              height={400}
+              width={500}
+              height={500}
             />
           </div>
         </article>
         <article className="explore">
-          <span className="theme-text">Explore</span>
-          <br />
-          <BouncingArrow />
+          <ScrollLink to="why-choose-him" smooth offset={-100}>
+            <span className="theme-text">Explore</span>
+            <BouncingArrow />
+          </ScrollLink>
         </article>
         <footer className="footer">
           <div className="name-container">

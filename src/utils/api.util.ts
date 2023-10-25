@@ -1,4 +1,9 @@
 import { NextApiRequest } from "next";
+import { Api } from "zerobounce";
+import validate from "deep-email-validator";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import { UserData } from "@/redux/slices/user.slice";
+import { isDev } from "@/utils/constants";
 
 export enum HttpStatus {
   OK = 200,
@@ -13,56 +18,187 @@ export enum HttpStatus {
 export enum HttpMethods {
   GET = "GET",
   POST = "POST",
+  PATCH = "PATCH",
   PUT = "PUT",
   DELETE = "DELETE",
 }
 
-export function isValidRequestMethod(
+function isValidRequestMethod(
   req: NextApiRequest,
   allowedMethods: Set<HttpMethods>
 ) {
-  return allowedMethods.has(req.method as HttpMethods);
+  const isValidMethod = allowedMethods.has(req.method as HttpMethods);
+  const allowedMethodSize = allowedMethods.size;
+
+  if (!isValidMethod)
+    throw {
+      statusCode: HttpStatus.METHOD_NOT_ALLOWED,
+      message: "An error occurred",
+      devMessage: `Only ${Array.from(allowedMethods).join(", ")} method${
+        allowedMethodSize > 1 ? "s" : ""
+      } ${allowedMethodSize > 1 ? "are" : "is"} allowed`,
+      data: null,
+    };
 }
 
-export function validateRequestHeaders(
+function validateRequestParams(
   req: NextApiRequest,
-  requiredHeaders: string[]
+  param: string,
+  requiredArray: string[]
 ) {
-  const missingHeaders = requiredHeaders.filter(
-    (header) => !(header in req.headers)
+  const missingRequiredParamFields = requiredArray.filter((field) =>
+    param === "query" || param === "headers"
+      ? !(field in req[param])
+      : req.body[field] === null ||
+        req.body[field] === undefined ||
+        req.body[field] === ""
   );
+  const message = (
+    {
+      query: `Required query params are missing: ${missingRequiredParamFields.join(
+        ", "
+      )}`,
+      body: `Required fields are missing: ${missingRequiredParamFields.join(
+        ", "
+      )}`,
+      headers: "An error occurred. Please try again later.",
+    } as { [param: string]: string }
+  )[param];
+  const devMessage =
+    param === "headers" ? "Required request headers are missing" : message;
 
-  return {
-    hasValidHeaders: missingHeaders.length === 0,
-    missingHeaders,
-  };
+  if (missingRequiredParamFields.length !== 0)
+    throw {
+      statusCode: HttpStatus.BAD_REQUEST,
+      message,
+      devMessage,
+      data: missingRequiredParamFields,
+    };
 }
 
-export function validateRequestBody(req: NextApiRequest, fields: string[]) {
-  const missingFields = fields.filter((field) => !(field in req.body));
-
-  return {
-    hasValidBody: missingFields.length === 0,
-    missingFields,
-  };
-}
-
-export function validateRequiredFields(
+export function validateRequest(
   req: NextApiRequest,
-  requiredFields: string[]
+  {
+    methods,
+    requiredHeaders,
+    requiredFields,
+    requiredParams,
+  }: {
+    methods: Set<HttpMethods>;
+    requiredHeaders?: string[];
+    requiredFields?: string[];
+    requiredParams?: string[];
+  }
 ) {
-  const missingRequiredFields = requiredFields.filter(
-    (field) => req.body[field] === ""
-  );
-
-  return {
-    hasRequiredFields: missingRequiredFields.length === 0,
-    missingRequiredFields,
-  };
+  isValidRequestMethod(req, methods);
+  if (requiredHeaders) validateRequestParams(req, "headers", requiredHeaders);
+  if (requiredParams) validateRequestParams(req, "query", requiredParams);
+  if (requiredFields) validateRequestParams(req, "body", requiredFields);
 }
 
-export function validateEmail(email: string) {
-  return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i.test(
-    email
-  );
+export async function validateEmail(email: string) {
+  if (!email) return false;
+  try {
+    const isValidByRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i.test(
+        email
+      );
+    if (!isValidByRegex) return false;
+
+    const isValidByDeepValidator = validate({
+      email,
+      validateRegex: true,
+      validateMx: true,
+      validateTypo: false,
+      validateDisposable: true,
+      validateSMTP: true,
+    });
+    if (!isValidByDeepValidator) return false;
+    if (isDev) return true;
+
+    const api = new Api(process.env.ZEROBOUNCE_API_KEY as string);
+    const response = await api.validate(email);
+
+    console.info({ success: response.success, error: response.error });
+    return response.isSuccess();
+  } catch (error) {
+    return false;
+  }
+}
+
+export async function validatePhone(phone: string) {
+  if (!phone) return false;
+
+  const isValid = isValidPhoneNumber(phone);
+  if (!isValid) return false;
+
+  if (isDev) return true;
+
+  try {
+    const response = await fetch(
+      `https://phonevalidation.abstractapi.com/v1/?api_key=${process.env.ABSTRACT_API_KEY}&phone=${phone}`
+    );
+    const { valid } = await response.json();
+    return valid;
+  } catch (error) {
+    return false;
+  }
+}
+
+export async function validateImage(imageUrl: string) {
+  if (!imageUrl) return false;
+
+  return fetch(imageUrl, {
+    method: "HEAD",
+  })
+    .then(() => true)
+    .catch(() => false);
+}
+
+export async function validateUserData({
+  email,
+  name,
+  imageUrl,
+  phoneNumber,
+}: UserData) {
+  const isValidEmail = await validateEmail(email);
+
+  switch (true) {
+    case !isValidEmail:
+      throw {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: "Email is invalid",
+        devMessage: "Email is invalid",
+        data: email,
+      };
+    case name && name.length < 3:
+      throw {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: "Name must be at least 3 characters",
+        devMessage: "Name must be at least 3 characters",
+        data: name,
+      };
+    case Boolean(imageUrl):
+      const isValidImage = await validateImage(imageUrl as string);
+      if (!isValidImage)
+        throw {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Image is invalid",
+          devMessage: "Image is invalid",
+          data: imageUrl,
+        };
+      break;
+    case Boolean(phoneNumber):
+      const isValidPhoneNumber = await validatePhone(phoneNumber as string);
+      if (!isValidPhoneNumber)
+        throw {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Image is invalid",
+          devMessage: "Image is invalid",
+          data: imageUrl,
+        };
+      break;
+    default:
+      break;
+  }
 }
