@@ -21,9 +21,11 @@ const styles: Interpolation<Theme> = ({
   &:not(:disabled):hover {
     cursor: pointer;
 
-    &.grow {
+    &.expand {
       transform: scale(1.05);
-      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+      box-shadow: ${isDarkMode
+        ? "0 4px 20px rgba(100, 100, 100, 0.25)"
+        : "0 4px 20px rgba(0, 0, 0, 0.25)"};
     }
   }
 
@@ -34,10 +36,6 @@ const styles: Interpolation<Theme> = ({
   .icon svg,
   .icon svg path {
     stroke: ${isDarkMode ? black : white};
-  }
-
-  &.rounded {
-    border-radius: 0.5rem;
   }
 
   &.bold {
