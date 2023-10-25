@@ -34,6 +34,8 @@ git push origin <branch-name>
 - Wait until @amjedidiah or one of the maintainers merges your pull request before merging into `develop`.
 If there are any conflicts, you will get a notification and be required to resolve the conflict.
 
+> Also make sure all the required checks pass.
+
 ## Guides
 
 ### Naming Conventions
