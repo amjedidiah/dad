@@ -22,6 +22,8 @@ Practice / grow your skills while contributing to a real-world project.
 
 - Install dependencies: `yarn install`
 
+- Fetch env variables: `npx vercel env pull`
+
 - Start development server: `yarn dev`
 
 - Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

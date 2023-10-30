@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { AppDispatch, CommonStateStatus, RootState } from "../store";
 import { HTTP_METHOD } from "next/dist/server/web/http";
+import { hydrate } from "@/redux/util";
 
 type CartState = {
   items: CartItems;
@@ -95,7 +96,11 @@ const cartSlice = createSlice({
       .addCase(cartLoad.fulfilled, cartSlice.caseReducers.cartActionDone)
       .addCase(cartLoad.rejected, (state, action) => {
         state.status = { value: "idle", message: action.error.message };
-      });
+      })
+      .addCase(hydrate, (state, action) => ({
+        ...state,
+        ...action.payload.cart,
+      }));
   },
 });
 
@@ -276,4 +281,4 @@ export const selectIsItemInCart = (id: number) => (state: RootState) =>
 export const selectItemQuantity = (id: number) => (state: RootState) =>
   state.cart.items[id]?.quantity || 0;
 
-export default cartSlice.reducer;
+export default cartSlice;
