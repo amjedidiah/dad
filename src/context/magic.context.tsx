@@ -17,7 +17,7 @@ import {
 } from "react";
 import { ModalContext } from "./modal/modal.context";
 import { ModalTitles } from "./modal/types";
-import { useAppDispatch, useAppSelector } from "@/hooks/types";
+import { useAppDispatch, useAppSelector } from "@/redux/util";
 
 const MagicContext = createContext<{
   magicClient?: Magic;

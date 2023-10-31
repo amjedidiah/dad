@@ -1,7 +1,7 @@
 import Button from "@/components/shared/button/index.button";
 import Rating from "@/components/shared/rating";
 import ShouldRender from "@/components/shared/should-render";
-import { useAppDispatch, useAppSelector } from "@/hooks/types";
+import { useAppDispatch, useAppSelector } from "@/redux/util";
 import { DeleteIcon } from "@/icons";
 import { cartUpdate, selectCartStatus } from "@/redux/slices/cart.slice";
 import { cx } from "@emotion/css";

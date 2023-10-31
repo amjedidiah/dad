@@ -27,7 +27,7 @@ export default function PartnerModal() {
                 passHref
               >
                 <Image
-                  src="/images/partner/paystack.png"
+                  src="/images/partner/paystack.webp"
                   alt="partner-with-paystack"
                   width={123}
                   height={57}
@@ -43,7 +43,7 @@ export default function PartnerModal() {
                 passHref
               >
                 <Image
-                  src="/images/partner/flutterwave.png"
+                  src="/images/partner/flutterwave.webp"
                   alt="partner-with-flutterwave"
                   width={210}
                   height={50}

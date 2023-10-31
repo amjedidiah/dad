@@ -11,16 +11,17 @@ import useMode from "@/hooks/use-mode";
 import "@/styles/global.css";
 import global from "@/styles/global.style";
 import { wrapper } from "@/redux/store";
-import { fetchLocationData } from "@/redux/slices/location.slice";
 import { MagicProvider } from "@/context/magic.context";
+import { Provider } from "react-redux";
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, ...rest }: AppProps) {
   const theme = useMode();
   const modalContextValue = useModal();
   const toastTheme = useMemo(
     () => (theme.isDarkMode ? "dark" : "light"),
     [theme.isDarkMode]
   );
+  const { store, props } = wrapper.useWrappedStore(rest);
 
   return (
     <ThemeProvider theme={theme}>
@@ -33,31 +34,16 @@ function MyApp({ Component, pageProps }: AppProps) {
           revalidateOnFocus: false,
         }}
       >
-        <ModalContext.Provider value={modalContextValue}>
-          <MagicProvider>
-            <Component {...pageProps} />
-          </MagicProvider>
-        </ModalContext.Provider>
+        <Provider store={store}>
+          <ModalContext.Provider value={modalContextValue}>
+            <MagicProvider>
+              <Component {...props.pageProps} />
+            </MagicProvider>
+          </ModalContext.Provider>
+        </Provider>
       </SWRConfig>
       <ToastContainer bodyStyle={{ zIndex: 1000001 }} theme={toastTheme} />
       <Analytics />
     </ThemeProvider>
   );
 }
-
-MyApp.getInitialProps = wrapper.getInitialAppProps(
-  (store) =>
-    async ({ Component, ctx }) => {
-      await store.dispatch(fetchLocationData());
-
-      const pageProps = {
-        ...(Component.getInitialProps
-          ? await Component.getInitialProps(ctx)
-          : {}),
-      };
-
-      return { pageProps };
-    }
-);
-
-export default wrapper.withRedux(MyApp);

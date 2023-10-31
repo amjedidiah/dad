@@ -12,7 +12,7 @@ import {
   selectIsItemInCart,
   selectItemQuantity,
 } from "@/redux/slices/cart.slice";
-import { useAppDispatch, useAppSelector } from "@/hooks/types";
+import { useAppDispatch, useAppSelector } from "@/redux/util";
 import ButtonGroup from "../button/button-group";
 import { cx } from "@emotion/css";
 import ShouldRender from "../should-render";

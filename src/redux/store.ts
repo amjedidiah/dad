@@ -27,7 +27,7 @@ export const makeStore = wrapMakeStore(() =>
       }).prepend(
         listenerMiddleware.middleware,
         nextReduxCookieMiddleware({
-          subtrees: ["cart"],
+          subtrees: [locationSlice.name, cartSlice.name],
         })
       );
     },

@@ -15,7 +15,7 @@ import {
   userSubscribe,
 } from "@/redux/slices/user.slice";
 import { useMagic } from "@/context/magic.context";
-import { useAppDispatch, useAppSelector } from "@/hooks/types";
+import { useAppDispatch, useAppSelector } from "@/redux/util";
 
 export default function Footer() {
   const { magicLogin } = useMagic();

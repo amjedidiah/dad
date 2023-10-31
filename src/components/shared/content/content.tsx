@@ -14,7 +14,7 @@ import { CartIcon } from "@/icons";
 import styles from "@/styles/best-selling-content.style";
 import { useRouter } from "next/router";
 import { IContentData } from "@/context/rating/rating.context";
-import { useAppDispatch, useAppSelector } from "@/hooks/types";
+import { useAppDispatch, useAppSelector } from "@/redux/util";
 import {
   cartAdd,
   cartRemove,

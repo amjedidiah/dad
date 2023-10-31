@@ -35,7 +35,7 @@ import { toast } from "react-toastify";
 import PhoneInput from "react-phone-number-input/react-hook-form";
 import "react-phone-number-input/style.css";
 import { selectCountryCode } from "@/redux/slices/location.slice";
-import { useAppSelector } from "@/hooks/types";
+import { useAppSelector } from "@/redux/util";
 import { selectActiveUser } from "@/redux/slices/user.slice";
 import { ModalContext } from "@/context/modal/modal.context";
 import { useMagic } from "@/context/magic.context";

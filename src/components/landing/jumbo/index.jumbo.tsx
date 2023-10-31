@@ -38,7 +38,7 @@ export default function Jumbo() {
           </div>
           <div className="image-container">
             <Image
-              src="/images/icons/manifest-icon-512.png"
+              src="/images/icons/manifest-icon-512.webp"
               alt="drpassy"
               width={500}
               height={500}

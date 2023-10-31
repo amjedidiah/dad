@@ -15,8 +15,8 @@ import {
   IFormHelperTypes,
   IFormField,
 } from "@/components/shared/form";
-import { useAppSelector } from "./types";
 import { selectActiveUser } from "@/redux/slices/user.slice";
+import { useAppSelector } from "@/redux/util";
 
 type IUseSharedForm<F extends FieldValues> = Pick<
   UseFormReturn<F>,

@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/hooks/types";
+import { useAppSelector } from "@/redux/util";
 import { selectLocationPrice } from "@/redux/slices/location.slice";
 
 type Props = {

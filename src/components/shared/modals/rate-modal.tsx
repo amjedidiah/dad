@@ -8,7 +8,7 @@ import { useTheme } from "@emotion/react";
 import { cx } from "@emotion/css";
 import RatingContext from "@/context/rating/rating.context";
 import { selectActiveUser } from "@/redux/slices/user.slice";
-import { useAppSelector } from "@/hooks/types";
+import { useAppSelector } from "@/redux/util";
 
 const buttons: IButton[] = [
   {

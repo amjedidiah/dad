@@ -5,21 +5,27 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import { Country } from "react-phone-number-input";
-import { RootState, CommonStateStatus } from "@/redux/store";
+import { RootState } from "@/redux/store";
 import { hydrate } from "@/redux/util";
+import axios from "axios";
+import ipData from "@/lib/responses/ip-data.json";
+import ratesData from "@/lib/responses/rates-data.json";
+
+type IPData = typeof ipData;
+type RatesData = typeof ratesData;
 
 type LocationState = {
-  countryCode?: Country;
-  currency?: string;
-  rate: number;
-  status: CommonStateStatus;
+  countryCode: Country;
+  currency: string;
+  language: string;
+  exchangeRate: number;
 };
 
 const initialState = {
-  countryCode: undefined,
-  currency: undefined,
-  rate: 1,
-  status: { value: "idle" },
+  countryCode: "US",
+  currency: "USD",
+  language: "en-US",
+  exchangeRate: 1,
 } as LocationState;
 
 const locationSlice = createSlice({
@@ -28,26 +34,37 @@ const locationSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchLocationData.pending, (state) => {
-        state.status = { value: "pending" };
-      })
       .addCase(
-        fetchLocationData.fulfilled,
+        fetchExchangeRate.fulfilled,
         (
           state,
-          action: PayloadAction<
-            Pick<LocationState, "countryCode" | "currency" | "rate">
-          >
+          action: PayloadAction<LocationState["exchangeRate"] | undefined>
         ) => {
-          state.status = { value: "idle" };
-          state.countryCode = action.payload.countryCode;
-          state.currency = action.payload.currency;
-          state.rate = action.payload.rate;
+          if (action.payload)
+            return {
+              ...state,
+              exchangeRate: action.payload,
+            };
         }
       )
-      .addCase(fetchLocationData.rejected, (state, action) => {
-        state.status = { value: "rejected", message: action.error.message };
-      })
+      .addCase(
+        fetchIPDetails.fulfilled,
+        (
+          state,
+          {
+            payload,
+          }: PayloadAction<
+            | Pick<LocationState, "countryCode" | "currency" | "language">
+            | undefined
+          >
+        ) => {
+          if (payload)
+            return {
+              ...state,
+              ...payload,
+            };
+        }
+      )
       .addCase(hydrate, (state, action) => ({
         ...state,
         ...action.payload.location,
@@ -55,29 +72,50 @@ const locationSlice = createSlice({
   },
 });
 
-export const fetchLocationData = createAsyncThunk(
-  "location/fetchLocationData",
-  () =>
-    fetch("https://ipapi.co/json/")
-      .then((res) => res.json())
-      .then(({ country_code, currency }) => ({
-        countryCode: country_code,
-        currency,
-      }))
-      .then(async (data) => {
-        const res = await fetch(
-          `https://v6.exchangerate-api.com/v6/${process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_KEY}/latest/USD`
-        ).then((res) => res.json());
-        const conversionRate =
-          !res.conversion_rates || !data.currency
-            ? 1
-            : res.conversion_rates[data.currency];
+export const fetchExchangeRate = createAsyncThunk<
+  LocationState["exchangeRate"] | undefined,
+  string,
+  { state: RootState }
+>("location/fetchExchangeRate", (currency) =>
+  axios
+    .get<RatesData>(
+      `https://v6.exchangerate-api.com/v6/${process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_KEY}/latest/USD`
+    )
+    .then(
+      ({ data: { conversion_rates } }) =>
+        conversion_rates &&
+        conversion_rates[currency as keyof typeof conversion_rates]
+    )
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    })
+);
 
-        return {
-          ...data,
-          rate: conversionRate,
-        };
-      })
+export const fetchIPDetails = createAsyncThunk<
+  Pick<LocationState, "countryCode" | "currency" | "language"> | undefined,
+  undefined,
+  { state: RootState }
+>("location/fetchIPDetails", async (_, thunkApi) =>
+  axios
+    .get<IPData>("https://ipapi.co/json/")
+    .then(({ data: { currency, country_code, languages } }) => {
+      const { countryCode } = thunkApi.getState().location;
+      if (country_code === countryCode) return;
+
+      thunkApi.dispatch(fetchExchangeRate(currency));
+
+      const [defaultLanguage] = languages.split(",");
+      return {
+        currency,
+        countryCode: country_code as Country,
+        language: defaultLanguage,
+      };
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    })
 );
 
 export const selectLocationState = (state: RootState) => state.location;
@@ -89,15 +127,10 @@ export const selectCountryCode = createSelector(
 
 export const selectLocationPrice =
   (price = 0) =>
-  ({ location: { countryCode, currency, rate } }: RootState) =>
-    countryCode && currency
-      ? new Intl.NumberFormat(countryCode, {
-          style: "currency",
-          currency,
-        }).format(price * rate)
-      : new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(price * rate);
+  ({ location: { language, currency, exchangeRate } }: RootState) =>
+    new Intl.NumberFormat(language, {
+      style: "currency",
+      currency,
+    }).format(price * exchangeRate);
 
 export default locationSlice;
