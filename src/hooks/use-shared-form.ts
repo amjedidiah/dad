@@ -1,22 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Control,
+  DeepMap,
+  DeepPartial,
   DefaultValues,
   FieldValues,
   Path,
-  PathValue,
   SubmitHandler,
   UseFormReturn,
   UseFormSetValue,
   useForm,
 } from "react-hook-form";
+import { IFormResponse, IFormHelperTypes } from "@/components/shared/form";
+import { useAppDispatch, useAppSelector } from "./types";
 import {
-  IFormResponse,
-  IFormHelperTypes,
-  IFormField,
-} from "@/components/shared/form";
-import { useAppSelector } from "./types";
-import { selectActiveUser } from "@/redux/slices/user.slice";
+  formUpdate,
+  formClear,
+  selectCombinedFormData,
+} from "@/redux/slices/form.slice";
+import { useDeepCompareEffect } from "react-use";
 
 type IUseSharedForm<F extends FieldValues> = Pick<
   UseFormReturn<F>,
@@ -32,88 +34,93 @@ type IUseSharedForm<F extends FieldValues> = Pick<
 
 export default function useSharedForm<F extends FieldValues>(
   onSubmit: SubmitHandler<F>,
-  successMessage: string,
-  fields: IFormField<F>[],
-  defaultValues?: DefaultValues<F>
+  successMessage: string
 ): IUseSharedForm<F> {
-  const userData = useAppSelector(selectActiveUser);
-  const updatedFormValues = useMemo(
-    () => ({
-      ...defaultValues,
-      ...userData,
-    }),
-    [defaultValues, userData]
+  const defaultValues = useAppSelector(
+    selectCombinedFormData()
   ) as DefaultValues<F>;
-  const { register, handleSubmit, formState, reset, setValue, control, watch } =
-    useForm<F>({
-      mode: "onChange",
-      defaultValues: updatedFormValues,
-    });
+  const dispatch = useAppDispatch();
+  const useFormApi = useForm<F>({
+    mode: "onChange",
+    defaultValues,
+  });
+  const valueChanges = useFormApi.watch();
   const [formResponse, setFormResponse] = useState<IFormResponse | undefined>();
-  const shouldPraise = useMemo(
-    () => formState.isValid && !formResponse,
-    [formState.isValid, formResponse]
-  );
-  const formFieldsObject = watch();
-  const formFieldNames = useMemo(
-    () => Object.keys(formFieldsObject),
-    [formFieldsObject]
-  );
-  const showSwitchUserText = useMemo(
-    () => !!userData?.email,
-    [userData?.email]
-  );
+  const shouldPraise = useFormApi.formState.isValid && !formResponse;
+  const showSwitchUserText = !!defaultValues?.email;
 
-  const submitForm = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+  const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-      try {
-        await handleSubmit(onSubmit)(e);
-        setFormResponse({
-          message: successMessage,
-          type: IFormHelperTypes.Success,
-        });
-        reset();
-      } catch (error) {
-        setFormResponse({
-          message: error as string,
-          type: IFormHelperTypes.Error,
-        });
-        reset(undefined, {
-          keepDirtyValues: true,
-          keepIsValid: true,
-          keepErrors: true,
-          keepIsSubmitted: true,
-        });
-        console.error(error);
-      } finally {
-        setTimeout(() => setFormResponse(undefined), 5000);
-      }
-    },
-    [handleSubmit, onSubmit, reset, successMessage]
-  );
+    try {
+      // Await form submit
+      await useFormApi.handleSubmit(onSubmit)(e);
 
-  useEffect(() => {
-    if (!formFieldNames.length || !userData?.email) return;
-    formFieldNames.forEach((fieldName) => {
-      const value = userData[fieldName as keyof typeof userData] as PathValue<
-        F,
-        Path<F>
-      >;
-      if (value) setValue(fieldName as Path<F>, value);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formFieldNames.length, setValue, userData]);
+      // Set returned form response
+      setFormResponse({
+        message: successMessage,
+        type: IFormHelperTypes.Success,
+      });
+
+      // Reset form
+      useFormApi.reset();
+
+      // Clear redux form data
+      await dispatch(formClear());
+    } catch (error) {
+      // Set returned form response
+      setFormResponse({
+        message: error as string,
+        type: IFormHelperTypes.Error,
+      });
+
+      // Log error to console
+      console.error(error);
+    } finally {
+      // Clear form response
+      setTimeout(() => setFormResponse(undefined), 5000);
+    }
+  };
+
+  // Update form with changes from the redux store
+  useDeepCompareEffect(() => {
+    for (let key of Object.keys(defaultValues)) {
+      const value = defaultValues[key];
+      useFormApi.setValue(key as Path<F>, value, { shouldDirty: false });
+    }
+  }, [defaultValues, useFormApi.setValue]);
+
+  // Update store with changes from the form
+  useDeepCompareEffect(() => {
+    const createValuesFromDirtyFields = (
+      dirtyFields: Partial<Readonly<DeepMap<DeepPartial<F>, boolean>>>,
+      changes: F
+    ) => {
+      const values = {} as FieldValues;
+
+      Object.keys(dirtyFields).forEach((fieldName) => {
+        if (dirtyFields[fieldName]) {
+          values[fieldName] = changes[fieldName];
+        }
+      });
+
+      return values;
+    };
+
+    if (Object.keys(valueChanges).length) {
+      const values = createValuesFromDirtyFields(
+        useFormApi.formState.dirtyFields,
+        valueChanges
+      );
+      dispatch(formUpdate(values));
+    }
+  }, [valueChanges]);
 
   return {
-    register,
-    formState,
+    ...useFormApi,
     submitForm,
     formResponse,
     shouldPraise,
-    setValue,
-    control,
     showSwitchUserText,
   };
 }

@@ -11,7 +11,6 @@ import {
 } from "react";
 import {
   Control,
-  DefaultValues,
   FieldValues,
   Path,
   PathValue,
@@ -46,7 +45,6 @@ type IForm<F extends FieldValues> = {
   praise: string;
   successMessage: string;
   onSubmit: SubmitHandler<F>;
-  defaultValues?: DefaultValues<F>;
 } & React.FormHTMLAttributes<HTMLFormElement>;
 
 type IFormFieldOptions = CldUploadWidgetPropsOptions & {
@@ -88,7 +86,6 @@ export default function Form<F extends FieldValues>({
   praise,
   successMessage,
   onSubmit,
-  defaultValues,
   className,
 }: IForm<F>) {
   const { modalTitle } = useContext(ModalContext);
@@ -102,7 +99,7 @@ export default function Form<F extends FieldValues>({
     setValue,
     control,
     showSwitchUserText,
-  } = useSharedForm<F>(onSubmit, successMessage, fields, defaultValues);
+  } = useSharedForm<F>(onSubmit, successMessage);
   return (
     <form
       css={styles}
