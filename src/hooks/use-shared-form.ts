@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { PropsWithChildren, useState } from "react";
 import {
-  Control,
   DeepMap,
   DeepPartial,
   DefaultValues,
@@ -8,10 +7,8 @@ import {
   Path,
   SubmitHandler,
   UseFormReturn,
-  UseFormSetValue,
   useForm,
 } from "react-hook-form";
-import { IFormResponse, IFormHelperTypes } from "@/components/shared/form";
 import { useAppDispatch, useAppSelector } from "./types";
 import {
   formUpdate,
@@ -20,16 +17,28 @@ import {
 } from "@/redux/slices/form.slice";
 import { useDeepCompareEffect } from "react-use";
 
-type IUseSharedForm<F extends FieldValues> = Pick<
-  UseFormReturn<F>,
-  "register" | "formState"
-> & {
-  submitForm: any;
+type IUseSharedForm<F extends FieldValues> = UseFormReturn<F> & {
+  submitForm: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   formResponse?: IFormResponse;
   shouldPraise: boolean;
-  setValue: UseFormSetValue<F>;
-  control: Control<F, any>;
   showSwitchUserText: boolean;
+};
+
+export type IFormHelper = {
+  type?: IFormHelperTypes;
+} & PropsWithChildren;
+
+export enum IFormHelperTypes {
+  Error = "error",
+  Praise = "praise",
+  Success = "success",
+  Warning = "warning",
+  Info = "info",
+}
+
+export type IFormResponse = {
+  type: IFormHelperTypes;
+  message: string;
 };
 
 export default function useSharedForm<F extends FieldValues>(
@@ -46,8 +55,6 @@ export default function useSharedForm<F extends FieldValues>(
   });
   const valueChanges = useFormApi.watch();
   const [formResponse, setFormResponse] = useState<IFormResponse | undefined>();
-  const shouldPraise = useFormApi.formState.isValid && !formResponse;
-  const showSwitchUserText = !!defaultValues?.email;
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -120,7 +127,7 @@ export default function useSharedForm<F extends FieldValues>(
     ...useFormApi,
     submitForm,
     formResponse,
-    shouldPraise,
-    showSwitchUserText,
+    shouldPraise: useFormApi.formState.isValid && !formResponse?.message,
+    showSwitchUserText: !!defaultValues?.email,
   };
 }
