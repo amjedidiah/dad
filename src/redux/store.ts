@@ -8,11 +8,13 @@ import {
   nextReduxCookieMiddleware,
   wrapMakeStore,
 } from "next-redux-cookie-wrapper";
+import formSlice from "@/redux/slices/form.slice";
 
 const rootReducer = combineReducers({
   [userSlice.name]: userSlice.reducer,
   [locationSlice.name]: locationSlice.reducer,
   [cartSlice.name]: cartSlice.reducer,
+  [formSlice.name]: formSlice.reducer,
 });
 
 export const makeStore = wrapMakeStore(() =>
