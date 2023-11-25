@@ -11,8 +11,9 @@ import useMode from "@/hooks/use-mode";
 import "@/styles/global.css";
 import global from "@/styles/global.style";
 import { wrapper } from "@/redux/store";
-import { MagicProvider } from "@/context/magic.context";
 import { Provider } from "react-redux";
+import useUserFetch from "@/hooks/use-user-fetch";
+import useFetchIPDetails from "@/hooks/use-fetch-ip-details";
 
 export default function MyApp({ Component, ...rest }: AppProps) {
   const theme = useMode();
@@ -22,6 +23,8 @@ export default function MyApp({ Component, ...rest }: AppProps) {
     [theme.isDarkMode]
   );
   const { store, props } = wrapper.useWrappedStore(rest);
+  useUserFetch(store);
+  useFetchIPDetails(store);
 
   return (
     <ThemeProvider theme={theme}>
@@ -36,9 +39,7 @@ export default function MyApp({ Component, ...rest }: AppProps) {
       >
         <Provider store={store}>
           <ModalContext.Provider value={modalContextValue}>
-            <MagicProvider>
-              <Component {...props.pageProps} />
-            </MagicProvider>
+            <Component {...props.pageProps} />
           </ModalContext.Provider>
         </Provider>
       </SWRConfig>

@@ -7,7 +7,6 @@ import ModeSwitch from "@/components/shared/layout/mode-switch";
 import { ModalContext } from "@/context/modal/modal.context";
 import Footer from "@/components/shared/layout/footer";
 import { CldOgImage } from "next-cloudinary";
-import useFetchIPDetails from "@/hooks/use-fetch-ip-details";
 
 type Props = {
   title: string;
@@ -25,7 +24,6 @@ export default function RootLayout({
 }: PropsWithChildren & Props) {
   const theme = useTheme();
   const { modalTitle } = useContext(ModalContext);
-  useFetchIPDetails();
 
   return (
     <Fragment>

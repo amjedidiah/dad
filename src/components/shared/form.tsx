@@ -11,7 +11,6 @@ import {
 } from "react";
 import {
   Control,
-  DefaultValues,
   FieldValues,
   Path,
   PathValue,
@@ -38,7 +37,7 @@ import { selectCountryCode } from "@/redux/slices/location.slice";
 import { useAppSelector } from "@/redux/util";
 import { selectActiveUser } from "@/redux/slices/user.slice";
 import { ModalContext } from "@/context/modal/modal.context";
-import { useMagic } from "@/context/magic.context";
+import useLogout from "@/hooks/use-logout";
 
 type IForm<F extends FieldValues> = {
   fields: IFormField<F>[];
@@ -46,7 +45,6 @@ type IForm<F extends FieldValues> = {
   praise: string;
   successMessage: string;
   onSubmit: SubmitHandler<F>;
-  defaultValues?: DefaultValues<F>;
 } & React.FormHTMLAttributes<HTMLFormElement>;
 
 type IFormFieldOptions = CldUploadWidgetPropsOptions & {
@@ -88,11 +86,10 @@ export default function Form<F extends FieldValues>({
   praise,
   successMessage,
   onSubmit,
-  defaultValues,
   className,
 }: IForm<F>) {
   const { modalTitle } = useContext(ModalContext);
-  const { magicLogout } = useMagic();
+  const logout = useLogout();
   const {
     register,
     formState: { isValid, isLoading, errors, isSubmitting },
@@ -102,7 +99,8 @@ export default function Form<F extends FieldValues>({
     setValue,
     control,
     showSwitchUserText,
-  } = useSharedForm<F>(onSubmit, successMessage, fields, defaultValues);
+    handlingSubmit,
+  } = useSharedForm<F>(onSubmit, successMessage);
   return (
     <form
       css={styles}
@@ -140,7 +138,7 @@ export default function Form<F extends FieldValues>({
                 {!isSubmitting && (
                   <span
                     className="cursor-pointer underline font-medium text-primary ms-1"
-                    onClick={() => magicLogout(modalTitle)}
+                    onClick={() => logout(modalTitle)}
                   >
                     Switch user?
                   </span>
@@ -148,7 +146,7 @@ export default function Form<F extends FieldValues>({
                 {!isSubmitting && (
                   <span
                     className="cursor-pointer underline font-medium text-red-500 ms-1"
-                    onClick={() => magicLogout()}
+                    onClick={() => logout()}
                   >
                     Logout?
                   </span>
@@ -180,9 +178,12 @@ export default function Form<F extends FieldValues>({
                 isLoading ||
                 !isValid ||
                 isSubmitting ||
-                Boolean(formResponse))
+                Boolean(formResponse) ||
+                handlingSubmit)
             }
-            isLoading={isSubmitting && button.type === "submit"}
+            isLoading={
+              (isSubmitting || handlingSubmit) && button.type === "submit"
+            }
             notGrow
           />
         </Form.Group>

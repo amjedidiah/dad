@@ -8,6 +8,7 @@ import {
   nextReduxCookieMiddleware,
   wrapMakeStore,
 } from "next-redux-cookie-wrapper";
+import { isDev } from "@/utils/constants";
 
 const rootReducer = combineReducers({
   [userSlice.name]: userSlice.reducer,
@@ -18,7 +19,7 @@ const rootReducer = combineReducers({
 export const makeStore = wrapMakeStore(() =>
   configureStore({
     reducer: rootReducer,
-    devTools: process.env.NODE_ENV !== "production",
+    devTools: isDev,
     middleware(getDefaultMiddleware) {
       return getDefaultMiddleware({
         serializableCheck: {
@@ -37,10 +38,5 @@ export const makeStore = wrapMakeStore(() =>
 export type AppStore = ReturnType<typeof makeStore>;
 export type RootState = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];
-
-export type CommonStateStatus = {
-  value: "idle" | "pending" | "rejected" | "fulfilled";
-  message?: string;
-};
 
 export const wrapper = createWrapper<AppStore>(makeStore);

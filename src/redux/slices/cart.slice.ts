@@ -4,9 +4,14 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { AppDispatch, CommonStateStatus, RootState } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { HTTP_METHOD } from "next/dist/server/web/http";
 import { hydrate } from "@/redux/util";
+
+type CommonStateStatus = {
+  value: "idle" | "pending" | "rejected" | "fulfilled";
+  message?: string;
+};
 
 type CartState = {
   items: CartItems;
@@ -144,7 +149,7 @@ export const cartAdd = createAsyncThunk<
     state: RootState;
   }
 >("cart/cartAdd", async (id, { dispatch, getState }) => {
-  const userId = getState().user.activeUser?.id;
+  const userId = getState().user.id;
   const isLoggedIn = !!userId;
   const item = { id, quantity: 1 };
 
@@ -169,7 +174,7 @@ export const cartRemove = createAsyncThunk<
     state: RootState;
   }
 >("cart/cartRemove", async ({ id, quantity }, { dispatch, getState }) => {
-  const userId = getState().user.activeUser?.id;
+  const userId = getState().user.id;
   const isLoggedIn = !!userId;
 
   // remove item from redux store optimistically
@@ -190,7 +195,7 @@ export const cartClear = createAsyncThunk<
     state: RootState;
   }
 >("cart/cartClear", async (_, { dispatch, getState }) => {
-  const userId = getState().user.activeUser?.id;
+  const userId = getState().user.id;
   const isLoggedIn = !!userId;
   const cartItems = getState().cart.items;
 
@@ -216,7 +221,7 @@ export const cartUpdate = createAsyncThunk<
     state: RootState;
   }
 >("cart/cartUpdate", async ({ id, quantity }, { dispatch, getState }) => {
-  const userId = getState().user.activeUser?.id;
+  const userId = getState().user.id;
   const isLoggedIn = !!userId;
 
   if (quantity === 0) {
@@ -242,7 +247,7 @@ export const cartLoad = createAsyncThunk<
     state: RootState;
   }
 >("cart/cartLoad", async (_, { dispatch, getState }) => {
-  const userId = getState().user.activeUser?.id;
+  const userId = getState().user.id;
   const isLoggedIn = !!userId;
   const initCartItems = getState().cart.items;
 

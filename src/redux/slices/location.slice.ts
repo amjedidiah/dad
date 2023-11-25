@@ -7,14 +7,13 @@ import {
 import { Country } from "react-phone-number-input";
 import { RootState } from "@/redux/store";
 import { hydrate } from "@/redux/util";
-import axios from "axios";
 import ipData from "@/lib/responses/ip-data.json";
 import ratesData from "@/lib/responses/rates-data.json";
 
 type IPData = typeof ipData;
 type RatesData = typeof ratesData;
 
-type LocationState = {
+export type LocationState = {
   countryCode: Country;
   currency: string;
   language: string;
@@ -65,6 +64,12 @@ const locationSlice = createSlice({
             };
         }
       )
+      .addCase(fetchIPDetails.rejected, (state) => {
+        return {
+          ...state,
+          ...initialState,
+        };
+      })
       .addCase(hydrate, (state, action) => ({
         ...state,
         ...action.payload.location,
@@ -77,12 +82,12 @@ export const fetchExchangeRate = createAsyncThunk<
   string,
   { state: RootState }
 >("location/fetchExchangeRate", (currency) =>
-  axios
-    .get<RatesData>(
-      `https://v6.exchangerate-api.com/v6/${process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_KEY}/latest/USD`
-    )
+  fetch(
+    `https://v6.exchangerate-api.com/v6/${process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_KEY}/latest/USD`
+  )
+    .then((res) => res.json())
     .then(
-      ({ data: { conversion_rates } }) =>
+      ({ conversion_rates }: RatesData) =>
         conversion_rates &&
         conversion_rates[currency as keyof typeof conversion_rates]
     )
@@ -97,13 +102,11 @@ export const fetchIPDetails = createAsyncThunk<
   undefined,
   { state: RootState }
 >("location/fetchIPDetails", async (_, thunkApi) =>
-  axios
-    .get<IPData>("https://ipapi.co/json/")
-    .then(({ data: { currency, country_code, languages } }) => {
+  fetch("https://ipapi.co/json/")
+    .then((res) => res.json())
+    .then(({ currency, country_code, languages }: IPData) => {
       const { countryCode } = thunkApi.getState().location;
       if (country_code === countryCode) return;
-
-      thunkApi.dispatch(fetchExchangeRate(currency));
 
       const [defaultLanguage] = languages.split(",");
       return {

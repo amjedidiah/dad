@@ -1,15 +1,15 @@
-import { verifyAuth } from "@/lib/auth.lib";
+import { magicSecret as magic } from "@/lib/magic.lib";
+import { expireUserCookie, verifyAuth } from "@/lib/auth.lib";
+import type { NextApiResponse, NextApiRequest } from "next";
 import { HttpMethods, HttpStatus, validateRequest } from "@/utils/api.util";
-import db from "@/utils/db.util";
-import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(
+export default async function logout(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
     validateRequest(req, {
-      methods: new Set([HttpMethods.POST]),
+      methods: new Set([HttpMethods.GET]),
     });
 
     const session = await verifyAuth(req);
@@ -21,16 +21,10 @@ export default async function handler(
         data: null,
       };
 
-    const userQuery =
-      await db`UPDATE users SET is_subscribed = CASE WHEN is_subscribed = true THEN false ELSE true END WHERE id = ${session.user_id} RETURNING *`;
+    await magic.users.logoutByIssuer(session.user_id as string);
+    await expireUserCookie(res);
 
-    res.status(HttpStatus.OK).send({
-      data: userQuery[0],
-      message: `${
-        userQuery[0]?.is_subscribed ? "Subscribed" : "Unsubscribed"
-      } successfully`,
-      error: false,
-    });
+    res.status(200).send({ done: true });
   } catch (error) {
     console.error(error);
     res
