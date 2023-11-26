@@ -21,6 +21,8 @@ export enum FormInputIds {
   Content = "content",
 }
 
+export const maxUploadSize = 1024 * 1024 * 2;
+
 const fieldObjects = {
   name: {
     type: "text",
@@ -73,7 +75,7 @@ const fieldObjects = {
     accept: "image/png, image/jpeg",
     ["aria-label"]: "Upload Photo",
     options: {
-      maxFileSize: 1024 * 1024 * 2,
+      maxFileSize: maxUploadSize,
       clientAllowedFormats: ["png", "jpeg", "jpg"],
       multiple: false,
       helperMessage: "Max size is 2MB of either jpg, jpeg or png image",

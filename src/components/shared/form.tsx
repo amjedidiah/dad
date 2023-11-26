@@ -1,36 +1,30 @@
 /** @jsxImportSource @emotion/react */
 import {
+  HTMLProps,
   InputHTMLAttributes,
   LabelHTMLAttributes,
   PropsWithChildren,
   TextareaHTMLAttributes,
   forwardRef,
   useContext,
-  useEffect,
-  useState,
 } from "react";
 import {
   Control,
   FieldValues,
+  FormState,
   Path,
-  PathValue,
   RegisterOptions,
   SubmitHandler,
   UseFormRegister,
+  UseFormReturn,
   UseFormSetValue,
 } from "react-hook-form";
 import { cx } from "@emotion/css";
 import Button, { IButton } from "@/components/shared/button/index.button";
 import useSharedForm from "@/hooks/use-shared-form";
 import styles from "@/styles/form.style";
-import {
-  CldUploadWidget,
-  CldUploadWidgetProps,
-  CldUploadWidgetPropsOptions,
-  CldUploadWidgetResults,
-} from "next-cloudinary";
+import { CldUploadWidget, CldUploadWidgetPropsOptions } from "next-cloudinary";
 import { useTheme } from "@emotion/react";
-import { toast } from "react-toastify";
 import PhoneInput from "react-phone-number-input/react-hook-form";
 import "react-phone-number-input/style.css";
 import { selectCountryCode } from "@/redux/slices/location.slice";
@@ -38,6 +32,8 @@ import { useAppSelector } from "@/redux/util";
 import { selectActiveUser } from "@/redux/slices/user.slice";
 import { ModalContext } from "@/context/modal/modal.context";
 import useLogout from "@/hooks/use-logout";
+import useFormControl from "@/hooks/use-form-control";
+import ShouldRender from "./should-render";
 
 type IForm<F extends FieldValues> = {
   fields: IFormField<F>[];
@@ -88,18 +84,13 @@ export default function Form<F extends FieldValues>({
   onSubmit,
   className,
 }: IForm<F>) {
-  const { modalTitle } = useContext(ModalContext);
-  const logout = useLogout();
   const {
-    register,
-    formState: { isValid, isLoading, errors, isSubmitting },
     submitForm,
     formResponse,
     shouldPraise,
-    setValue,
-    control,
     showSwitchUserText,
     handlingSubmit,
+    ...rest
   } = useSharedForm<F>(onSubmit, successMessage);
   return (
     <form
@@ -107,60 +98,19 @@ export default function Form<F extends FieldValues>({
       className={cx(`form ${className}`)}
       onSubmit={submitForm}
     >
-      {fields.map(({ value, ...field }) => {
-        field["aria-invalid"] = errors[field.id] ? "true" : "false";
-        field.setValue = setValue;
-        if ("type" in field && field.type === "tel") field.control = control;
-
-        return (
-          <Form.Group key={field.id}>
-            {field["aria-label"] && (
-              <Form.Label htmlFor={field.id}>
-                {field["aria-label"]}
-                {field.required && <span className="asterisk">*</span>}
-              </Form.Label>
-            )}
-            <Form.Field
-              {...field}
-              {...register(
-                field.id as Path<F>,
-                { ...field } as RegisterOptions<F, Path<F>> | undefined
-              )}
-            />
-            {errors[field.id] && (
-              <Form.Helper type={IFormHelperTypes.Warning}>
-                {errors[field.id]?.message as string}
-              </Form.Helper>
-            )}
-            {showSwitchUserText && field.name === "email" && (
-              <Form.Helper type={IFormHelperTypes.Info}>
-                You are currently logged in with this email.
-                {!isSubmitting && (
-                  <span
-                    className="cursor-pointer underline font-medium text-primary ms-1"
-                    onClick={() => logout(modalTitle)}
-                  >
-                    Switch user?
-                  </span>
-                )}
-                {!isSubmitting && (
-                  <span
-                    className="cursor-pointer underline font-medium text-red-500 ms-1"
-                    onClick={() => logout()}
-                  >
-                    Logout?
-                  </span>
-                )}
-              </Form.Helper>
-            )}
-          </Form.Group>
-        );
-      })}
-      {shouldPraise && !isSubmitting && (
+      {fields.map(({ value, ...field }) => (
+        <Form.Field
+          key={field.name}
+          field={field}
+          showSwitchUserText={showSwitchUserText}
+          {...rest}
+        />
+      ))}
+      <ShouldRender if={shouldPraise && !rest.formState.isSubmitting}>
         <Form.Group className="group-message">
           <Form.Helper type={IFormHelperTypes.Praise}>{praise}</Form.Helper>
         </Form.Group>
-      )}
+      </ShouldRender>
       {formResponse && (
         <Form.Group className="group-message">
           <Form.Helper type={formResponse.type}>
@@ -168,37 +118,19 @@ export default function Form<F extends FieldValues>({
           </Form.Helper>
         </Form.Group>
       )}
-      {buttons.map((button) => (
-        <Form.Group className="group-button" key={button.key}>
-          <Button
-            {...button}
-            disabled={
-              button.type === "submit" &&
-              (button.disabled ||
-                isLoading ||
-                !isValid ||
-                isSubmitting ||
-                Boolean(formResponse) ||
-                handlingSubmit)
-            }
-            isLoading={
-              (isSubmitting || handlingSubmit) && button.type === "submit"
-            }
-            notGrow
-          />
-        </Form.Group>
+      {buttons.map((button, i) => (
+        <Form.Button
+          key={`${button.id}-${i}`}
+          button={button}
+          isHandlingSubmit={handlingSubmit}
+          formResponse={formResponse}
+          {...rest}
+        />
       ))}
       {children}
     </form>
   );
 }
-
-Form.Group = function FormGroup({
-  children,
-  className,
-}: PropsWithChildren & { className?: string }) {
-  return <div className={cx(`group ${className}`)}>{children}</div>;
-};
 
 Form.Label = function FormLabel({
   children,
@@ -211,7 +143,53 @@ Form.Label = function FormLabel({
   );
 };
 
-Form.Field = forwardRef<
+Form.Field = function FormField<F extends FieldValues>({
+  field,
+  showSwitchUserText,
+  ...rest
+}: {
+  field: IFormField<F>;
+  showSwitchUserText: boolean;
+} & UseFormReturn<F>) {
+  const {
+    register,
+    setValue,
+    control,
+    formState: { errors, isSubmitting },
+  } = rest;
+
+  field["aria-invalid"] = errors[field.id] ? "true" : "false";
+  field.setValue = setValue;
+  if ("type" in field && field.type === "tel") field.control = control;
+
+  return (
+    <Form.Group key={field.id}>
+      {field["aria-label"] && (
+        <Form.Label htmlFor={field.id}>
+          {field["aria-label"]}
+          {field.required && <span className="asterisk">*</span>}
+        </Form.Label>
+      )}
+      <Form.Control
+        {...field}
+        {...register(
+          field.id as Path<F>,
+          { ...field } as RegisterOptions<F, Path<F>> | undefined
+        )}
+      />
+      {errors[field.id] && (
+        <Form.Helper type={IFormHelperTypes.Warning}>
+          {errors[field.id]?.message as string}
+        </Form.Helper>
+      )}
+      <ShouldRender if={showSwitchUserText && field.name === "email"}>
+        <Form.SwitchUser isSubmitting={isSubmitting} />
+      </ShouldRender>
+    </Form.Group>
+  );
+};
+
+Form.Control = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   IFormField<any>
 >(function FormField<Y extends FieldValues>(
@@ -219,65 +197,10 @@ Form.Field = forwardRef<
   ref: any
 ) {
   const { isDarkMode } = useTheme();
-  const [fileUploadMessage, setFileUploadMessage] = useState<{
-    type?: string;
-    message: string;
-  }>({ message: field.options?.helperMessage || "" });
   const countryCode = useAppSelector(selectCountryCode);
   const userData = useAppSelector(selectActiveUser);
-
-  const handleSuccess: CldUploadWidgetProps["onSuccess"] = ({ info }) => {
-    if (!info || typeof info === "string") return;
-    const data = info as {
-      secure_url: string;
-      original_filename: string;
-      format: string;
-    };
-    setValue(field.name as Path<Y>, data.secure_url as PathValue<Y, Path<Y>>);
-
-    setFileUploadMessage({
-      type: "success",
-      message: `${data.original_filename}.${data.format}`,
-    });
-  };
-
-  const handleUpload = (
-    { info }: CldUploadWidgetResults,
-    options?: IFormFieldOptions
-  ) => {
-    if (!info || typeof info === "string") return;
-    const data = info as { file: { size: number; type: string } };
-    const fileSize = data.file.size;
-    const fileExt = data.file.type.split("/")[1];
-    const maxFileSize = options?.maxFileSize || Number.MAX_SAFE_INTEGER;
-
-    if (
-      fileSize > maxFileSize ||
-      !options?.clientAllowedFormats?.includes(fileExt)
-    ) {
-      setValue(field.name as Path<Y>, undefined as PathValue<Y, Path<Y>>);
-      setFileUploadMessage({
-        type: "error",
-        message: field.options?.helperMessage || "",
-      });
-      setTimeout(
-        () => toast.info("Close the upload dialog and try again..."),
-        2500
-      );
-    }
-  };
-
-  useEffect(() => {
-    if ("type" in field && field.type === "file") {
-      const fileName = userData?.imageUrl?.split("/").at(-1);
-      if (fileName)
-        setFileUploadMessage({
-          type: "success",
-          message: fileName,
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData?.imageUrl]);
+  const { fileUploadMessage, handleUpload, handleUploadSuccess } =
+    useFormControl(field, setValue);
 
   if ("rows" in field)
     return (
@@ -293,13 +216,11 @@ Form.Field = forwardRef<
       return (
         <CldUploadWidget
           signatureEndpoint="/api/sign-cloudinary-params"
-          onSuccess={handleSuccess}
-          onUploadAdded={(results, widget) =>
-            handleUpload(results, field.options)
-          }
+          onSuccess={handleUploadSuccess}
+          onUploadAdded={(results) => handleUpload(results, field.options)}
           options={field.options}
         >
-          {({ open, results }) => {
+          {({ open }) => {
             function handleOnClick(e: React.MouseEvent<HTMLDivElement>) {
               e.preventDefault();
               open();
@@ -365,6 +286,77 @@ Form.Field = forwardRef<
   return null;
 });
 
+Form.SwitchUser = function SwitchUser({
+  isSubmitting,
+}: {
+  isSubmitting: boolean;
+}) {
+  const { modalTitle } = useContext(ModalContext);
+  const logout = useLogout();
+
+  return (
+    <Form.Helper type={IFormHelperTypes.Info}>
+      You are currently logged in with this email.
+      {!isSubmitting && (
+        <>
+          <span
+            className="cursor-pointer underline font-medium text-primary ms-1"
+            onClick={() => logout(modalTitle)}
+          >
+            Switch user?
+          </span>
+          <span
+            className="cursor-pointer underline font-medium text-red-500 ms-1"
+            onClick={() => logout()}
+          >
+            Logout?
+          </span>
+        </>
+      )}
+    </Form.Helper>
+  );
+};
+
+Form.Group = function FormGroup({
+  children,
+  className,
+}: HTMLProps<HTMLDivElement>) {
+  return <div className={cx(`group ${className}`)}>{children}</div>;
+};
+
 Form.Helper = function FormHelper({ children, type }: IFormHelper) {
   return <span className={cx("helper theme-text", type)}>{children}</span>;
+};
+
+Form.Button = function FormButton<F extends FieldValues>({
+  button,
+  formResponse,
+  isHandlingSubmit,
+  formState: { isLoading, isValid, isSubmitting },
+}: {
+  button: IButton;
+  formResponse?: IFormResponse;
+  isHandlingSubmit: boolean;
+  formState: FormState<F>;
+}) {
+  return (
+    <Form.Group className="group-button" key={button.key}>
+      <Button
+        {...button}
+        disabled={
+          button.type === "submit" &&
+          (button.disabled ||
+            isLoading ||
+            !isValid ||
+            isSubmitting ||
+            Boolean(formResponse) ||
+            isHandlingSubmit)
+        }
+        isLoading={
+          (isSubmitting || isHandlingSubmit) && button.type === "submit"
+        }
+        notGrow
+      />
+    </Form.Group>
+  );
 };
