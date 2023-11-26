@@ -18,9 +18,10 @@ import { validateCookie } from "@/lib/auth.lib";
 import {
   formUpdate,
   formClear,
-  selectCombinedFormData,
+  selectFormData,
 } from "@/redux/slices/form.slice";
 import { useDeepCompareEffect } from "react-use";
+import { selectActiveUser } from "@/redux/slices/user.slice";
 
 type IUseSharedForm<F extends FieldValues> = UseFormReturn<F> & {
   submitForm: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -37,9 +38,12 @@ export default function useSharedForm<F extends FieldValues>(
   const dispatch = useAppDispatch();
   const login = useLogin();
   const userUpdate = useUserUpdate();
-  const defaultValues = useAppSelector(
-    selectCombinedFormData()
-  ) as unknown as DefaultValues<F>;
+  const formData = useAppSelector(selectFormData);
+  const userData = useAppSelector(selectActiveUser);
+  const defaultValues = {
+    ...userData,
+    ...formData,
+  } as unknown as DefaultValues<F>;
   const useFormApi = useForm<F>({
     mode: "onChange",
     defaultValues,
@@ -133,6 +137,6 @@ export default function useSharedForm<F extends FieldValues>(
     formResponse,
     handlingSubmit,
     shouldPraise: useFormApi.formState.isValid && !formResponse?.message,
-    showSwitchUserText: !!defaultValues?.email,
+    showSwitchUserText: !!userData?.email,
   };
 }
