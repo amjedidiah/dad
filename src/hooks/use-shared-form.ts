@@ -22,6 +22,7 @@ import {
 } from "@/redux/slices/form.slice";
 import { useDeepCompareEffect } from "react-use";
 import { selectActiveUser } from "@/redux/slices/user.slice";
+import useDebounce from "@/hooks/use-debounce";
 
 type IUseSharedForm<F extends FieldValues> = UseFormReturn<F> & {
   submitForm: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -48,7 +49,7 @@ export default function useSharedForm<F extends FieldValues>(
     mode: "onChange",
     defaultValues,
   });
-  const valueChanges = useFormApi.watch();
+  const valueChanges = useDebounce(useFormApi.watch());
   const [formResponse, setFormResponse] = useState<IFormResponse | undefined>();
   const [handlingSubmit, setHandlingSubmit] = useState(false);
 
@@ -127,7 +128,7 @@ export default function useSharedForm<F extends FieldValues>(
         useFormApi.formState.dirtyFields,
         valueChanges
       );
-      dispatch(formUpdate(values));
+      if (Object.keys(values).length) dispatch(formUpdate(values));
     }
   }, [valueChanges]);
 
