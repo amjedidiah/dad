@@ -34,12 +34,13 @@ type IUseSharedForm<F extends FieldValues> = UseFormReturn<F> & {
 
 export default function useSharedForm<F extends FieldValues>(
   onSubmit: SubmitHandler<F>,
-  successMessage: string
+  successMessage: string,
+  formId: string
 ): IUseSharedForm<F> {
   const dispatch = useAppDispatch();
   const login = useLogin();
   const userUpdate = useUserUpdate();
-  const formData = useAppSelector(selectFormData);
+  const formData = useAppSelector(selectFormData(formId));
   const userData = useAppSelector(selectActiveUser);
   const defaultValues = {
     ...userData,
@@ -81,7 +82,7 @@ export default function useSharedForm<F extends FieldValues>(
       useFormApi.reset();
 
       // Clear redux form data
-      await dispatch(formClear());
+      await dispatch(formClear(formId));
     } catch (error) {
       // Set returned form response
       setFormResponse({
@@ -128,7 +129,7 @@ export default function useSharedForm<F extends FieldValues>(
         useFormApi.formState.dirtyFields,
         valueChanges
       );
-      if (Object.keys(values).length) dispatch(formUpdate(values));
+      if (Object.keys(values).length) dispatch(formUpdate(formId, values));
     }
   }, [valueChanges]);
 

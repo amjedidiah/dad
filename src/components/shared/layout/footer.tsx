@@ -48,6 +48,7 @@ export default function Footer() {
               Subscribe to life-changing messages
             </h4>
             <Form
+              id="subscribe-form"
               buttons={updatedFooterFormButtons}
               fields={footerFormFields}
               onSubmit={handleSubscribe}

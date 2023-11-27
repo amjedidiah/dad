@@ -83,6 +83,7 @@ export default function Form<F extends FieldValues>({
   successMessage,
   onSubmit,
   className,
+  id = "",
 }: IForm<F>) {
   const {
     submitForm,
@@ -91,7 +92,7 @@ export default function Form<F extends FieldValues>({
     showSwitchUserText,
     handlingSubmit,
     ...rest
-  } = useSharedForm<F>(onSubmit, successMessage);
+  } = useSharedForm<F>(onSubmit, successMessage, id);
   return (
     <form
       css={styles}

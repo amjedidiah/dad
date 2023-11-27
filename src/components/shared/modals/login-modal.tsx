@@ -17,6 +17,7 @@ export default function LoginModal() {
     <Modal.Body className="w-[808px] [&_form]:grid [&_form]:gap-x-6 [&_[type=submit]]:mt-6 [&_[type=submit]]:mb-7">
       <Modal.Title>Login</Modal.Title>
       <Form
+        id="login-form"
         fields={loginFormFields}
         buttons={loginFormButtons}
         onSubmit={handleSubmit}

@@ -23,6 +23,7 @@ export default function ContactModal() {
     <Modal.Body styles={styles}>
       <Modal.Title>Contact</Modal.Title>
       <Form
+        id="contact-form"
         fields={contactFormFields}
         buttons={contactFormButtons}
         onSubmit={handleSubmit}
