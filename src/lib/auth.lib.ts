@@ -1,10 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { parse, serialize } from "cookie";
-import { isDev } from "@/utils/constants";
 import { magicSecret as magic } from "@/lib/magic.lib";
 import { magicPublishable } from "@/lib/magic.lib";
 
-export const TOKEN_NAME = "dr-passy-auth-token";
+export const TOKEN_NAME = "_d<_p*>s<_w@>s!<@";
 
 const MAX_AGE_HOURS = 24; // 24 hours
 
@@ -14,7 +13,7 @@ export async function setUserCookie(res: NextApiResponse, token: string) {
   const cookie = serialize(TOKEN_NAME, token, {
     httpOnly: true,
     maxAge: MAX_AGE,
-    secure: !isDev,
+    secure: true,
     sameSite: "strict",
     expires: new Date(Date.now() + MAX_AGE * 1000),
     path: "/",
@@ -35,7 +34,7 @@ export const getSession = async (token?: string) => {
 
     return { user_id: issuer };
   } catch (error) {
-    console.error({ error });
+    console.error(error);
     return;
   }
 };
@@ -58,7 +57,7 @@ export const verifyAuth = async (req: NextApiRequest) => {
 
     return await getSession(token);
   } catch (error) {
-    console.error({ error });
+    console.error(error);
   }
 };
 
@@ -73,14 +72,14 @@ export const expireUserCookie = (res: NextApiResponse) => {
 
 export const validateCookie = async () => {
   if (!magicPublishable) return;
-  const res = await fetch("/api/auth/cookie").then((res) => res.json());
 
-  const token = res.data;
+  const res = await fetch("/api/auth/validate");
+  const { data: isAuthed } = await res.json();
   const isLoggedIn = await magicPublishable.user.isLoggedIn();
-  if (!token && isLoggedIn) {
-    await magicPublishable.user.logout();
-    return;
-  }
 
-  return Boolean(token) && isLoggedIn;
+  if (!isAuthed && isLoggedIn) await magicPublishable.user.logout();
+  else if (!isAuthed && !isLoggedIn)
+    await fetch("/api/auth/invalidate", { method: "POST" });
+
+  return isAuthed && isLoggedIn;
 };

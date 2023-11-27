@@ -1,5 +1,4 @@
-import { magicSecret as magic } from "@/lib/magic.lib";
-import { expireUserCookie, verifyAuth } from "@/lib/auth.lib";
+import { expireUserCookie } from "@/lib/auth.lib";
 import type { NextApiResponse, NextApiRequest } from "next";
 import { HttpMethods, HttpStatus, validateRequest } from "@/utils/api.util";
 
@@ -9,19 +8,8 @@ export default async function logout(
 ) {
   try {
     validateRequest(req, {
-      methods: new Set([HttpMethods.GET]),
+      methods: new Set([HttpMethods.POST]),
     });
-
-    const session = await verifyAuth(req);
-    if (!session?.user_id)
-      throw {
-        statusCode: HttpStatus.UNAUTHORIZED,
-        message: "You need to be logged in",
-        devMessage: "Unauthorised action",
-        data: null,
-      };
-
-    await magic.users.logoutByIssuer(session.user_id);
     await expireUserCookie(res);
 
     res.status(200).send({ done: true });

@@ -1,8 +1,8 @@
-import { TOKEN_NAME } from "@/lib/auth.lib";
+import { verifyAuth } from "@/lib/auth.lib";
 import { NextApiRequest, NextApiResponse } from "next";
 import { HttpMethods, HttpStatus, validateRequest } from "@/utils/api.util";
 
-export default async function cookie(
+export default async function validate(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -11,16 +11,17 @@ export default async function cookie(
       methods: new Set([HttpMethods.GET]),
     });
 
-    const token = req.cookies[TOKEN_NAME];
+    const session = await verifyAuth(req);
+
     res.status(200).json({
-      data: token,
-      message: "Token retrieved successfully",
+      data: Boolean(session?.user_id),
+      message: "Auth status retrieved successfully",
       error: false,
     });
   } catch (error) {
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .json({ data: false, message: error.message, error: true });
   }
 }

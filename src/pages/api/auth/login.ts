@@ -1,5 +1,5 @@
 import { magicSecret as magic } from "@/lib/magic.lib";
-import { setUserCookie } from "@/lib/auth.lib";
+import { getSession, setUserCookie } from "@/lib/auth.lib";
 import { NextApiRequest, NextApiResponse } from "next";
 import { HttpMethods, HttpStatus, validateRequest } from "@/utils/api.util";
 import db from "@/utils/db.util";
@@ -30,11 +30,9 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
         data: auth,
       };
 
-    // Validate DID Token
-    await magic.token.validate(DIDToken);
-
     // Validate issuer
-    const issuer = magic.token.getIssuer(DIDToken);
+    const session = await getSession(DIDToken);
+    const issuer = session?.user_id;
     if (!issuer)
       throw {
         message: "Unauthorised login",

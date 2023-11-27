@@ -21,7 +21,7 @@ export default function useLogin() {
         if (error) throw "Error verifying email...";
       });
     } catch (error) {
-      await magic?.user.logout();
+      await magic.user.logout();
       throw error.message || error || "An error occurred.";
     }
   };
