@@ -42,7 +42,6 @@ export default function Home({
   return (
     <RootLayout
       title="Dr Passy Amaraegbu | Living a life of purity, power and prosperity"
-      description="Dr Passy Amaraegbu is a father, psychologist and pastor specializing in solving long standing issues in the lives of people"
       noHeader
     >
       <Jumbo />

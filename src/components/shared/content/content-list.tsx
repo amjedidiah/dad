@@ -13,7 +13,8 @@ type Props = {
 export default function ContentList({ list: contentItems, type }: Props) {
   useScrollTarget();
 
-  if (!contentItems) return null;
+  if (!contentItems.length) return null;
+
   return (
     <section
       className="load-in py-6 md:py-10 grid gap-y-10"
