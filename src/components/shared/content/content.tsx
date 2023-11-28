@@ -67,6 +67,7 @@ export default function Content({
                     className={cx({ "group-hover:hidden": isBook })}
                     fill
                     sizes="100%"
+                    priority
                   />
                 )}
                 {content?.back_cover && (
@@ -76,6 +77,7 @@ export default function Content({
                     className="hidden group-hover:block"
                     fill
                     sizes="100%"
+                    priority
                   />
                 )}
               </div>
