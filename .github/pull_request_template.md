@@ -6,12 +6,11 @@
 
 ## Reviewer Context
 
-- Related Github issue 🔗
 - GTmetrix results screenshots 📉
 
 ## Check List
 
-- [ ] Checked to ensure there aren't other open [Pull Requests](https://github.com/amjedidiah/crm-website/pulls) for the same update/change :eyes:
+- [ ] Checked to ensure there aren't other open [Pull Requests](https://github.com/amjedidiah/dad/pulls) for the same update/change :eyes:
 - [ ] Commented on the code that is hard to understand :bulb:
 - [ ] Removed all unnecessary logs and comments :fire:
 - [ ] Self reviewed :eyes:
