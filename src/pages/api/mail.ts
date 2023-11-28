@@ -46,7 +46,7 @@ export default async function handler(
       react: EmailTemplate({ name, message: content }),
     });
 
-    res.status(HttpStatus.OK).json({
+    res.status(HttpStatus.OK).send({
       message: "Message sent successfully",
       error: false,
     });
@@ -54,6 +54,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }

@@ -1,3 +1,4 @@
+import { verifyAuth } from "@/lib/auth.lib";
 import { HttpMethods, HttpStatus, validateRequest } from "@/utils/api.util";
 import db from "@/utils/db.util";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -6,18 +7,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { email } = req.body;
-
   try {
     validateRequest(req, {
-      methods: new Set([HttpMethods.PATCH]),
-      requiredFields: ["email"],
+      methods: new Set([HttpMethods.POST]),
     });
 
-    const userQuery =
-      await db`UPDATE users SET is_subscribed = CASE WHEN is_subscribed = true THEN false ELSE true END WHERE email = ${email} RETURNING *`;
+    const session = await verifyAuth(req);
+    if (!session?.user_id)
+      throw {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        message: "You need to be logged in",
+        devMessage: "Unauthorised action",
+        data: null,
+      };
 
-    res.status(HttpStatus.OK).json({
+    const userQuery =
+      await db`UPDATE users SET is_subscribed = CASE WHEN is_subscribed = true THEN false ELSE true END WHERE id = ${session.user_id} RETURNING *`;
+
+    res.status(HttpStatus.OK).send({
       data: userQuery[0],
       message: `${
         userQuery[0]?.is_subscribed ? "Subscribed" : "Unsubscribed"
@@ -28,6 +35,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }

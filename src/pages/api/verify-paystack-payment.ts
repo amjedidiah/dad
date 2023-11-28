@@ -28,7 +28,7 @@ export default async function handler(
         data: response.data,
       };
 
-    res.status(HttpStatus.OK).json({
+    res.status(HttpStatus.OK).send({
       data: response.data,
       message: `${response.data.customer.first_name} ${
         response.data.customer.last_name
@@ -42,6 +42,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }

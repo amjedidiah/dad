@@ -1,3 +1,4 @@
+import { verifyAuth } from "@/lib/auth.lib";
 import { HttpMethods, HttpStatus, validateRequest } from "@/utils/api.util";
 import db from "@/utils/db.util";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -6,19 +7,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { issuer } = req.query;
-
   try {
     validateRequest(req, {
       methods: new Set([HttpMethods.GET]),
-      requiredParams: ["issuer"],
     });
 
-    const userQuery = await db`SELECT * FROM users WHERE id = ${
-      issuer as string
-    } LIMIT 1`;
+    const session = await verifyAuth(req);
+    if (!session?.user_id)
+      throw {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        message: "You need to be logged in",
+        devMessage: "Unauthorised action",
+        data: null,
+      };
 
-    res.status(HttpStatus.OK).json({
+    const userQuery =
+      await db`SELECT * FROM users WHERE id = ${session.user_id} LIMIT 1`;
+
+    res.status(HttpStatus.OK).send({
       data: userQuery[0],
       message: "User fetched successfully",
       error: false,
@@ -27,6 +33,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }

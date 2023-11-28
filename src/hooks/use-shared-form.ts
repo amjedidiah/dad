@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from "react";
+import { useState } from "react";
 import {
   DeepMap,
   DeepPartial,
@@ -9,71 +9,80 @@ import {
   UseFormReturn,
   useForm,
 } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "./types";
+import { IFormResponse, IFormHelperTypes } from "@/components/shared/form";
+import { useAppDispatch, useAppSelector } from "@/redux/util";
+import { magicPublishable as magic } from "@/lib/magic.lib";
+import useLogin from "./use-login";
+import useUserUpdate from "./use-user-update";
+import { validateCookie } from "@/lib/auth.lib";
 import {
   formUpdate,
   formClear,
-  selectCombinedFormData,
+  selectFormData,
 } from "@/redux/slices/form.slice";
 import { useDeepCompareEffect } from "react-use";
+import { selectActiveUser } from "@/redux/slices/user.slice";
+import useDebounce from "@/hooks/use-debounce";
 
 type IUseSharedForm<F extends FieldValues> = UseFormReturn<F> & {
   submitForm: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   formResponse?: IFormResponse;
   shouldPraise: boolean;
   showSwitchUserText: boolean;
-};
-
-export type IFormHelper = {
-  type?: IFormHelperTypes;
-} & PropsWithChildren;
-
-export enum IFormHelperTypes {
-  Error = "error",
-  Praise = "praise",
-  Success = "success",
-  Warning = "warning",
-  Info = "info",
-}
-
-export type IFormResponse = {
-  type: IFormHelperTypes;
-  message: string;
+  handlingSubmit: boolean;
 };
 
 export default function useSharedForm<F extends FieldValues>(
   onSubmit: SubmitHandler<F>,
-  successMessage: string
+  successMessage: string,
+  formId: string
 ): IUseSharedForm<F> {
-  const defaultValues = useAppSelector(
-    selectCombinedFormData()
-  ) as DefaultValues<F>;
   const dispatch = useAppDispatch();
+  const login = useLogin();
+  const userUpdate = useUserUpdate();
+  const formData = useAppSelector(selectFormData(formId));
+  const userData = useAppSelector(selectActiveUser);
+  const defaultValues = {
+    ...userData,
+    ...formData,
+  } as unknown as DefaultValues<F>;
   const useFormApi = useForm<F>({
     mode: "onChange",
     defaultValues,
   });
-  const valueChanges = useFormApi.watch();
+  const valueChanges = useDebounce(useFormApi.watch());
   const [formResponse, setFormResponse] = useState<IFormResponse | undefined>();
+  const [handlingSubmit, setHandlingSubmit] = useState(false);
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setHandlingSubmit(true);
+    const values = useFormApi.getValues();
 
     try {
+      if (!magic) throw "An error occurred. Please reload the page";
+
+      // Attempt to login if not logged in
+      const isLoggedIn = await validateCookie();
+      if (!isLoggedIn && values.email) await login(values.email);
+
       // Await form submit
       await useFormApi.handleSubmit(onSubmit)(e);
 
-      // Set returned form response
+      // Show response of form submit
       setFormResponse({
         message: successMessage,
         type: IFormHelperTypes.Success,
       });
 
+      // Update logged in user with relevant form values
+      await userUpdate(values as any).catch(console.error);
+
       // Reset form
       useFormApi.reset();
 
       // Clear redux form data
-      await dispatch(formClear());
+      await dispatch(formClear(formId));
     } catch (error) {
       // Set returned form response
       setFormResponse({
@@ -84,8 +93,9 @@ export default function useSharedForm<F extends FieldValues>(
       // Log error to console
       console.error(error);
     } finally {
-      // Clear form response
+      // Clear form submit response
       setTimeout(() => setFormResponse(undefined), 5000);
+      setHandlingSubmit(false);
     }
   };
 
@@ -119,7 +129,7 @@ export default function useSharedForm<F extends FieldValues>(
         useFormApi.formState.dirtyFields,
         valueChanges
       );
-      dispatch(formUpdate(values));
+      if (Object.keys(values).length) dispatch(formUpdate(formId, values));
     }
   }, [valueChanges]);
 
@@ -127,7 +137,8 @@ export default function useSharedForm<F extends FieldValues>(
     ...useFormApi,
     submitForm,
     formResponse,
+    handlingSubmit,
     shouldPraise: useFormApi.formState.isValid && !formResponse?.message,
-    showSwitchUserText: !!defaultValues?.email,
+    showSwitchUserText: !!userData?.email,
   };
 }

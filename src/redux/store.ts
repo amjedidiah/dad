@@ -8,6 +8,7 @@ import {
   nextReduxCookieMiddleware,
   wrapMakeStore,
 } from "next-redux-cookie-wrapper";
+import { isDev } from "@/utils/constants";
 import formSlice from "@/redux/slices/form.slice";
 
 const rootReducer = combineReducers({
@@ -20,7 +21,7 @@ const rootReducer = combineReducers({
 export const makeStore = wrapMakeStore(() =>
   configureStore({
     reducer: rootReducer,
-    devTools: process.env.NODE_ENV !== "production",
+    devTools: isDev,
     middleware(getDefaultMiddleware) {
       return getDefaultMiddleware({
         serializableCheck: {
@@ -29,7 +30,7 @@ export const makeStore = wrapMakeStore(() =>
       }).prepend(
         listenerMiddleware.middleware,
         nextReduxCookieMiddleware({
-          subtrees: ["cart"],
+          subtrees: [locationSlice.name, cartSlice.name],
         })
       );
     },
@@ -39,10 +40,5 @@ export const makeStore = wrapMakeStore(() =>
 export type AppStore = ReturnType<typeof makeStore>;
 export type RootState = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];
-
-export type CommonStateStatus = {
-  value: "idle" | "pending" | "rejected" | "fulfilled";
-  message?: string;
-};
 
 export const wrapper = createWrapper<AppStore>(makeStore);

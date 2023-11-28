@@ -1,12 +1,11 @@
-import { createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit";
-import { userCrupdate, userFetchById } from "@/redux/slices/user.slice";
-import { cartLoad } from "@/redux/slices/cart.slice";
+import { createListenerMiddleware } from "@reduxjs/toolkit";
+import { fetchExchangeRate } from "@/redux/slices/location.slice";
 export const listenerMiddleware = createListenerMiddleware();
 
 listenerMiddleware.startListening({
-  matcher: isAnyOf(userFetchById.fulfilled, userCrupdate.fulfilled),
-  effect: async ({ payload }: any, listenerApi) => {
-    if (!payload) return;
-    listenerApi.dispatch(cartLoad() as any);
+  type: "location/fetchIPDetails/fulfilled",
+  effect: ({ payload }: any, listenerApi) => {
+    if (payload)
+      listenerApi.dispatch(fetchExchangeRate(payload.currency) as any);
   },
 });

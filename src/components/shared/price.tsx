@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/hooks/types";
+import { useAppSelector } from "@/redux/util";
 import { selectLocationPrice } from "@/redux/slices/location.slice";
 
 type Props = {
@@ -7,5 +7,5 @@ type Props = {
 
 export default function Price({ value }: Props) {
   const price = useAppSelector(selectLocationPrice(value));
-  return <>{price}</>;
+  return <span suppressHydrationWarning>{price}</span>;
 }

@@ -1,7 +1,6 @@
 import Follow from "@/components/shared/follow";
 import Form from "@/components/shared/form";
 import Modal from "@/components/shared/layout/modal";
-import { useMagic } from "@/context/magic.context";
 import useMail from "@/hooks/use-mail";
 import styles from "@/styles/contact-modal.style";
 import {
@@ -12,14 +11,10 @@ import {
 } from "@/utils/constants";
 
 export default function ContactModal() {
-  const { magicLogin } = useMagic();
   const { sendMail } = useMail();
   const handleSubmit = async (data: any) => {
-    const { message: userMessage, ...userData } = data;
-    await magicLogin(userData);
-
     const { error, message } = await sendMail(data);
-    if (error) throw message;
+    if (error) throw "Error sending message. Please try again later...";
 
     return message;
   };
@@ -28,6 +23,7 @@ export default function ContactModal() {
     <Modal.Body styles={styles}>
       <Modal.Title>Contact</Modal.Title>
       <Form
+        id="contact-form"
         fields={contactFormFields}
         buttons={contactFormButtons}
         onSubmit={handleSubmit}

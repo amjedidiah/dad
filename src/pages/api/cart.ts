@@ -74,7 +74,7 @@ export default async function handler(
         [HttpMethods.PUT]: "cleared from",
       }[req.method as string]))();
 
-    res.status(HttpStatus.OK).json({
+    res.status(HttpStatus.OK).send({
       data: refinedItems,
       message: `Item ${actionMessage} cart successfully`,
       error: false,
@@ -83,6 +83,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }

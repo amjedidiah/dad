@@ -3,6 +3,7 @@ import {
   HTMLProps,
   InputHTMLAttributes,
   LabelHTMLAttributes,
+  PropsWithChildren,
   TextareaHTMLAttributes,
   forwardRef,
   useContext,
@@ -20,21 +21,17 @@ import {
 } from "react-hook-form";
 import { cx } from "@emotion/css";
 import Button, { IButton } from "@/components/shared/button/index.button";
-import useSharedForm, {
-  IFormHelper,
-  IFormHelperTypes,
-  IFormResponse,
-} from "@/hooks/use-shared-form";
+import useSharedForm from "@/hooks/use-shared-form";
 import styles from "@/styles/form.style";
 import { CldUploadWidget, CldUploadWidgetPropsOptions } from "next-cloudinary";
 import { useTheme } from "@emotion/react";
 import PhoneInput from "react-phone-number-input/react-hook-form";
 import "react-phone-number-input/style.css";
 import { selectCountryCode } from "@/redux/slices/location.slice";
-import { useAppSelector } from "@/hooks/types";
+import { useAppSelector } from "@/redux/util";
 import { selectActiveUser } from "@/redux/slices/user.slice";
 import { ModalContext } from "@/context/modal/modal.context";
-import { useMagic } from "@/context/magic.context";
+import useLogout from "@/hooks/use-logout";
 import useFormControl from "@/hooks/use-form-control";
 import ShouldRender from "./should-render";
 
@@ -61,6 +58,23 @@ export type IFormField<T extends FieldValues> = {
   | TextareaHTMLAttributes<HTMLTextAreaElement>
 );
 
+type IFormHelper = {
+  type?: IFormHelperTypes;
+} & PropsWithChildren;
+
+export enum IFormHelperTypes {
+  Error = "error",
+  Praise = "praise",
+  Success = "success",
+  Warning = "warning",
+  Info = "info",
+}
+
+export type IFormResponse = {
+  type: IFormHelperTypes;
+  message: string;
+};
+
 export default function Form<F extends FieldValues>({
   buttons,
   children,
@@ -69,14 +83,16 @@ export default function Form<F extends FieldValues>({
   successMessage,
   onSubmit,
   className,
+  id = "",
 }: IForm<F>) {
   const {
     submitForm,
     formResponse,
     shouldPraise,
     showSwitchUserText,
+    handlingSubmit,
     ...rest
-  } = useSharedForm<F>(onSubmit, successMessage);
+  } = useSharedForm<F>(onSubmit, successMessage, id);
   return (
     <form
       css={styles}
@@ -107,6 +123,7 @@ export default function Form<F extends FieldValues>({
         <Form.Button
           key={`${button.id}-${i}`}
           button={button}
+          isHandlingSubmit={handlingSubmit}
           formResponse={formResponse}
           {...rest}
         />
@@ -276,7 +293,7 @@ Form.SwitchUser = function SwitchUser({
   isSubmitting: boolean;
 }) {
   const { modalTitle } = useContext(ModalContext);
-  const { magicLogout } = useMagic();
+  const logout = useLogout();
 
   return (
     <Form.Helper type={IFormHelperTypes.Info}>
@@ -285,13 +302,13 @@ Form.SwitchUser = function SwitchUser({
         <>
           <span
             className="cursor-pointer underline font-medium text-primary ms-1"
-            onClick={() => magicLogout(modalTitle)}
+            onClick={() => logout(modalTitle)}
           >
             Switch user?
           </span>
           <span
             className="cursor-pointer underline font-medium text-red-500 ms-1"
-            onClick={() => magicLogout()}
+            onClick={() => logout()}
           >
             Logout?
           </span>
@@ -315,10 +332,12 @@ Form.Helper = function FormHelper({ children, type }: IFormHelper) {
 Form.Button = function FormButton<F extends FieldValues>({
   button,
   formResponse,
+  isHandlingSubmit,
   formState: { isLoading, isValid, isSubmitting },
 }: {
   button: IButton;
   formResponse?: IFormResponse;
+  isHandlingSubmit: boolean;
   formState: FormState<F>;
 }) {
   return (
@@ -331,9 +350,12 @@ Form.Button = function FormButton<F extends FieldValues>({
             isLoading ||
             !isValid ||
             isSubmitting ||
-            Boolean(formResponse))
+            Boolean(formResponse) ||
+            isHandlingSubmit)
         }
-        isLoading={isSubmitting && button.type === "submit"}
+        isLoading={
+          (isSubmitting || isHandlingSubmit) && button.type === "submit"
+        }
         notGrow
       />
     </Form.Group>

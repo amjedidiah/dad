@@ -33,9 +33,9 @@ export default function RootLayout({
         <meta name="theme-color" content={theme?.colors.primary} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content={description} />
-        <link rel="icon" href="/images/icons/manifest-icon-512.png" />
+        <link rel="icon" href="/images/icons/manifest-icon-512.webp" />
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="apple-touch-icon" href="/images/icons/apple-icon-180.png" />
+        <link rel="apple-touch-icon" href="/images/icons/apple-icon-180.webp" />
       </Head>
       <CldOgImage src={ogImage} alt="og" />
 

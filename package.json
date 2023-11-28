@@ -1,19 +1,22 @@
 {
   "name": "drpassy-website",
+  "homepage": "https://www.drpassy.com/",
   "version": "0.1.0",
   "private": true,
+  "author": "Jedidiah Amaraegbu <imunacode@gmail.com>",
   "scripts": {
     "dev": "next dev",
     "build": "nx exec -- next build",
     "start": "nx exec -- next start",
     "lint:dev": "next lint --fix",
     "lint": "next lint",
-    "test": "npx checkly test --record",
-    "test:deploy": "npx checkly deploy"
+    "export": "next export",
+    "env": "npx vercel env pull"
   },
   "dependencies": {
     "@emotion/css": "^11.11.0",
     "@emotion/react": "^11.11.0",
+    "@magic-sdk/admin": "^2.0.1",
     "@react-email/components": "^0.0.7",
     "@reduxjs/toolkit": "^1.9.5",
     "@vercel/analytics": "^1.0.1",
@@ -43,16 +46,16 @@
     "zerobounce": "^0.3.0"
   },
   "engines": {
-    "node": ">=16.13.0",
-    "npm": ">=8.1.0"
+    "node": ">=16.20.2",
+    "npm": ">=8.19.4"
   },
   "license": "MIT",
   "devDependencies": {
+    "@magic-sdk/types": "^17.2.0",
     "@types/node": "20.1.0",
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.0",
     "@types/react-scroll": "^1.8.7",
-    "@types/redux-persist": "^4.3.1",
     "autoprefixer": "^10.4.15",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
@@ -62,10 +65,17 @@
     "nx": "16.10.0",
     "postcss": "^8.4.28",
     "prettier": "^2.8.8",
-    "sharp": "^0.32.5",
+    "sharp": "^0.32.6",
     "tailwindcss": "^3.3.3",
     "ts-node": "latest",
     "typescript": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amjedidiah/dad"
+  },
+  "bugs": {
+    "url": "https://github.com/amjedidiah/dad/issues"
   },
   "nx": {
     "targets": {}

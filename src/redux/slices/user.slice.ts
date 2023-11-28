@@ -4,7 +4,7 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { AppDispatch, CommonStateStatus, RootState } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { hydrate } from "@/redux/util";
 
 export type UserData = {
@@ -16,48 +16,27 @@ export type UserData = {
   isSubscribed?: boolean;
 };
 
-export type UserState = {
-  activeUser?: UserData;
-  status: CommonStateStatus;
-};
-
-const initialState: UserState = {
-  activeUser: undefined,
-  status: { value: "idle" },
-};
+const initialState = {} as UserData;
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    userActionPending(state) {
-      state.status = { value: "pending" };
+    userSet(state, action: PayloadAction<UserData>) {
+      if (action.payload) {
+        return { ...state, ...action.payload };
+      }
     },
-    userSet(state, action: PayloadAction<UserState["activeUser"]>) {
-      state.status = { value: "idle" };
-      if (action.payload) state.activeUser = action.payload;
-    },
-    userUnset(state) {
-      state.activeUser = undefined;
+    userUnset() {
+      return initialState;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(userFetchById.pending, userSlice.caseReducers.userActionPending)
-      .addCase(userFetchById.fulfilled, userSlice.caseReducers.userSet)
-      .addCase(userFetchById.rejected, (state, action) => {
-        state.status = { value: "rejected", message: action.error.message };
-      })
-      .addCase(userCrupdate.pending, userSlice.caseReducers.userActionPending)
-      .addCase(userCrupdate.fulfilled, userSlice.caseReducers.userSet)
-      .addCase(userCrupdate.rejected, (state, action) => {
-        state.status = { value: "rejected", message: action.error.message };
-      })
-      .addCase(userSubscribe.pending, userSlice.caseReducers.userActionPending)
+      .addCase(userFetch.fulfilled, userSlice.caseReducers.userSet)
+      .addCase(userUpdate.fulfilled, userSlice.caseReducers.userSet)
       .addCase(userSubscribe.fulfilled, userSlice.caseReducers.userSet)
-      .addCase(userSubscribe.rejected, (state, action) => {
-        state.status = { value: "rejected", message: action.error.message };
-      })
+      .addCase(userLogout.fulfilled, userSlice.caseReducers.userUnset)
       .addCase(hydrate, (state, action) => ({
         ...state,
         ...action.payload.user,
@@ -65,125 +44,107 @@ const userSlice = createSlice({
   },
 });
 
-export const userFetchById = createAsyncThunk<
-  UserState["activeUser"],
-  string,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->("user/fetchById", (userId, thunkApi) =>
-  fetch(`/api/users/${userId}`)
-    .then((res) => res.json())
-    .then(({ data, error, message }) => {
-      if (thunkApi.getState().user.activeUser) return;
-      if (error) throw message;
+const getUserData = (data: any) => {
+  const {
+    created_at,
+    updated_at,
+    phone_number,
+    image_url,
+    is_subscribed,
+    ...user
+  } = data;
+  return {
+    ...user,
+    phoneNumber: phone_number,
+    imageUrl: image_url,
+    isSubscribed: is_subscribed,
+  } as UserData;
+};
 
-      const {
-        created_at,
-        updated_at,
-        phone_number,
-        image_url,
-        is_subscribed,
-        ...user
-      } = data;
-      return {
-        ...user,
-        phoneNumber: phone_number,
-        imageUrl: image_url,
-        isSubscribed: is_subscribed,
-      };
-    })
-    .catch((error) => {
-      throw error;
-    })
+export const userFetch = createAsyncThunk<UserData, undefined>(
+  "user/fetch",
+  () =>
+    fetch("/api/users/get")
+      .then((res) => res.json())
+      .then(({ data }) => getUserData(data))
+      .catch((error) => {
+        throw error;
+      })
 );
 
-export const userCrupdate = createAsyncThunk<
-  UserState["activeUser"],
+export const userUpdate = createAsyncThunk<
+  UserData,
   UserData,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
->("user/crupdate", (user, thunkApi) =>
-  fetch("/api/users/crupdate", {
+>("user/update", (userData) =>
+  fetch("/api/users/update", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ ...thunkApi.getState().user.activeUser, ...user }),
+    body: JSON.stringify(userData),
   })
     .then((res) => res.json())
-    .then(({ data, message, error }) => {
-      if (error) throw message;
-
-      const {
-        created_at,
-        updated_at,
-        phone_number,
-        image_url,
-        is_subscribed,
-        ...user
-      } = data;
-      return {
-        ...user,
-        phoneNumber: phone_number,
-        imageUrl: image_url,
-        isSubscribed: is_subscribed,
-      };
-    })
+    .then(({ data }) => getUserData(data))
     .catch((error) => {
       throw error;
     })
 );
 
 export const userSubscribe = createAsyncThunk<
-  UserState["activeUser"],
-  string,
+  UserData,
+  undefined,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
->("user/subscribe", (email, thunkApi) =>
+>("user/subscribe", () =>
   fetch("/api/users/subscribe", {
-    method: "PATCH",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email }),
   })
     .then((res) => res.json())
-    .then(({ data, message, error }) => {
-      if (error) throw message;
-
-      const {
-        created_at,
-        updated_at,
-        phone_number,
-        image_url,
-        is_subscribed,
-        ...user
-      } = data;
-
-      return {
-        ...user,
-        phoneNumber: phone_number,
-        imageUrl: image_url,
-        isSubscribed: is_subscribed,
-      };
-    })
+    .then(({ data }) => getUserData(data))
     .catch((error) => {
       throw error;
     })
 );
 
-export const { userSet, userUnset } = userSlice.actions;
+export const userLogout = createAsyncThunk("user/logout", async () =>
+  fetch("/api/auth/logout")
+    .then((res) => res.json())
+    .catch((error) => {
+      throw error;
+    })
+);
 
-export const selectActiveUser = ({ user: { activeUser } }: RootState) =>
-  activeUser;
+export const userLogin = createAsyncThunk<
+  void,
+  string,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>("user/login", async (token) =>
+  fetch("/api/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((res) => res.json())
+    .catch((error) => {
+      throw error;
+    })
+);
 
-export const selectUserStatus = ({ user: { status } }: RootState) => status;
+export const selectActiveUser = ({ user }: RootState) => user;
 
 export const selectUserIsSubscribed = createSelector(
   [selectActiveUser],

@@ -2,19 +2,29 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { HttpMethods, HttpStatus, validateRequest } from "@/utils/api.util";
 import { reviewFormSuccess } from "@/utils/constants";
 import db from "@/utils/db.util";
+import { verifyAuth } from "@/lib/auth.lib";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { issuer, id, type, rating, content } = req.body;
+  const { id, type, rating, content } = req.body;
   const hasReview = !!content;
 
   try {
     validateRequest(req, {
       methods: new Set([HttpMethods.POST]),
-      requiredFields: ["issuer", "id", "type", "rating"],
+      requiredFields: ["id", "type", "rating"],
     });
+
+    const session = await verifyAuth(req);
+    if (!session?.user_id)
+      throw {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        message: "You need to be logged in",
+        devMessage: "Unauthorised action",
+        data: null,
+      };
 
     switch (true) {
       case typeof id !== "number" || id < 1:
@@ -51,10 +61,11 @@ export default async function handler(
 
     const userQuery =
       await db`INSERT INTO reviews (user_id, content_id, type, review, rating)
-          VALUES (${issuer}, ${id}, ${type}, ${content || ""}, ${rating})
-        `;
+          VALUES (${session.user_id}, ${id}, ${type}, ${
+        content || ""
+      }, ${rating})`;
 
-    res.status(HttpStatus.OK).json({
+    res.status(HttpStatus.OK).send({
       data: userQuery[0],
       message: hasReview ? reviewFormSuccess : "Your rating has been recorded",
       error: false,
@@ -63,6 +74,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }

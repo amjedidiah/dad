@@ -2,7 +2,6 @@ import Button from "@/components/shared/button/index.button";
 import RootLayout from "@/components/shared/layout/root-layout";
 import SectionHeader from "@/components/shared/section-header";
 import ShouldRender from "@/components/shared/should-render";
-import { useAppSelector } from "@/hooks/types";
 import { selectCartItems } from "@/redux/slices/cart.slice";
 import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
@@ -11,6 +10,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import useSWR from "swr";
 import CartItem from "@/components/cart/cart-item";
 import Price from "@/components/shared/price";
+import { useAppSelector } from "@/redux/util";
 
 export type PrunedCartItem = {
   id: number;
