@@ -63,8 +63,7 @@ export default async function handler(
       await db`INSERT INTO reviews (user_id, content_id, type, review, rating)
           VALUES (${session.user_id}, ${id}, ${type}, ${
         content || ""
-      }, ${rating})
-        `;
+      }, ${rating})`;
 
     res.status(HttpStatus.OK).send({
       data: userQuery[0],
