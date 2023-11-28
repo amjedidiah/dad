@@ -11,7 +11,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     });
 
     const params_to_sign = req.body.paramsToSign;
-    const api_secret = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+    const api_secret = process.env.CLOUDINARY_API_SECRET;
 
     if (!api_secret)
       throw {
@@ -20,7 +20,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const signature = cloudinary.utils.api_sign_request(
       params_to_sign,
-      process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET as string
+      process.env.CLOUDINARY_API_SECRET as string
     );
 
     res.status(HttpStatus.OK).send({
