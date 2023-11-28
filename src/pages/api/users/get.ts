@@ -24,7 +24,7 @@ export default async function handler(
     const userQuery =
       await db`SELECT * FROM users WHERE id = ${session.user_id} LIMIT 1`;
 
-    res.status(HttpStatus.OK).json({
+    res.status(HttpStatus.OK).send({
       data: userQuery[0],
       message: "User fetched successfully",
       error: false,
@@ -33,6 +33,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }

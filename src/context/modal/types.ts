@@ -14,4 +14,5 @@ export enum ModalTitles {
   review = "review",
   login = "login",
   content = "content",
+  contentReview = "content-review",
 }

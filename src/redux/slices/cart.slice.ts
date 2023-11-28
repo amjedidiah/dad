@@ -280,10 +280,12 @@ export const selectCartItemsCount = createSelector([selectCartItems], (items) =>
   items.reduce((acc, item) => acc + item.quantity, 0)
 );
 
-export const selectIsItemInCart = (id: number) => (state: RootState) =>
-  !!state.cart.items[id];
+export const selectIsItemInCart = (id?: number) => (state: RootState) =>
+  !id ? false : !!state.cart.items[id];
 
-export const selectItemQuantity = (id: number) => (state: RootState) =>
-  state.cart.items[id]?.quantity || 0;
+export const selectItemQuantity = (id?: number) => (state: RootState) => {
+  if (!id) return 0;
+  return state.cart.items[id]?.quantity || 0;
+};
 
 export default cartSlice;

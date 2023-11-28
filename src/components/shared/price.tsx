@@ -7,5 +7,5 @@ type Props = {
 
 export default function Price({ value }: Props) {
   const price = useAppSelector(selectLocationPrice(value));
-  return <>{price}</>;
+  return <span suppressHydrationWarning>{price}</span>;
 }

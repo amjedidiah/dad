@@ -16,7 +16,7 @@ export default async function handler(
 
     const booksQuery = await db`SELECT * FROM books WHERE id = ${+id} LIMIT 1`;
 
-    res.status(HttpStatus.OK).json({
+    res.status(HttpStatus.OK).send({
       data: booksQuery[0],
       message: "Book fetched successfully",
       error: false,
@@ -25,6 +25,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }

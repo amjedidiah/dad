@@ -23,7 +23,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET as string
     );
 
-    res.status(HttpStatus.OK).json({
+    res.status(HttpStatus.OK).send({
       signature,
       message: "Signature generated successfully",
       error: false,
@@ -32,6 +32,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }

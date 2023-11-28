@@ -13,7 +13,7 @@ export default async function validate(
 
     const session = await verifyAuth(req);
 
-    res.status(200).json({
+    res.status(200).send({
       data: Boolean(session?.user_id),
       message: "Auth status retrieved successfully",
       error: false,
@@ -22,6 +22,6 @@ export default async function validate(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: false, message: error.message, error: true });
+      .end({ data: false, message: error.message, error: true });
   }
 }

@@ -66,11 +66,7 @@ export const userFetch = createAsyncThunk<UserData, undefined>(
   () =>
     fetch("/api/users/get")
       .then((res) => res.json())
-      .then(({ data, error, message }) => {
-        if (error) throw message;
-
-        return getUserData(data);
-      })
+      .then(({ data }) => getUserData(data))
       .catch((error) => {
         throw error;
       })
@@ -113,11 +109,7 @@ export const userSubscribe = createAsyncThunk<
     },
   })
     .then((res) => res.json())
-    .then(({ data, message, error }) => {
-      if (error) throw message;
-
-      return getUserData(data);
-    })
+    .then(({ data }) => getUserData(data))
     .catch((error) => {
       throw error;
     })

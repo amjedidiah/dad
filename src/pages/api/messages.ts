@@ -14,7 +14,7 @@ export default async function handler(
     const returnedMessages =
       await db`SELECT * FROM messages WHERE recorded_at NOT IN (SELECT MAX(recorded_at) FROM messages);`;
 
-    res.status(HttpStatus.OK).json({
+    res.status(HttpStatus.OK).send({
       message: "Messages returned successfully",
       error: false,
       data: returnedMessages,
@@ -23,6 +23,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }

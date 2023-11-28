@@ -66,7 +66,7 @@ export default async function handler(
       }, ${rating})
         `;
 
-    res.status(HttpStatus.OK).json({
+    res.status(HttpStatus.OK).send({
       data: userQuery[0],
       message: hasReview ? reviewFormSuccess : "Your rating has been recorded",
       error: false,
@@ -75,6 +75,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .end({ data: error.data, message: error.message, error: true });
   }
 }
