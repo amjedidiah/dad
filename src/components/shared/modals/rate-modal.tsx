@@ -4,11 +4,12 @@ import { ModalTitles } from "@/context/modal/types";
 import { IButton } from "@/components/shared/button/index.button";
 import { useContext, useMemo } from "react";
 import ButtonGroup from "@/components/shared/button/button-group";
-import { useTheme } from "@emotion/react";
 import { cx } from "@emotion/css";
 import RatingContext from "@/context/rating/rating.context";
 import { selectActiveUser } from "@/redux/slices/user.slice";
 import { useAppSelector } from "@/redux/util";
+import { AiOutlineClose } from "react-icons/ai";
+import { ModalContext } from "@/context/modal/modal.context";
 
 const buttons: IButton[] = [
   {
@@ -23,11 +24,18 @@ const buttons: IButton[] = [
   },
 ];
 
-export default function RateModal() {
-  const { isDarkMode } = useTheme();
+interface ModalProps {
+  isDarkMode: boolean;
+}
+const RateModal: React.FC<ModalProps> = ({ isDarkMode }) => {
   const { rating, setRating, handleReview, isRating } =
     useContext(RatingContext);
   const userData = useAppSelector(selectActiveUser);
+  const { toggleModal } = useContext(ModalContext);
+
+  const closeModal = () => {
+    toggleModal();
+  };
 
   const reviewButtons = useMemo(
     () =>
@@ -55,9 +63,16 @@ export default function RateModal() {
 
   return (
     <Modal.Body>
-      <div className="flex flex-col items-center py-14 px-2">
-        <div className="flex flex-col items-center gap-4">
-          <h4 className="theme-text text-5xl font-bold">Rate</h4>
+      <div className="items-center py-14 px-2">
+        <div className="items-center gap-4">
+          <div className="flex justify-between">
+            <Modal.Title>Rate</Modal.Title>
+            <AiOutlineClose
+              onClick={closeModal}
+              className={`
+           ${!isDarkMode && "bg-black text-white w-14 h-14 cursor-pointer"}`}
+            />
+          </div>{" "}
           <p
             className={cx(
               {
@@ -84,4 +99,5 @@ export default function RateModal() {
       </div>
     </Modal.Body>
   );
-}
+};
+export default RateModal;

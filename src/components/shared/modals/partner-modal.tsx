@@ -5,11 +5,29 @@ import Scrolling from "@/components/shared/scrolling";
 import TestimonialList from "@/components/shared/testimonials/testimonial-list";
 import styles from "@/styles/partner-modal.style";
 import { ministries } from "@/utils/constants";
+import { ModalContext } from "@/context/modal/modal.context";
+import { useContext } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 
-export default function PartnerModal() {
+interface ModalProps {
+  isDarkMode: boolean;
+}
+const PartnerModal: React.FC<ModalProps> = ({ isDarkMode }) => {
+  const { toggleModal } = useContext(ModalContext);
+
+  const closeModal = () => {
+    toggleModal();
+  };
   return (
     <Modal.Body styles={styles}>
-      <Modal.Title>Partner</Modal.Title>
+      <div className="flex justify-between">
+        <Modal.Title>Partner</Modal.Title>
+        <AiOutlineClose
+          onClick={closeModal}
+          className={`
+           ${!isDarkMode && "bg-black text-white w-14 h-14 cursor-pointer"}`}
+        />
+      </div>{" "}
       <article className="container-ministries">
         <h3 className="theme-text sub-title">Ministries</h3>
         <Scrolling items={ministries} />
@@ -62,4 +80,5 @@ export default function PartnerModal() {
       </article>
     </Modal.Body>
   );
-}
+};
+export default PartnerModal;

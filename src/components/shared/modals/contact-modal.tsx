@@ -1,6 +1,7 @@
 import Follow from "@/components/shared/follow";
 import Form from "@/components/shared/form";
 import Modal from "@/components/shared/layout/modal";
+import { ModalContext } from "@/context/modal/modal.context";
 import useMail from "@/hooks/use-mail";
 import styles from "@/styles/contact-modal.style";
 import {
@@ -9,9 +10,19 @@ import {
   contactFormPraise,
   contactFormSuccess,
 } from "@/utils/constants";
+import { useContext } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 
-export default function ContactModal() {
+interface ModalProps {
+  isDarkMode: boolean;
+}
+const ContactModal: React.FC<ModalProps> = ({ isDarkMode }) => {
   const { sendMail } = useMail();
+  const { toggleModal } = useContext(ModalContext);
+
+  const closeModal = () => {
+    toggleModal();
+  };
   const handleSubmit = async (data: any) => {
     const { error, message } = await sendMail(data);
     if (error) throw "Error sending message. Please try again later...";
@@ -21,7 +32,14 @@ export default function ContactModal() {
 
   return (
     <Modal.Body styles={styles}>
-      <Modal.Title>Contact</Modal.Title>
+      <div className="flex justify-between">
+        <Modal.Title>Contact</Modal.Title>
+        <AiOutlineClose
+          onClick={closeModal}
+          className={`
+           ${!isDarkMode && "bg-black text-white w-14 h-14 cursor-pointer"}`}
+        />
+      </div>{" "}
       <Form
         id="contact-form"
         fields={contactFormFields}
@@ -33,4 +51,5 @@ export default function ContactModal() {
       <Follow />
     </Modal.Body>
   );
-}
+};
+export default ContactModal;

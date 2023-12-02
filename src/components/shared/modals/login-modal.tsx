@@ -8,14 +8,29 @@ import {
   loginFormSuccess,
 } from "@/utils/constants";
 import { useContext } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 
-export default function LoginModal() {
+interface ModalProps {
+  isDarkMode: boolean;
+}
+const LoginModal: React.FC<ModalProps> = ({ isDarkMode }) => {
   const { toggleModal, modalData: modalTitle } = useContext(ModalContext);
   const handleSubmit = () => toggleModal(modalTitle);
 
+  const closeModal = () => {
+    toggleModal();
+  };
+
   return (
     <Modal.Body className="w-[808px] [&_form]:grid [&_form]:gap-x-6 [&_[type=submit]]:mt-6 [&_[type=submit]]:mb-7">
-      <Modal.Title>Login</Modal.Title>
+      <div className="flex justify-between">
+        <Modal.Title>Login</Modal.Title>
+        <AiOutlineClose
+          onClick={closeModal}
+          className={`
+           ${!isDarkMode && "bg-black text-white w-14 h-14 cursor-pointer"}`}
+        />
+      </div>{" "}
       <Form
         id="login-form"
         fields={loginFormFields}
@@ -26,4 +41,5 @@ export default function LoginModal() {
       />
     </Modal.Body>
   );
-}
+};
+export default LoginModal;
