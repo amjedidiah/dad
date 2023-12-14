@@ -8,8 +8,6 @@ import { cx } from "@emotion/css";
 import RatingContext from "@/context/rating/rating.context";
 import { selectActiveUser } from "@/redux/slices/user.slice";
 import { useAppSelector } from "@/redux/util";
-import { AiOutlineClose } from "react-icons/ai";
-import { ModalContext } from "@/context/modal/modal.context";
 
 const buttons: IButton[] = [
   {
@@ -31,11 +29,6 @@ const RateModal: React.FC<ModalProps> = ({ isDarkMode }) => {
   const { rating, setRating, handleReview, isRating } =
     useContext(RatingContext);
   const userData = useAppSelector(selectActiveUser);
-  const { toggleModal } = useContext(ModalContext);
-
-  const closeModal = () => {
-    toggleModal();
-  };
 
   const reviewButtons = useMemo(
     () =>
@@ -64,15 +57,9 @@ const RateModal: React.FC<ModalProps> = ({ isDarkMode }) => {
   return (
     <Modal.Body>
       <div className="items-center py-14 px-2">
-        <div className="items-center gap-4">
-          <div className="flex justify-between">
-            <Modal.Title>Rate</Modal.Title>
-            <AiOutlineClose
-              onClick={closeModal}
-              className={`
-           ${!isDarkMode && "bg-black text-white w-14 h-14 cursor-pointer"}`}
-            />
-          </div>{" "}
+        <div className="items-center text-center gap-4">
+          <Modal.Title>Rate</Modal.Title>
+
           <p
             className={cx(
               {
