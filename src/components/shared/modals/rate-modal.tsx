@@ -75,7 +75,7 @@ export default function RateModal() {
           <Rating value={rating} onRating={setRating} isActive />
         </div>
 
-        <div className="[&>div]:gap-10 [&_button]:rounded-[2rem] [&_button]:px-2 [&_button]:py-4 [&_button]:w-56 md:[&_button]:w-[303px]">
+        <div className="[&>div]:justify-center [&>div]:gap-10 [&_button]:rounded-[2rem] [&_button]:px-2 [&_button]:py-4 [&_button]:w-56 md:[&_button]:w-[303px]">
           <ButtonGroup
             className="action-buttons-container"
             buttons={reviewButtons}
