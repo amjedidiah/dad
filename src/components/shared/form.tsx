@@ -6,7 +6,9 @@ import {
   PropsWithChildren,
   TextareaHTMLAttributes,
   forwardRef,
+  useCallback,
   useContext,
+  useState,
 } from "react";
 import {
   Control,
@@ -34,6 +36,7 @@ import { ModalContext } from "@/context/modal/modal.context";
 import useLogout from "@/hooks/use-logout";
 import useFormControl from "@/hooks/use-form-control";
 import ShouldRender from "@/components/shared/should-render";
+import ReCAPTCHA from "react-google-recaptcha";
 
 type IForm<F extends FieldValues> = {
   fields: IFormField<F>[];
@@ -93,6 +96,15 @@ export default function Form<F extends FieldValues>({
     handlingSubmit,
     ...rest
   } = useSharedForm<F>(onSubmit, successMessage, id);
+  const [isRecaptchaValid, setIsRecaptchaValid] = useState(false);
+
+  const onRecaptchaChange = useCallback(
+    (value: string | null) => setIsRecaptchaValid(Boolean(value)),
+    []
+  );
+  const { isDarkMode } = useTheme();
+  const recaptchaTheme = isDarkMode ? "dark" : "light";
+
   return (
     <form
       css={styles}
@@ -107,7 +119,14 @@ export default function Form<F extends FieldValues>({
           {...rest}
         />
       ))}
-      <ShouldRender if={shouldPraise && !rest.formState.isSubmitting}>
+      <ReCAPTCHA
+        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string}
+        onChange={onRecaptchaChange}
+        theme={recaptchaTheme}
+      />
+      <ShouldRender
+        if={shouldPraise && !rest.formState.isSubmitting && isRecaptchaValid}
+      >
         <Form.Group className="group-message">
           <Form.Helper type={IFormHelperTypes.Praise}>{praise}</Form.Helper>
         </Form.Group>
@@ -125,6 +144,7 @@ export default function Form<F extends FieldValues>({
           button={button}
           isHandlingSubmit={handlingSubmit}
           formResponse={formResponse}
+          isRecaptchaValid={isRecaptchaValid}
           {...rest}
         />
       ))}
@@ -334,11 +354,13 @@ Form.Button = function FormButton<F extends FieldValues>({
   formResponse,
   isHandlingSubmit,
   formState: { isLoading, isValid, isSubmitting },
+  isRecaptchaValid,
 }: {
   button: IButton;
   formResponse?: IFormResponse;
   isHandlingSubmit: boolean;
   formState: FormState<F>;
+  isRecaptchaValid: boolean;
 }) {
   return (
     <Form.Group className="group-button" key={button.key}>
@@ -351,7 +373,8 @@ Form.Button = function FormButton<F extends FieldValues>({
             !isValid ||
             isSubmitting ||
             Boolean(formResponse) ||
-            isHandlingSubmit)
+            isHandlingSubmit ||
+            !isRecaptchaValid)
         }
         isLoading={
           (isSubmitting || isHandlingSubmit) && button.type === "submit"
