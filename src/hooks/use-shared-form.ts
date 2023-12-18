@@ -81,7 +81,7 @@ export default function useSharedForm<F extends FieldValues>(
       else await dispatch(userFetch());
 
       // Reset form
-      useFormApi.reset();
+      useFormApi.reset(userData as unknown as F);
 
       // Clear redux form data
       await dispatch(formClear(formId));
@@ -113,7 +113,10 @@ export default function useSharedForm<F extends FieldValues>(
   useDeepCompareEffect(() => {
     for (let key of Object.keys(defaultValues)) {
       const value = defaultValues[key];
-      useFormApi.setValue(key as Path<F>, value, { shouldDirty: false });
+      useFormApi.setValue(key as Path<F>, value, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
     }
   }, [defaultValues, useFormApi.setValue]);
 

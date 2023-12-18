@@ -10,6 +10,7 @@ import {
 import Form from "@/components/shared/form";
 import { useSelector } from "react-redux";
 import {
+  selectIsAuthed,
   selectUserIsSubscribed,
   userSubscribe,
 } from "@/redux/slices/user.slice";
@@ -26,10 +27,13 @@ export default function Footer() {
     }),
     [isSubscribed]
   );
+  const isAuthed = useSelector(selectIsAuthed);
   const handleSubscribe = async () => {
-    await dispatch(userSubscribe()).then(async ({ error }: any) => {
-      if (error) throw "Error subscribing...";
-    });
+    await dispatch(userSubscribe(isAuthed ? undefined : true)).then(
+      async ({ error }: any) => {
+        if (error) throw "Error subscribing...";
+      }
+    );
   };
 
   return (

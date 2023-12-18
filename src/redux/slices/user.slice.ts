@@ -96,17 +96,18 @@ export const userUpdate = createAsyncThunk<
 
 export const userSubscribe = createAsyncThunk<
   UserData,
-  undefined,
+  boolean | undefined,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
->("user/subscribe", () =>
+>("user/subscribe", (shouldSubscribe) =>
   fetch("/api/users/subscribe", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify(shouldSubscribe ? { shouldSubscribe } : {}),
   })
     .then((res) => res.json())
     .then(({ data }) => getUserData(data))
@@ -149,6 +150,10 @@ export const selectActiveUser = ({ user }: RootState) => user;
 export const selectUserIsSubscribed = createSelector(
   [selectActiveUser],
   (activeUser) => Boolean(activeUser?.isSubscribed)
+);
+
+export const selectIsAuthed = createSelector([selectActiveUser], (activeUser) =>
+  Boolean(activeUser.id)
 );
 
 export default userSlice;

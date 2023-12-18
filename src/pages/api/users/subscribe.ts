@@ -22,7 +22,9 @@ export default async function handler(
       };
 
     const userQuery =
-      await db`UPDATE users SET is_subscribed = CASE WHEN is_subscribed = true THEN false ELSE true END WHERE id = ${session.user_id} RETURNING *`;
+      "shouldSubscribe" in req.body
+        ? await db`UPDATE users SET is_subscribed = true WHERE id = ${session.user_id} RETURNING *`
+        : await db`UPDATE users SET is_subscribed = CASE WHEN is_subscribed = true THEN false ELSE true END WHERE id = ${session.user_id} RETURNING *`;
 
     res.status(HttpStatus.OK).send({
       data: userQuery[0],
