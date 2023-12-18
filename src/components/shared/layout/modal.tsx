@@ -13,7 +13,7 @@ export default function Modal() {
   const ratingContextValue = useRating();
 
   if (!ModalComponent) return null;
-
+//a minor change now
   return (
     <dialog css={styles} open={true} onClick={() => toggleModal()}>
       <RatingContext.Provider value={ratingContextValue}>
