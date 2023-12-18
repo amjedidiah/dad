@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import Image, { StaticImageData } from "next/image";
-import styles from "../../styles/about.style";
-import Scrolling, { ScrollingProps } from "../shared/scrolling";
+import styles from "@/styles/about.style";
+import Scrolling, { ScrollingProps } from "@/components/shared/scrolling";
 
 type Props = {
   image: StaticImageData;

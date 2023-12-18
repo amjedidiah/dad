@@ -22,6 +22,6 @@ export default async function validate(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .end({ data: false, message: error.message, error: true });
+      .send({ data: false, message: error.message, error: true });
   }
 }

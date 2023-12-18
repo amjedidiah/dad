@@ -72,7 +72,9 @@ CREATE TABLE reviews (
   updated_at TIMESTAMP DEFAULT NOW(),
 
   FOREIGN KEY (content_id) REFERENCES books(id) ON DELETE CASCADE,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  -- Add a unique constraint on user_id and content_id
+  CONSTRAINT review_user_book_unique UNIQUE (user_id, content_id)
 );
 
 -- Cart Table Schema

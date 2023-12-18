@@ -4,7 +4,7 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { HTTP_METHOD } from "next/dist/server/web/http";
 import { hydrate } from "@/redux/util";
 

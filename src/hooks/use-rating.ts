@@ -37,6 +37,8 @@ export default function useRating() {
 
       toast.success(message);
       toggleModal();
+
+      return { error: false };
     } catch (error) {
       const errorMessage = error?.message || error;
       if (!review.content) {

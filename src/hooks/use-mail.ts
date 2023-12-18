@@ -15,7 +15,9 @@ export default function useMail() {
       },
       body: JSON.stringify(data),
     });
-    return response.json();
+    return response.ok
+      ? response.json()
+      : { error: true, message: "An error occurred" };
   }, []);
 
   return {
