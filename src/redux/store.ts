@@ -1,46 +1,44 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import locationReducer from "@/redux/slices/location.slice";
-import userReducer from "@/redux/slices/user.slice";
-import cartReducer from "@/redux/slices/cart.slice";
-import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import locationSlice from "@/redux/slices/location.slice";
+import userSlice from "@/redux/slices/user.slice";
+import cartSlice from "@/redux/slices/cart.slice";
 import { listenerMiddleware } from "@/redux/middlewares";
-
-const persistConfig = {
-  key: "root",
-  storage,
-  whitelist: ["cart"],
-};
+import { createWrapper } from "next-redux-wrapper";
+import {
+  nextReduxCookieMiddleware,
+  wrapMakeStore,
+} from "next-redux-cookie-wrapper";
+import { isDev } from "@/utils/constants";
+import formSlice from "@/redux/slices/form.slice";
 
 const rootReducer = combineReducers({
-  user: userReducer,
-  location: locationReducer,
-  cart: cartReducer,
+  [userSlice.name]: userSlice.reducer,
+  [locationSlice.name]: locationSlice.reducer,
+  [cartSlice.name]: cartSlice.reducer,
+  [formSlice.name]: formSlice.reducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+export const makeStore = wrapMakeStore(() =>
+  configureStore({
+    reducer: rootReducer,
+    devTools: isDev,
+    middleware(getDefaultMiddleware) {
+      return getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: ["persist/PERSIST"],
+        },
+      }).prepend(
+        listenerMiddleware.middleware,
+        nextReduxCookieMiddleware({
+          subtrees: [locationSlice.name, cartSlice.name],
+        })
+      );
+    },
+  })
+);
 
-const store = configureStore({
-  reducer: persistedReducer,
-  devTools: process.env.NODE_ENV !== "production",
-  middleware(getDefaultMiddleware) {
-    return getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ["persist/PERSIST"],
-      },
-    }).prepend(listenerMiddleware.middleware);
-  },
-});
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];
 
-export type RootState = ReturnType<typeof store.getState>;
-
-export type AppDispatch = typeof store.dispatch;
-
-export type CommonStateStatus = {
-  value: "idle" | "pending" | "rejected" | "fulfilled";
-  message?: string;
-};
-
-export const persistor = persistStore(store);
-
-export default store;
+export const wrapper = createWrapper<AppStore>(makeStore);

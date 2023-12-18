@@ -14,7 +14,7 @@ export default async function handler(
     const returnedBooks =
       await db`SELECT * FROM books WHERE is_best_selling = false`;
 
-    res.status(HttpStatus.OK).json({
+    res.status(HttpStatus.OK).send({
       message: "Books returned successfully",
       error: false,
       data: returnedBooks,
@@ -23,6 +23,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .json({ data: error.data, message: error.message, error: true });
+      .send({ data: error.data, message: error.message, error: true });
   }
 }

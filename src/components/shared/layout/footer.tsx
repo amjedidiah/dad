@@ -10,19 +10,16 @@ import {
 import Form from "@/components/shared/form";
 import { useSelector } from "react-redux";
 import {
+  selectIsAuthed,
   selectUserIsSubscribed,
-  selectUserStatus,
   userSubscribe,
 } from "@/redux/slices/user.slice";
-import { useMagic } from "@/context/magic.context";
-import { useAppDispatch, useAppSelector } from "@/hooks/types";
+import { useAppDispatch } from "@/redux/util";
 
 export default function Footer() {
-  const { magicLogin } = useMagic();
   const { isDarkMode } = useTheme();
   const isSubscribed = useSelector(selectUserIsSubscribed);
   const dispatch = useAppDispatch();
-  const userStatus = useAppSelector(selectUserStatus);
   const updatedFooterFormButtons = footerFormButtons.map(
     (button) => ({
       ...button,
@@ -30,16 +27,13 @@ export default function Footer() {
     }),
     [isSubscribed]
   );
-  const handleSubscribe = async (data: any) => {
-    const { message: userMessage, ...userData } = data;
-    await magicLogin(userData);
-
-    await dispatch(userSubscribe(data.email));
-
-    const { value, message } = userStatus;
-    if (value === "rejected") throw message;
-
-    return message;
+  const isAuthed = useSelector(selectIsAuthed);
+  const handleSubscribe = async () => {
+    await dispatch(userSubscribe(isAuthed ? undefined : true)).then(
+      async ({ error }: any) => {
+        if (error) throw "Error subscribing...";
+      }
+    );
   };
 
   return (
@@ -58,6 +52,7 @@ export default function Footer() {
               Subscribe to life-changing messages
             </h4>
             <Form
+              id="subscribe-form"
               buttons={updatedFooterFormButtons}
               fields={footerFormFields}
               onSubmit={handleSubscribe}

@@ -96,7 +96,7 @@ export function validateRequest(
   if (requiredFields) validateRequestParams(req, "body", requiredFields);
 }
 
-export async function validateEmail(email: string) {
+async function validateEmail(email: string) {
   if (!email) return false;
   try {
     const isValidByRegex =
@@ -126,7 +126,7 @@ export async function validateEmail(email: string) {
   }
 }
 
-export async function validatePhone(phone: string) {
+async function validatePhone(phone: string) {
   if (!phone) return false;
 
   const isValid = isValidPhoneNumber(phone);
@@ -145,7 +145,7 @@ export async function validatePhone(phone: string) {
   }
 }
 
-export async function validateImage(imageUrl: string) {
+async function validateImage(imageUrl: string) {
   if (!imageUrl) return false;
 
   return fetch(imageUrl, {

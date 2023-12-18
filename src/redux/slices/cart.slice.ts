@@ -4,8 +4,14 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { AppDispatch, CommonStateStatus, RootState } from "../store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { HTTP_METHOD } from "next/dist/server/web/http";
+import { hydrate } from "@/redux/util";
+
+type CommonStateStatus = {
+  value: "idle" | "pending" | "rejected" | "fulfilled";
+  message?: string;
+};
 
 type CartState = {
   items: CartItems;
@@ -95,7 +101,11 @@ const cartSlice = createSlice({
       .addCase(cartLoad.fulfilled, cartSlice.caseReducers.cartActionDone)
       .addCase(cartLoad.rejected, (state, action) => {
         state.status = { value: "idle", message: action.error.message };
-      });
+      })
+      .addCase(hydrate, (state, action) => ({
+        ...state,
+        ...action.payload.cart,
+      }));
   },
 });
 
@@ -139,7 +149,7 @@ export const cartAdd = createAsyncThunk<
     state: RootState;
   }
 >("cart/cartAdd", async (id, { dispatch, getState }) => {
-  const userId = getState().user.activeUser?.id;
+  const userId = getState().user.id;
   const isLoggedIn = !!userId;
   const item = { id, quantity: 1 };
 
@@ -164,7 +174,7 @@ export const cartRemove = createAsyncThunk<
     state: RootState;
   }
 >("cart/cartRemove", async ({ id, quantity }, { dispatch, getState }) => {
-  const userId = getState().user.activeUser?.id;
+  const userId = getState().user.id;
   const isLoggedIn = !!userId;
 
   // remove item from redux store optimistically
@@ -185,7 +195,7 @@ export const cartClear = createAsyncThunk<
     state: RootState;
   }
 >("cart/cartClear", async (_, { dispatch, getState }) => {
-  const userId = getState().user.activeUser?.id;
+  const userId = getState().user.id;
   const isLoggedIn = !!userId;
   const cartItems = getState().cart.items;
 
@@ -211,7 +221,7 @@ export const cartUpdate = createAsyncThunk<
     state: RootState;
   }
 >("cart/cartUpdate", async ({ id, quantity }, { dispatch, getState }) => {
-  const userId = getState().user.activeUser?.id;
+  const userId = getState().user.id;
   const isLoggedIn = !!userId;
 
   if (quantity === 0) {
@@ -237,7 +247,7 @@ export const cartLoad = createAsyncThunk<
     state: RootState;
   }
 >("cart/cartLoad", async (_, { dispatch, getState }) => {
-  const userId = getState().user.activeUser?.id;
+  const userId = getState().user.id;
   const isLoggedIn = !!userId;
   const initCartItems = getState().cart.items;
 
@@ -270,10 +280,12 @@ export const selectCartItemsCount = createSelector([selectCartItems], (items) =>
   items.reduce((acc, item) => acc + item.quantity, 0)
 );
 
-export const selectIsItemInCart = (id: number) => (state: RootState) =>
-  !!state.cart.items[id];
+export const selectIsItemInCart = (id?: number) => (state: RootState) =>
+  !id ? false : !!state.cart.items[id];
 
-export const selectItemQuantity = (id: number) => (state: RootState) =>
-  state.cart.items[id]?.quantity || 0;
+export const selectItemQuantity = (id?: number) => (state: RootState) => {
+  if (!id) return 0;
+  return state.cart.items[id]?.quantity || 0;
+};
 
-export default cartSlice.reducer;
+export default cartSlice;

@@ -10,21 +10,21 @@ import useModal from "@/hooks/use-modal";
 import useMode from "@/hooks/use-mode";
 import "@/styles/global.css";
 import global from "@/styles/global.style";
+import { wrapper } from "@/redux/store";
 import { Provider } from "react-redux";
-import store, { persistor } from "@/redux/store";
-import { fetchLocationData } from "@/redux/slices/location.slice";
-import { PersistGate } from "redux-persist/integration/react";
-import { MagicProvider } from "@/context/magic.context";
+import useUserFetch from "@/hooks/use-user-fetch";
+import useFetchIPDetails from "@/hooks/use-fetch-ip-details";
 
-store.dispatch(fetchLocationData());
-
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, ...rest }: AppProps) {
   const theme = useMode();
   const modalContextValue = useModal();
   const toastTheme = useMemo(
     () => (theme.isDarkMode ? "dark" : "light"),
     [theme.isDarkMode]
   );
+  const { store, props } = wrapper.useWrappedStore(rest);
+  useUserFetch(store);
+  useFetchIPDetails(store);
 
   return (
     <ThemeProvider theme={theme}>
@@ -38,13 +38,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         }}
       >
         <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <ModalContext.Provider value={modalContextValue}>
-              <MagicProvider>
-                <Component {...pageProps} />
-              </MagicProvider>
-            </ModalContext.Provider>
-          </PersistGate>
+          <ModalContext.Provider value={modalContextValue}>
+            <Component {...props.pageProps} />
+          </ModalContext.Provider>
         </Provider>
       </SWRConfig>
       <ToastContainer bodyStyle={{ zIndex: 1000001 }} theme={toastTheme} />
@@ -52,5 +48,3 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     </ThemeProvider>
   );
 }
-
-// TODO: Eventually integrate GraphQL Code Generator

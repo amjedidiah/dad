@@ -9,7 +9,7 @@ import useActionButtons from "@/hooks/use-action-buttons";
 import useStickyHeader from "@/hooks/use-sticky-header";
 import { CartIcon } from "@/icons";
 import styles from "@/styles/header.style";
-import { useAppSelector } from "@/hooks/types";
+import { useAppSelector } from "@/redux/util";
 import { selectCartItemsCount } from "@/redux/slices/cart.slice";
 import { useTheme } from "@emotion/react";
 import { isDev } from "@/utils/constants";
@@ -33,7 +33,7 @@ export default function Header() {
         <Link href="/" className="logo-container">
           <div className="logo-container__logo">
             <Image
-              src="/images/icons/manifest-icon-512.png"
+              src="/images/icons/manifest-icon-512.webp"
               alt="logo"
               className="logo-container__logo"
               fill

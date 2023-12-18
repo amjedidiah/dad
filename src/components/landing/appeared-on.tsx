@@ -3,9 +3,9 @@ import Scrolling from "@/components/shared/scrolling";
 import styles from "@/styles/appeared-on.style";
 
 const images = [
-  { key: "channels", imageLink: "/images/landing/channels.png" },
-  { key: "the-guardian", imageLink: "/images/landing/the-guardian.png" },
-  { key: "nta", imageLink: "/images/landing/nta.png" },
+  { key: "channels", imageLink: "/images/landing/channels.webp" },
+  { key: "the-guardian", imageLink: "/images/landing/the-guardian.webp" },
+  { key: "nta", imageLink: "/images/landing/nta.webp" },
 ];
 
 export default function AppearedOn() {
