@@ -25,19 +25,17 @@ export default function useContentItem({
   const cartStatus = useAppSelector(selectCartStatus);
   const dispatch = useAppDispatch();
 
-  const viewDetailsButton = {
-    key: `view details`,
-    value: `View Details`,
-    className: "rounded",
-    outlined: true,
-    onClick: () => toggleModal(ModalTitles.content, { id, type }),
-  };
-
   return {
     isBook,
     typeButtons: isBook
       ? [
-          viewDetailsButton,
+          {
+            key: `view details`,
+            value: `View Details`,
+            className: "rounded",
+            outlined: true,
+            onClick: () => toggleModal(ModalTitles.content, { id, type }),
+          },
           {
             key: isInCart ? "remove from cart" : "add to cart",
             value: isInCart ? "Remove From Cart" : "Add To Cart",
@@ -52,7 +50,6 @@ export default function useContentItem({
           },
         ]
       : [
-          viewDetailsButton,
           {
             key: `listen`,
             value: `Listen`,
