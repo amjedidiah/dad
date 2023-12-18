@@ -59,6 +59,17 @@ export default async function handler(
         break;
     }
 
+    const existsResult =
+      await db`SELECT * FROM reviews WHERE user_id = ${session.user_id} AND content_id=${id} AND type =${type}`;
+
+    if (existsResult.length)
+      throw {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: "You have already rated this book. Rate another one",
+        devMessage: "User has already rated this book before now",
+        data: rating,
+      };
+
     const userQuery =
       await db`INSERT INTO reviews (user_id, content_id, type, review, rating)
           VALUES (${session.user_id}, ${id}, ${type}, ${
@@ -74,6 +85,6 @@ export default async function handler(
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .end({ data: error.data, message: error.message, error: true });
+      .send({ data: error.data, message: error.message, error: true });
   }
 }

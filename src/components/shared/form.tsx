@@ -33,7 +33,7 @@ import { selectActiveUser } from "@/redux/slices/user.slice";
 import { ModalContext } from "@/context/modal/modal.context";
 import useLogout from "@/hooks/use-logout";
 import useFormControl from "@/hooks/use-form-control";
-import ShouldRender from "./should-render";
+import ShouldRender from "@/components/shared/should-render";
 
 type IForm<F extends FieldValues> = {
   fields: IFormField<F>[];

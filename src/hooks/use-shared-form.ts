@@ -12,8 +12,8 @@ import {
 import { IFormResponse, IFormHelperTypes } from "@/components/shared/form";
 import { useAppDispatch, useAppSelector } from "@/redux/util";
 import { magicPublishable as magic } from "@/lib/magic.lib";
-import useLogin from "./use-login";
-import useUserUpdate from "./use-user-update";
+import useLogin from "@/hooks/use-login";
+import useUserUpdate from "@/hooks/use-user-update";
 import { validateCookie } from "@/lib/auth.lib";
 import {
   formUpdate,
@@ -21,7 +21,7 @@ import {
   selectFormData,
 } from "@/redux/slices/form.slice";
 import { useDeepCompareEffect } from "react-use";
-import { selectActiveUser } from "@/redux/slices/user.slice";
+import { selectActiveUser, userFetch } from "@/redux/slices/user.slice";
 import useDebounce from "@/hooks/use-debounce";
 
 type IUseSharedForm<F extends FieldValues> = UseFormReturn<F> & {
@@ -43,8 +43,8 @@ export default function useSharedForm<F extends FieldValues>(
   const formData = useAppSelector(selectFormData(formId));
   const userData = useAppSelector(selectActiveUser);
   const defaultValues = {
-    ...userData,
     ...formData,
+    ...userData,
   } as unknown as DefaultValues<F>;
   const useFormApi = useForm<F>({
     mode: "onChange",
@@ -75,8 +75,10 @@ export default function useSharedForm<F extends FieldValues>(
         type: IFormHelperTypes.Success,
       });
 
-      // Update logged in user with relevant form values
-      await userUpdate(values as any).catch(console.error);
+      const isEmailData = Object.keys(values).length === 1;
+      // Update logged in user with relevant form values if data contains values to update else just fetch user
+      if (!isEmailData) await userUpdate(values as any).catch(console.error);
+      else await dispatch(userFetch());
 
       // Reset form
       useFormApi.reset();
@@ -92,6 +94,14 @@ export default function useSharedForm<F extends FieldValues>(
 
       // Log error to console
       console.error(error);
+
+      // Reset form
+      useFormApi.reset(undefined, {
+        keepDirtyValues: true,
+        keepIsValid: true,
+        keepErrors: true,
+        keepIsSubmitted: true,
+      });
     } finally {
       // Clear form submit response
       setTimeout(() => setFormResponse(undefined), 5000);

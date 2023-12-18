@@ -4,7 +4,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    req.body = JSON.parse(req.body || {});
+    if (!req.body)
+      throw {
+        message: "Empty body",
+      };
+
+    req.body = JSON.parse(req.body);
     validateRequest(req, {
       methods: new Set([HttpMethods.POST]),
       requiredFields: ["paramsToSign"],
@@ -32,6 +37,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .end({ data: error.data, message: error.message, error: true });
+      .send({ data: error.data, message: error.message, error: true });
   }
 }

@@ -24,14 +24,14 @@ export default async function handler(
         devMessage: "Best selling content not found",
       };
 
-    return res.status(200).send({
+    res.status(200).send({
       data: contents[0],
       message: "Best selling contents retrieved successfully",
       error: false,
     });
   } catch (error) {
     console.error(error);
-    return res.status(error.statusCode || 500).end({
+    res.status(error.statusCode || 500).send({
       data: null,
       message: error.message || "An error occurred",
       error: true,

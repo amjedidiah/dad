@@ -31,6 +31,6 @@ WHERE r.content_id = ${+id} AND r.type = ${type} AND r.review IS NOT NULL AND r.
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .end({ data: error.data, message: error.message, error: true });
+      .send({ data: error.data, message: error.message, error: true });
   }
 }

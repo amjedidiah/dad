@@ -69,6 +69,6 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
     console.error(error);
     res
       .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
-      .end({ data: error.data, message: error.message, error: true });
+      .send({ data: error.data, message: error.message, error: true });
   }
 }
