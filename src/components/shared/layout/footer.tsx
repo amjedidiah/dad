@@ -15,7 +15,7 @@ import {
   userSubscribe,
 } from "@/redux/slices/user.slice";
 import { useAppDispatch } from "@/redux/util";
-
+//footer chnge
 export default function Footer() {
   const { isDarkMode } = useTheme();
   const isSubscribed = useSelector(selectUserIsSubscribed);
