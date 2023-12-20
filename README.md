@@ -22,7 +22,7 @@ Practice / grow your skills while contributing to a real-world project.
 
 - Install dependencies: `yarn install`
 
-- Fetch env variables: `yarn env`
+- Request env variables
 
 - Start development server: `yarn dev`
 
