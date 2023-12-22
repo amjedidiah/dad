@@ -7,6 +7,20 @@ import ModeSwitch from "@/components/shared/layout/mode-switch";
 import { ModalContext } from "@/context/modal/modal.context";
 import Footer from "@/components/shared/layout/footer";
 import { CldOgImage } from "next-cloudinary";
+import useChatBot from "@/hooks/use-chat-bot";
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "chat-bot": {
+        platform_id: string;
+        user_id: string;
+        chatbot_id: string;
+        children: Element;
+      };
+    }
+  }
+}
 
 type Props = {
   title: string;
@@ -24,6 +38,7 @@ export default function RootLayout({
 }: PropsWithChildren & Props) {
   const theme = useTheme();
   const { modalTitle } = useContext(ModalContext);
+  useChatBot();
 
   return (
     <Fragment>
@@ -47,6 +62,16 @@ export default function RootLayout({
       </main>
       <Footer />
       {modalTitle && <Modal />}
+
+      <chat-bot
+        platform_id="4ab2c356-1b29-4e73-b4ce-e89486920581"
+        user_id="e60a612c-d975-4ddf-a34a-84868b125f9e"
+        chatbot_id="a304ee03-617d-44c2-ab72-cd1f4ae39a3e"
+      >
+        <a href="https://www.chatsimple.ai/?utm_source=widget&utm_medium=referral">
+          [chatbot]
+        </a>
+      </chat-bot>
     </Fragment>
   );
 }

@@ -14,6 +14,7 @@ import { wrapper } from "@/redux/store";
 import { Provider } from "react-redux";
 import useUserFetch from "@/hooks/use-user-fetch";
 import useFetchIPDetails from "@/hooks/use-fetch-ip-details";
+import Script from "next/script";
 
 export default function MyApp({ Component, ...rest }: AppProps) {
   const theme = useMode();
@@ -45,6 +46,7 @@ export default function MyApp({ Component, ...rest }: AppProps) {
       </SWRConfig>
       <ToastContainer bodyStyle={{ zIndex: 1000001 }} theme={toastTheme} />
       <Analytics />
+      <Script src="https://cdn.chatsimple.ai/chat-bot-loader.js" defer />
     </ThemeProvider>
   );
 }
