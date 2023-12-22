@@ -14,6 +14,21 @@ import { wrapper } from "@/redux/store";
 import { Provider } from "react-redux";
 import useUserFetch from "@/hooks/use-user-fetch";
 import useFetchIPDetails from "@/hooks/use-fetch-ip-details";
+import Script from "next/script";
+import ChatBot from "@/components/shared/chat-bot";
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "chat-bot": {
+        platform_id: string;
+        user_id: string;
+        chatbot_id: string;
+        children: Element;
+      };
+    }
+  }
+}
 
 export default function MyApp({ Component, ...rest }: AppProps) {
   const theme = useMode();
@@ -45,6 +60,8 @@ export default function MyApp({ Component, ...rest }: AppProps) {
       </SWRConfig>
       <ToastContainer bodyStyle={{ zIndex: 1000001 }} theme={toastTheme} />
       <Analytics />
+      <ChatBot />
+      <Script src="https://cdn.chatsimple.ai/chat-bot-loader.js" defer />
     </ThemeProvider>
   );
 }
