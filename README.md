@@ -20,11 +20,11 @@ Practice / grow your skills while contributing to a real-world project.
 
 - Checkout to develop: `git checkout develop`
 
-- Install dependencies: `yarn install`
+- Install dependencies: `pnpm install`
 
-- Fetch env variables: `yarn env`
+- Request env variables
 
-- Start development server: `yarn dev`
+- Start development server: `pnpm dev`
 
 - Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
