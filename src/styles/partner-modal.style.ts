@@ -43,9 +43,12 @@ const styles: Interpolation<Theme> = ({
     grid-template-columns: calc(100% - 0rem);
     margin: 4.75rem 0;
 
-    @media (min-width: ${breakpoints.lg}px) {
-      grid-template-columns: 596px auto;
-    }
+    ${process.env.NODE_ENV === "development" &&
+    css`
+      @media (min-width: ${breakpoints.lg}px) {
+        grid-template-columns: 596px auto;
+      }
+    `}
 
     .sub-title {
       font-size: 1.5rem;
@@ -63,10 +66,13 @@ const styles: Interpolation<Theme> = ({
       padding: 2rem;
       text-align: center;
 
-      @media (min-width: ${breakpoints.lg}px) {
-        grid-column: 2 / 3;
-        grid-row: 1 / 2;
-      }
+      ${process.env.NODE_ENV === "development" &&
+      css`
+        @media (min-width: ${breakpoints.lg}px) {
+          grid-column: 2 / 3;
+          grid-row: 1 / 2;
+        }
+      `}
 
       .container-partner-logos {
         gap: 1rem;

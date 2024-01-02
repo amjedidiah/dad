@@ -4,7 +4,7 @@ import Modal from "@/components/shared/layout/modal";
 import Scrolling from "@/components/shared/scrolling";
 import TestimonialList from "@/components/shared/testimonials/testimonial-list";
 import styles from "@/styles/partner-modal.style";
-import { ministries } from "@/utils/constants";
+import { isDev, ministries } from "@/utils/constants";
 
 export default function PartnerModal() {
   return (
@@ -31,34 +31,19 @@ export default function PartnerModal() {
                   alt="partner-with-paystack"
                   width={123}
                   height={57}
-                  style={{ width: "auto", height: "auto" }}
-                />
-              </Link>
-            </div>
-            <div className="child-partner-logo">
-              <Link
-                href={
-                  process.env.NEXT_PUBLIC_FLUTTERWAVE_DONATION_LINK as string
-                }
-                passHref
-              >
-                <Image
-                  src="/images/partner/flutterwave.webp"
-                  alt="partner-with-flutterwave"
-                  width={210}
-                  height={50}
-                  style={{ width: "auto", height: "auto" }}
                 />
               </Link>
             </div>
           </div>
         </div>
-        <div className="child-partner-testimonials">
-          <h4 className="theme-text sub-title">
-            Hear what partners are saying
-          </h4>
-          <TestimonialList />
-        </div>
+        {isDev && (
+          <div className="child-partner-testimonials">
+            <h4 className="theme-text sub-title">
+              Hear what partners are saying
+            </h4>
+            <TestimonialList />
+          </div>
+        )}
       </article>
     </Modal.Body>
   );
