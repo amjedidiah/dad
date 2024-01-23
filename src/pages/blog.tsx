@@ -1,75 +1,119 @@
-import blog1 from "../../public/images/blog/blog1.png";
 import RootLayout from "@/components/shared/layout/root-layout";
 import SectionHeader from "@/components/shared/section-header";
 import Image from "next/image";
 import Blogs, { TopBlogs } from "@/components/blog/blogs";
+import { client } from "../../sanity/lib/client";
+import { PortableText } from "@portabletext/react";
+import Link from "next/link";
+import TruncatedContent from "@/components/blog/truncatedcontent";
 
-export default function Blog() {
+export default function Blog({ blogs, majorBlog, topBlogs }: any) {
+  const focusedBlog = majorBlog[0];
+  // const posts = focusedBlog.post;
+  // const getWordsBeforeFullStop = (post: any) => {
+  //   // Find the index of the first occurrence of "."
+  //   const indexOfFullStop = post.findIndex((block: any) =>
+  //     block.children.some((span: any) => span.text.includes("."))
+  //   );
+
+  //   // If a full stop is found, extract the text before it; otherwise, use the entire text
+  //   const wordsBeforeFullStop =
+  //     indexOfFullStop !== -1
+  //       ? post
+  //           .slice(0, indexOfFullStop)
+  //           .flatMap((block: any) => block.children)
+  //           .map((span: any) => span.text)
+  //           .join(" ")
+  //       : post
+  //           .flatMap((block: any) => block.children)
+  //           .map((span: any) => span.text)
+  //           .join(" ");
+
+  //   return wordsBeforeFullStop;
+  // };
   return (
     <RootLayout title="Blog - Dr Passy Amaraegbu | Living a life of purity, power and prosperity">
       <section className="load-in pt-5 mb-5 md:mb-10 md:flex md:justify-between  md:mx-16 mx-10">
         <div className="w-full lg:w-3/4 md:flex gap-10 ">
-        <div>
-          <SectionHeader title="Blog" pageTitle />
-        </div>
-        <div className="text-white text-xl mt-5 md:mt-10 xl:mt-14">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officiis
-          iusto libero sint ab error tempora.
-        </div>
+          <div>
+            <SectionHeader title="Blog" pageTitle />
+          </div>
+          <div className="text-white text-xl mt-5 md:mt-10 xl:mt-14">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officiis
+            iusto libero sint ab error tempora.
+          </div>
         </div>
       </section>
 
-      <section className="mx-10 md:mx-16 mb-20 text-white">
-        <div className="lg:flex gap-5">
-          <div className="relative  mb-5 md:md-10 lg:mb-0">
-            <Image
-              src={blog1}
-              height={400}
-              width={400}
-              alt="Alt text for the image"
-              className="w-full h-full"
-            />
-            <div className="absolute top-3/4 left-0 transform -translate-y-1/2 text-white p-5 md:p-8">
-              <p className="text-2xl font-bold mb-2 md:mb-4">
-                Climbing that mountain like a pro
-              </p>
-              <p>
-                We have the best expertise person Lorem ipsum dolor sit amet
-                consectetur, adipisicing elit. Excepturi, sint?
-              </p>
-            </div>
+      <section className="mx-10 md:mx-16 mb-20 text-white h-full">
+        <div className="lg:flex space-x-5">
+          {majorBlog.map((item: any, index: any) => (
+            <Link
+              href={`blog/${item.slug}`}
+              key={index}
+              className="lg:w-1/2 lg:flex"
+            >
+              <div className="relative  mb-5 md:mb-10 lg:mb-0 lg:w-full lg:flex flex-col lg:flex-grow">
+                <Image
+                  src={item.image}
+                  height={400}
+                  width={800}
+                  alt={item.title}
+                  className="h-full w-full object-cover object-center"
+                />
+                <div className="absolute top-3/4 left-0 transform -translate-y-1/2 text-white p-5 md:p-8">
+                  <p className="text-2xl font-bold mb-2 md:mb-4">
+                    {item.title}
+                  </p>
+                  <TruncatedContent content={item.post} maxWords={20} />
+                </div>
+              </div>
+            </Link>
+          ))}
+          <div className="lg:w-1/2 lg:flex lg:flex-col">
+            <TopBlogs topBlogs={topBlogs} />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:grid-cols-1">
-           <TopBlogs />
-           </div>
         </div>
       </section>
 
       <section className="mx-10 md:mx-16 text-white">
-        <Blogs /> 
+        <Blogs blogs={blogs} />
       </section>
     </RootLayout>
   );
 }
 
-{/* <div className="space-y-10">
-          <div className="lg:flex gap-x-10">
-            <div className="p-4 border border-gray-300 mb-5 lg:mb-0">
-              <div className="mb-5">
-                <Image src={blog4} height={350} width={350} alt={"this"} className="w-full"/>
-              </div>
-              <div>
-                <div className="flex justify-between mb-1">
-                  <div className="bg-gray-100 rounded px-3 py-1 text-black">
-                    Reality
-                  </div>
-                  <div className="text-gray-300">2 min read</div>
-                </div>
-                <div className="text-xl text-gray-200">
-                  Making things working out regardless
-                </div>
-            />
-              </div>
-            </div>
-          </div>
-        </div> */}
+export async function getStaticProps() {
+  const blogs = await client.fetch(`*[_type == "blogs"]{
+    title,
+    readTime,
+    "image": image.asset->url,
+    post,
+    readType,
+    "slug": slug.current
+  }`);
+
+  const topBlogs = await client.fetch(`*[_type == "topBlogs"]{
+      title,
+    readTime,
+    "image": image.asset->url,
+    post,
+    readType,
+    "slug": slug.current
+  }`);
+
+  const majorBlog = await client.fetch(`*[_type == "majorBlog"]{
+    title,
+    "image": image.asset->url,
+    post,
+    "slug": slug.current
+  }`);
+
+  return {
+    props: {
+      blogs,
+      majorBlog,
+      topBlogs,
+    },
+  };
+}
