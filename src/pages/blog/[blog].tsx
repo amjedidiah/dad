@@ -6,56 +6,6 @@ import Link from "next/link";
 import TruncatedContent from "@/components/blog/truncatedcontent";
 
 export default function SingleBlog({ blogPost, blogs }: any) {
-  // // Extracting the content from the PortableText value
-  // const contentBlocks = blogPost.post;
-
-  // // Function to get the first 50 words as a string
-  // const getFirst50Words = (blocks: any) => {
-  //   let wordCount = 0;
-  //   let result = [];
-
-  //   for (const block of blocks) {
-  //     for (const span of block.children) {
-  //       const words = span.text.split(" ");
-
-  //       for (const word of words) {
-  //         result.push({
-  //           _type: "block",
-  //           style: "normal",
-  //           children: [
-  //             {
-  //               _type: "span",
-  //               marks: [],
-  //               text: word,
-  //             },
-  //           ],
-  //         });
-
-  //         wordCount++;
-
-  //         if (wordCount === 300) {
-  //           return result;
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   return result;
-  // };
-
-  // // Get the first 50 words as blocks
-  // const first50WordsBlocks = getFirst50Words(contentBlocks);
-
-  // // Manual rendering of the PortableText with the first 50 words
-  // const renderFirst50Words = (blocks) => {
-  //   return (
-  //     <div>
-  //       {blocks.map((block, index) => (
-  //         <span key={index}>{block.children[0].text} </span>
-  //       ))}
-  //     </div>
-  //   );
-  // };
   return (
     <RootLayout title="Blog - Dr Passy Amaraegbu | Living a life of purity, power and prosperity">
       <div className="mt-5 mx-20 text-white space-x-5">

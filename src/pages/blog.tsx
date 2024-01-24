@@ -3,34 +3,10 @@ import SectionHeader from "@/components/shared/section-header";
 import Image from "next/image";
 import Blogs, { TopBlogs } from "@/components/blog/blogs";
 import { client } from "../../sanity/lib/client";
-import { PortableText } from "@portabletext/react";
 import Link from "next/link";
 import TruncatedContent from "@/components/blog/truncatedcontent";
 
 export default function Blog({ blogs, majorBlog, topBlogs }: any) {
-  const focusedBlog = majorBlog[0];
-  // const posts = focusedBlog.post;
-  // const getWordsBeforeFullStop = (post: any) => {
-  //   // Find the index of the first occurrence of "."
-  //   const indexOfFullStop = post.findIndex((block: any) =>
-  //     block.children.some((span: any) => span.text.includes("."))
-  //   );
-
-  //   // If a full stop is found, extract the text before it; otherwise, use the entire text
-  //   const wordsBeforeFullStop =
-  //     indexOfFullStop !== -1
-  //       ? post
-  //           .slice(0, indexOfFullStop)
-  //           .flatMap((block: any) => block.children)
-  //           .map((span: any) => span.text)
-  //           .join(" ")
-  //       : post
-  //           .flatMap((block: any) => block.children)
-  //           .map((span: any) => span.text)
-  //           .join(" ");
-
-  //   return wordsBeforeFullStop;
-  // };
   return (
     <RootLayout title="Blog - Dr Passy Amaraegbu | Living a life of purity, power and prosperity">
       <section className="load-in pt-5 mb-5 md:mb-10 md:flex md:justify-between  md:mx-16 mx-10">
@@ -38,6 +14,7 @@ export default function Blog({ blogs, majorBlog, topBlogs }: any) {
           <div>
             <SectionHeader title="Blog" pageTitle />
           </div>
+
           <div className="text-white text-xl mt-5 md:mt-10 xl:mt-14">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officiis
             iusto libero sint ab error tempora.
