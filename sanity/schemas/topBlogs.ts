@@ -1,4 +1,3 @@
-// schemas/pet.js
 export default {
   name: "topBlogs",
   type: "document",
